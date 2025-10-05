@@ -11,6 +11,11 @@
   },
   "youtubeVideos": [
     {
+      "id": "mexEuoPH6zI",
+      "title": "😱 Майнкрафт, но Я Продолжил ДЕТЕКТИВНУЮ ИСТОРИЮ [Детектив: Смайл] | Глава 3 | Minecraft",
+      "thumbnailUrl": "https://i.ytimg.com/vi/mexEuoPH6zI/maxresdefault.jpg"
+    },
+    {
       "id": "e7K5ijK2VOo",
       "title": "Отправь тому самому другу 😂 #shorts #майнкрафт #bezzubickmcplay",
       "thumbnailUrl": "https://i.ytimg.com/vi/e7K5ijK2VOo/maxresdefault.jpg"
@@ -104,17 +109,12 @@
       "id": "QzXOnCefouU",
       "title": "🎬 Майнкрафт Фильм 2025 - Реакция и Разбор НОВОГО ТРЕЙЛЕРА | Bezzubick MCPlay | Minecraft",
       "thumbnailUrl": "https://i.ytimg.com/vi/QzXOnCefouU/maxresdefault.jpg"
-    },
-    {
-      "id": "FAXuDSitKFU",
-      "title": "💀 Бу! Испугался? Не бойся! Я друг! #Shorts #minecraft #майнкрафт #minecraftmemes",
-      "thumbnailUrl": "https://i.ytimg.com/vi/FAXuDSitKFU/maxresdefault.jpg"
     }
   ],
   "liveStream": {
     "type": "none"
   },
-  "lastUpdated": "2025-10-05T12:13:04.473441",
+  "lastUpdated": "2025-10-05T12:51:51.579644",
   "debugInfo": {
     "instagram_setup_warning": "Missing Instagram credentials",
     "x_error": "HTTP 429",
