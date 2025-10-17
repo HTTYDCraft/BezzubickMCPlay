@@ -1,13 +1,13 @@
 {
   "followerCounts": {
-    "youtube": 158000,
+    "youtube": 149000,
     "telegram": 38,
     "instagram": 0,
     "x": 2,
     "twitch": 3,
     "tiktok": 0,
     "vk_group": 160,
-    "vk_personal": 974
+    "vk_personal": 973
   },
   "youtubeVideos": [
     {
@@ -114,7 +114,7 @@
   "liveStream": {
     "type": "none"
   },
-  "lastUpdated": "2025-10-17T21:56:54.564724",
+  "lastUpdated": "2025-10-17T22:16:31.881857",
   "debugInfo": {
     "instagram_setup_warning": "Missing Instagram credentials",
     "x_error": "HTTP 429",
