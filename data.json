@@ -1,7 +1,7 @@
 {
   "followerCounts": {
     "youtube": 224000,
-    "telegram": 40,
+    "telegram": 39,
     "instagram": 0,
     "x": 2,
     "twitch": 3,
@@ -114,7 +114,7 @@
   "liveStream": {
     "type": "none"
   },
-  "lastUpdated": "2025-11-23T20:44:21.486065",
+  "lastUpdated": "2025-11-23T20:53:01.149469",
   "debugInfo": {
     "instagram_setup_warning": "Missing Instagram credentials",
     "x_error": "HTTP 429",
