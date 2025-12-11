@@ -6,7 +6,7 @@
     "x": 2,
     "twitch": 3,
     "tiktok": 0,
-    "vk_group": 177,
+    "vk_group": 178,
     "vk_personal": 971
   },
   "youtubeVideos": [
@@ -114,9 +114,10 @@
   "liveStream": {
     "type": "none"
   },
-  "lastUpdated": "2025-12-11T02:57:30.512214",
+  "lastUpdated": "2025-12-11T03:56:41.190297",
   "debugInfo": {
     "instagram_setup_warning": "Missing Instagram credentials",
+    "x_error": "HTTP 429",
     "tiktok_setup_warning": "Missing TikTok credentials"
   }
 }
