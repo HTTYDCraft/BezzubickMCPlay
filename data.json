@@ -112,9 +112,12 @@
     }
   ],
   "liveStream": {
-    "type": "none"
+    "type": "youtube",
+    "id": "L25UFGpzG4s",
+    "title": "Collecting eggs in the river #shorts",
+    "youtubeChannelId": "UCm6mheCT60mZ5qlxG5r2GeA"
   },
-  "lastUpdated": "2025-12-17T05:57:56.363449",
+  "lastUpdated": "2025-12-17T06:36:00.179462",
   "debugInfo": {
     "instagram_setup_warning": "Missing Instagram credentials",
     "x_error": "HTTP 429",
