@@ -112,12 +112,14 @@
     }
   ],
   "liveStream": {
-    "type": "none"
+    "type": "youtube",
+    "id": "7Nwuat4nf0Y",
+    "title": "This time I give steve a link (no mid-stream ads)",
+    "youtubeChannelId": "UCm6mheCT60mZ5qlxG5r2GeA"
   },
-  "lastUpdated": "2025-12-19T04:43:57.716700",
+  "lastUpdated": "2025-12-19T04:59:53.210744",
   "debugInfo": {
     "instagram_setup_warning": "Missing Instagram credentials",
-    "x_error": "HTTP 429",
     "tiktok_setup_warning": "Missing TikTok credentials"
   }
 }
