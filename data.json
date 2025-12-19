@@ -112,9 +112,12 @@
     }
   ],
   "liveStream": {
-    "type": "none"
+    "type": "youtube",
+    "id": "yMlySipX5iU",
+    "title": "send this to someone who would totally do this for you @RyanKHudson #food #lovelanguage #homecooking",
+    "youtubeChannelId": "UCm6mheCT60mZ5qlxG5r2GeA"
   },
-  "lastUpdated": "2025-12-19T08:48:02.287076",
+  "lastUpdated": "2025-12-19T09:02:04.994793",
   "debugInfo": {
     "instagram_setup_warning": "Missing Instagram credentials",
     "x_error": "HTTP 429",
