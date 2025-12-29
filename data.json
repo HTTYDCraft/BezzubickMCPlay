@@ -6,7 +6,7 @@
     "x": 2,
     "twitch": 3,
     "tiktok": 0,
-    "vk_group": 184,
+    "vk_group": 185,
     "vk_personal": 971
   },
   "youtubeVideos": [
@@ -114,11 +114,10 @@
   "liveStream": {
     "type": "none"
   },
-  "lastUpdated": "2025-12-29T14:58:39.182990",
+  "lastUpdated": "2025-12-29T15:25:18.289568",
   "debugInfo": {
-    "telegram_error": "HTTPSConnectionPool(host='api.telegram.org', port=443): Max retries exceeded with url: /bot7688822731:AAHJmhctxR3MMOQ0xhQ21IdsdZt5CRmmeqY/getChatMemberCount?chat_id=-1001689196648 (Caused by NewConnectionError(\"HTTPSConnection(host='api.telegram.org', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable\"))",
     "instagram_setup_warning": "Missing Instagram credentials",
-    "x_error": "HTTP 429",
+    "x_error": "Expecting value: line 1 column 1 (char 0)",
     "tiktok_setup_warning": "Missing TikTok credentials"
   }
 }
