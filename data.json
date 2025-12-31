@@ -11,6 +11,11 @@
   },
   "youtubeVideos": [
     {
+      "id": "oCnCHw9bki8",
+      "title": "Конец 2025... Что дальше?✨",
+      "thumbnailUrl": "https://i.ytimg.com/vi/oCnCHw9bki8/maxresdefault.jpg"
+    },
+    {
       "id": "iDyafiaFNuA",
       "title": "🔴 ЗАБРОШЕННЫЙ ОСТРОВ В ПЯТНИЦУ 13! The Forest  [Cтрим] | Minecraft",
       "thumbnailUrl": "https://i.ytimg.com/vi/iDyafiaFNuA/maxresdefault.jpg"
@@ -104,17 +109,12 @@
       "id": "MYC1RBFjLOw",
       "title": "🔴 ОФИГЕВАЮ ОТ КАРТОШКИ НА ФАНПАРТИ В МАЙНКРАФТ!  [Cтрим] | Minecraft",
       "thumbnailUrl": "https://i.ytimg.com/vi/MYC1RBFjLOw/maxresdefault.jpg"
-    },
-    {
-      "id": "O2vUkNmEy0Y",
-      "title": "🔴 НЕДЕЛЯ СТРИМОВ! День 7, BEDWARS!  [Cтрим] | Minecraft",
-      "thumbnailUrl": "https://i.ytimg.com/vi/O2vUkNmEy0Y/maxresdefault.jpg"
     }
   ],
   "liveStream": {
     "type": "none"
   },
-  "lastUpdated": "2025-12-31T11:59:20.042967",
+  "lastUpdated": "2025-12-31T12:54:55.897195",
   "debugInfo": {
     "instagram_setup_warning": "Missing Instagram credentials",
     "x_error": "HTTP 429",
