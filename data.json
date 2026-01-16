@@ -11,6 +11,11 @@
   },
   "youtubeVideos": [
     {
+      "id": "u8rnQnqFYDU",
+      "title": "😱 Майнкрафт, но Я Закончил ДЕТЕКТИВНУЮ ИСТОРИЮ [Детектив: Смайл] | Глава 4 | Minecraft",
+      "thumbnailUrl": "https://i.ytimg.com/vi/u8rnQnqFYDU/maxresdefault.jpg"
+    },
+    {
       "id": "oCnCHw9bki8",
       "title": "Конец 2025... Что дальше?✨",
       "thumbnailUrl": "https://i.ytimg.com/vi/oCnCHw9bki8/maxresdefault.jpg"
@@ -104,17 +109,12 @@
       "id": "MQarwER72VE",
       "title": "🔴 МАЙНКРАФТЕР ВПЕРВЫЕ ПОПАЛ В The Last of Us! | The Last of Us",
       "thumbnailUrl": "https://i.ytimg.com/vi/MQarwER72VE/maxresdefault.jpg"
-    },
-    {
-      "id": "MYC1RBFjLOw",
-      "title": "🔴 ОФИГЕВАЮ ОТ КАРТОШКИ НА ФАНПАРТИ В МАЙНКРАФТ!  [Cтрим] | Minecraft",
-      "thumbnailUrl": "https://i.ytimg.com/vi/MYC1RBFjLOw/maxresdefault.jpg"
     }
   ],
   "liveStream": {
     "type": "none"
   },
-  "lastUpdated": "2026-01-16T11:56:17.903563",
+  "lastUpdated": "2026-01-16T12:39:53.229608",
   "debugInfo": {
     "instagram_setup_warning": "Missing Instagram credentials",
     "x_error": "HTTP 429",
