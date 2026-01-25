@@ -11,6 +11,11 @@
   },
   "youtubeVideos": [
     {
+      "id": "7jY46bOpPI4",
+      "title": "😉 Когда лень идти в шахту... #Shorts #майнкрафт #bezzubickmcplay",
+      "thumbnailUrl": "https://i.ytimg.com/vi/7jY46bOpPI4/maxresdefault.jpg"
+    },
+    {
       "id": "gM1bTYzhNAE",
       "title": "😉 Когда лень идти в шахту... #Shorts #майнкрафт #bezzubickmcplay",
       "thumbnailUrl": "https://i.ytimg.com/vi/gM1bTYzhNAE/maxresdefault.jpg"
@@ -104,20 +109,15 @@
       "id": "HogYfXf4Ym0",
       "title": "🔴 100К и ОДИН БЛОК на Стриме вместе с ДРУЗЬЯМИ!   [Cтрим] | Minecraft",
       "thumbnailUrl": "https://i.ytimg.com/vi/HogYfXf4Ym0/maxresdefault.jpg"
-    },
-    {
-      "id": "IOJtfzNYbRI",
-      "title": "🔴 СТРИМ НА КРИСТАЛИКСЕ! | Minecraft",
-      "thumbnailUrl": "https://i.ytimg.com/vi/IOJtfzNYbRI/maxresdefault.jpg"
     }
   ],
   "liveStream": {
     "type": "none"
   },
-  "lastUpdated": "2026-01-25T12:29:44.753321",
+  "lastUpdated": "2026-01-25T13:10:42.240337",
   "debugInfo": {
     "instagram_setup_warning": "Missing Instagram credentials",
-    "x_error": "HTTP 429",
+    "x_error": "Expecting value: line 1 column 1 (char 0)",
     "tiktok_setup_warning": "Missing TikTok credentials"
   }
 }
