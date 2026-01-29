@@ -11,6 +11,11 @@
   },
   "youtubeVideos": [
     {
+      "id": "Jp977ZMd_bE",
+      "title": "👀 POV: твой друг #Shorts #майнкрафт #bezzubickmcplay",
+      "thumbnailUrl": "https://i.ytimg.com/vi/Jp977ZMd_bE/maxresdefault.jpg"
+    },
+    {
       "id": "7jY46bOpPI4",
       "title": "😉 Когда лень идти в шахту... #Shorts #майнкрафт #bezzubickmcplay",
       "thumbnailUrl": "https://i.ytimg.com/vi/7jY46bOpPI4/maxresdefault.jpg"
@@ -104,17 +109,12 @@
       "id": "gzBeZIjP6Aw",
       "title": "🔴 СТРИМ ПО КАК ПРИРУЧИТЬ ДРАКОНА В МАЙНКРАФТЕ!  [Cтрим] | Minecraft",
       "thumbnailUrl": "https://i.ytimg.com/vi/gzBeZIjP6Aw/maxresdefault.jpg"
-    },
-    {
-      "id": "HogYfXf4Ym0",
-      "title": "🔴 100К и ОДИН БЛОК на Стриме вместе с ДРУЗЬЯМИ!   [Cтрим] | Minecraft",
-      "thumbnailUrl": "https://i.ytimg.com/vi/HogYfXf4Ym0/maxresdefault.jpg"
     }
   ],
   "liveStream": {
     "type": "none"
   },
-  "lastUpdated": "2026-01-29T11:58:22.965702",
+  "lastUpdated": "2026-01-29T13:04:59.204135",
   "debugInfo": {
     "instagram_setup_warning": "Missing Instagram credentials",
     "x_error": "HTTP 429",
