@@ -11,6 +11,11 @@
   },
   "youtubeVideos": [
     {
+      "id": "Q3I1DcFGvS4",
+      "title": "Не жмякай на звук ❌  #minecraft #shorts #майнкрафт",
+      "thumbnailUrl": "https://i.ytimg.com/vi/Q3I1DcFGvS4/maxresdefault.jpg"
+    },
+    {
       "id": "Jp977ZMd_bE",
       "title": "👀 POV: твой друг #Shorts #майнкрафт #bezzubickmcplay",
       "thumbnailUrl": "https://i.ytimg.com/vi/Jp977ZMd_bE/maxresdefault.jpg"
@@ -104,17 +109,12 @@
       "id": "fyjBSg6ZlUs",
       "title": "🔴 ПОПАЛ В МАЙНКРАФТ ДАНЖЕНС СПУСТЯ ГОД! | Minecraft Dungeons",
       "thumbnailUrl": "https://i.ytimg.com/vi/fyjBSg6ZlUs/maxresdefault.jpg"
-    },
-    {
-      "id": "gzBeZIjP6Aw",
-      "title": "🔴 СТРИМ ПО КАК ПРИРУЧИТЬ ДРАКОНА В МАЙНКРАФТЕ!  [Cтрим] | Minecraft",
-      "thumbnailUrl": "https://i.ytimg.com/vi/gzBeZIjP6Aw/maxresdefault.jpg"
     }
   ],
   "liveStream": {
     "type": "none"
   },
-  "lastUpdated": "2026-02-13T11:57:20.399513",
+  "lastUpdated": "2026-02-13T13:01:41.791224",
   "debugInfo": {
     "instagram_setup_warning": "Missing Instagram credentials",
     "x_error": "HTTP 429",
