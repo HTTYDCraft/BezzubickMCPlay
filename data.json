@@ -114,9 +114,10 @@
   "liveStream": {
     "type": "none"
   },
-  "lastUpdated": "2026-02-19T12:00:57.480385",
+  "lastUpdated": "2026-02-19T13:37:14.633214",
   "debugInfo": {
     "instagram_setup_warning": "Missing Instagram credentials",
+    "x_error": "HTTP 429",
     "tiktok_setup_warning": "Missing TikTok credentials"
   }
 }
