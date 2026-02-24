@@ -11,6 +11,16 @@
   },
   "youtubeVideos": [
     {
+      "id": "w_UzSa8eLfU",
+      "title": "😉 Не кликай на звук! - Когда лень идти в шахту [Reverse Edition] #Shorts #майнкрафт #bezzubickmcplay",
+      "thumbnailUrl": "https://i.ytimg.com/vi/w_UzSa8eLfU/maxresdefault.jpg"
+    },
+    {
+      "id": "JnxUmWGeg4c",
+      "title": "😉 Не кликай на звук! - Когда лень идти в шахту [Reverse Edition] #Shorts #майнкрафт #bezzubickmcplay",
+      "thumbnailUrl": "https://i.ytimg.com/vi/JnxUmWGeg4c/maxresdefault.jpg"
+    },
+    {
       "id": "Q3I1DcFGvS4",
       "title": "Не жмякай на звук ❌  #minecraft #shorts #майнкрафт",
       "thumbnailUrl": "https://i.ytimg.com/vi/Q3I1DcFGvS4/maxresdefault.jpg"
@@ -99,22 +109,12 @@
       "id": "djxZictN0oE",
       "title": "🔴 НЕДЕЛЯ СТРИМОВ! День 3, ВЫЖИВАНИЕ С ДРУЗЬЯМИ!  [Cтрим] | Minecraft",
       "thumbnailUrl": "https://i.ytimg.com/vi/djxZictN0oE/maxresdefault.jpg"
-    },
-    {
-      "id": "e9PMO0asww0",
-      "title": "🔴 СТРИМЧИК R.E.P.O! МЫ УЖЕ ПРОФЕССИОНАЛЬНЫЕ БАЛЛАБОЛЫ! | R.E.P.O",
-      "thumbnailUrl": "https://i.ytimg.com/vi/e9PMO0asww0/maxresdefault.jpg"
-    },
-    {
-      "id": "fyjBSg6ZlUs",
-      "title": "🔴 ПОПАЛ В МАЙНКРАФТ ДАНЖЕНС СПУСТЯ ГОД! | Minecraft Dungeons",
-      "thumbnailUrl": "https://i.ytimg.com/vi/fyjBSg6ZlUs/maxresdefault.jpg"
     }
   ],
   "liveStream": {
     "type": "none"
   },
-  "lastUpdated": "2026-02-24T12:05:28.844982",
+  "lastUpdated": "2026-02-24T13:40:47.517860",
   "debugInfo": {
     "instagram_setup_warning": "Missing Instagram credentials",
     "x_error": "HTTP 429",
