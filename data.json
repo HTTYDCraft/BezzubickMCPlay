@@ -1,7 +1,7 @@
 {
   "followerCounts": {
     "youtube": 221000,
-    "telegram": 38,
+    "telegram": 39,
     "instagram": 0,
     "x": 2,
     "twitch": 3,
@@ -114,7 +114,7 @@
   "liveStream": {
     "type": "none"
   },
-  "lastUpdated": "2026-03-24T16:17:47.919820",
+  "lastUpdated": "2026-03-24T17:16:42.269767",
   "debugInfo": {
     "instagram_setup_warning": "Missing Instagram credentials",
     "tiktok_setup_warning": "Missing TikTok credentials"
