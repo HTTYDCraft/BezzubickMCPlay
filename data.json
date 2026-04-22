@@ -11,6 +11,11 @@
   },
   "youtubeVideos": [
     {
+      "id": "F-Cdh4SM0fE",
+      "title": "просто играем в майнкрафт. без больших букв",
+      "thumbnailUrl": "https://i.ytimg.com/vi/F-Cdh4SM0fE/maxresdefault_live.jpg"
+    },
+    {
       "id": "w_UzSa8eLfU",
       "title": "😉 Не кликай на звук! - Когда лень идти в шахту [Reverse Edition] #Shorts #майнкрафт #bezzubickmcplay",
       "thumbnailUrl": "https://i.ytimg.com/vi/w_UzSa8eLfU/maxresdefault.jpg"
@@ -104,17 +109,15 @@
       "id": "amvo9aV0cDg",
       "title": "🔴 КАК ПРИРУЧИТЬ ДРАКОНА В МАЙНКРАФТЕ!  [Cтрим] | Minecraft",
       "thumbnailUrl": "https://i.ytimg.com/vi/amvo9aV0cDg/maxresdefault.jpg"
-    },
-    {
-      "id": "djxZictN0oE",
-      "title": "🔴 НЕДЕЛЯ СТРИМОВ! День 3, ВЫЖИВАНИЕ С ДРУЗЬЯМИ!  [Cтрим] | Minecraft",
-      "thumbnailUrl": "https://i.ytimg.com/vi/djxZictN0oE/maxresdefault.jpg"
     }
   ],
   "liveStream": {
-    "type": "none"
+    "type": "youtube",
+    "id": "F-Cdh4SM0fE",
+    "title": "просто играем в майнкрафт. без больших букв",
+    "youtubeChannelId": "UCm6mheCT60mZ5qlxG5r2GeA"
   },
-  "lastUpdated": "2026-04-22T18:45:14.875952",
+  "lastUpdated": "2026-04-22T19:53:23.227244",
   "debugInfo": {
     "instagram_setup_warning": "Missing Instagram credentials",
     "tiktok_setup_warning": "Missing TikTok credentials"
