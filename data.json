@@ -1,12 +1,12 @@
 {
   "followerCounts": {
     "youtube": 221000,
-    "telegram": 40,
+    "telegram": 41,
     "instagram": 0,
     "x": 2,
     "twitch": 3,
     "tiktok": 0,
-    "vk_group": 232,
+    "vk_group": 233,
     "vk_personal": 892
   },
   "youtubeVideos": [
@@ -117,7 +117,7 @@
     "title": "просто играем в майнкрафт. без больших букв",
     "youtubeChannelId": "UCm6mheCT60mZ5qlxG5r2GeA"
   },
-  "lastUpdated": "2026-04-22T19:53:23.227244",
+  "lastUpdated": "2026-04-22T20:41:50.781584",
   "debugInfo": {
     "instagram_setup_warning": "Missing Instagram credentials",
     "tiktok_setup_warning": "Missing TikTok credentials"
