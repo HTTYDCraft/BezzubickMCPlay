@@ -13,7 +13,7 @@
     {
       "id": "F-Cdh4SM0fE",
       "title": "просто играем в майнкрафт. без больших букв",
-      "thumbnailUrl": "https://i.ytimg.com/vi/F-Cdh4SM0fE/maxresdefault_live.jpg"
+      "thumbnailUrl": "https://i.ytimg.com/vi/F-Cdh4SM0fE/maxresdefault.jpg"
     },
     {
       "id": "w_UzSa8eLfU",
@@ -112,12 +112,9 @@
     }
   ],
   "liveStream": {
-    "type": "youtube",
-    "id": "F-Cdh4SM0fE",
-    "title": "просто играем в майнкрафт. без больших букв",
-    "youtubeChannelId": "UCm6mheCT60mZ5qlxG5r2GeA"
+    "type": "none"
   },
-  "lastUpdated": "2026-04-22T21:36:17.681920",
+  "lastUpdated": "2026-04-22T22:27:31.427648",
   "debugInfo": {
     "instagram_setup_warning": "Missing Instagram credentials",
     "tiktok_setup_warning": "Missing TikTok credentials"
