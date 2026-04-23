@@ -11,6 +11,11 @@
   },
   "youtubeVideos": [
     {
+      "id": "G-Oy-FuqBTY",
+      "title": "🔴 ПРОСТО СТРИМ | Minecraft",
+      "thumbnailUrl": "https://i.ytimg.com/vi/G-Oy-FuqBTY/maxresdefault_live.jpg"
+    },
+    {
       "id": "F-Cdh4SM0fE",
       "title": "просто играем в майнкрафт. без больших букв",
       "thumbnailUrl": "https://i.ytimg.com/vi/F-Cdh4SM0fE/maxresdefault.jpg"
@@ -104,17 +109,15 @@
       "id": "aAr4JYbHyuw",
       "title": "🔴 СТРИМЧИК R.E.P.O! ОБНОВЛЕНИЕ ОПЯТЬ | R.E.P.O",
       "thumbnailUrl": "https://i.ytimg.com/vi/aAr4JYbHyuw/maxresdefault.jpg"
-    },
-    {
-      "id": "amvo9aV0cDg",
-      "title": "🔴 КАК ПРИРУЧИТЬ ДРАКОНА В МАЙНКРАФТЕ!  [Cтрим] | Minecraft",
-      "thumbnailUrl": "https://i.ytimg.com/vi/amvo9aV0cDg/maxresdefault.jpg"
     }
   ],
   "liveStream": {
-    "type": "none"
+    "type": "youtube",
+    "id": "G-Oy-FuqBTY",
+    "title": "🔴 ПРОСТО СТРИМ | Minecraft",
+    "youtubeChannelId": "UCm6mheCT60mZ5qlxG5r2GeA"
   },
-  "lastUpdated": "2026-04-23T16:46:34.757398",
+  "lastUpdated": "2026-04-23T17:58:54.268859",
   "debugInfo": {
     "instagram_setup_warning": "Missing Instagram credentials",
     "tiktok_setup_warning": "Missing TikTok credentials"
