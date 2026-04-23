@@ -13,7 +13,7 @@
     {
       "id": "G-Oy-FuqBTY",
       "title": "🔴 ПРОСТО СТРИМ | Minecraft",
-      "thumbnailUrl": "https://i.ytimg.com/vi/G-Oy-FuqBTY/maxresdefault_live.jpg"
+      "thumbnailUrl": "https://i.ytimg.com/vi/G-Oy-FuqBTY/maxresdefault.jpg"
     },
     {
       "id": "F-Cdh4SM0fE",
@@ -112,12 +112,9 @@
     }
   ],
   "liveStream": {
-    "type": "youtube",
-    "id": "G-Oy-FuqBTY",
-    "title": "🔴 ПРОСТО СТРИМ | Minecraft",
-    "youtubeChannelId": "UCm6mheCT60mZ5qlxG5r2GeA"
+    "type": "none"
   },
-  "lastUpdated": "2026-04-23T19:18:42.713455",
+  "lastUpdated": "2026-04-23T20:14:27.088402",
   "debugInfo": {
     "instagram_setup_warning": "Missing Instagram credentials",
     "tiktok_setup_warning": "Missing TikTok credentials"
