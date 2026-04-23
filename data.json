@@ -6,7 +6,7 @@
     "x": 2,
     "twitch": 3,
     "tiktok": 0,
-    "vk_group": 231,
+    "vk_group": 232,
     "vk_personal": 892
   },
   "youtubeVideos": [
@@ -117,7 +117,7 @@
     "title": "🔴 ПРОСТО СТРИМ | Minecraft",
     "youtubeChannelId": "UCm6mheCT60mZ5qlxG5r2GeA"
   },
-  "lastUpdated": "2026-04-23T17:58:54.268859",
+  "lastUpdated": "2026-04-23T19:18:42.713455",
   "debugInfo": {
     "instagram_setup_warning": "Missing Instagram credentials",
     "tiktok_setup_warning": "Missing TikTok credentials"
