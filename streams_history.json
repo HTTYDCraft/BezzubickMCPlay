@@ -44,6 +44,25 @@
       "title": "🔴 ПРОСТО СТРИМ | Minecraft",
       "url": "https://www.youtube.com/watch?v=G-Oy-FuqBTY",
       "videoId": "G-Oy-FuqBTY"
+    },
+    {
+      "key": "youtube:wyzGY8LmYCA",
+      "dt": "2026-04-24T17:13:46Z",
+      "date": "2026-04-24",
+      "platform": "youtube",
+      "title": "🔴 РЕПОООООООПОПО | R.E.P.O",
+      "url": "https://www.youtube.com/watch?v=wyzGY8LmYCA",
+      "videoId": "wyzGY8LmYCA"
+    },
+    {
+      "key": "twitch:315911963350",
+      "dt": "2026-04-24T17:13:46Z",
+      "date": "2026-04-24",
+      "platform": "twitch",
+      "title": "🔴 РЕПООООО",
+      "url": "https://www.twitch.tv/bezzubickmcplay",
+      "streamId": "315911963350",
+      "channel": "bezzubickmcplay"
     }
   ]
 }
