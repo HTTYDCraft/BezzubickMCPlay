@@ -6,10 +6,15 @@
     "x": 2,
     "twitch": 4,
     "tiktok": 0,
-    "vk_group": 232,
+    "vk_group": 233,
     "vk_personal": 893
   },
   "youtubeVideos": [
+    {
+      "id": "D_7T2w6mUFE",
+      "title": "🔴 Стрим на хейве, всме дарова  [Cтрим] | Minecraft",
+      "thumbnailUrl": "https://i.ytimg.com/vi/D_7T2w6mUFE/maxresdefault_live.jpg"
+    },
     {
       "id": "wyzGY8LmYCA",
       "title": "🔴 РЕПОООООООПОПО | R.E.P.O",
@@ -104,17 +109,12 @@
       "id": "VSlrapIrbZ8",
       "title": "🔴 НЕДЕЛЯ СТРИМОВ! День 1, THE HIVE!  [Cтрим] | Minecraft",
       "thumbnailUrl": "https://i.ytimg.com/vi/VSlrapIrbZ8/maxresdefault.jpg"
-    },
-    {
-      "id": "W_IoChdssJ0",
-      "title": "🔴 СТРИМЧИК R.E.P.O! ОБНОВЛЕНИЕ | R.E.P.O",
-      "thumbnailUrl": "https://i.ytimg.com/vi/W_IoChdssJ0/sddefault.jpg"
     }
   ],
   "liveStream": {
     "type": "none"
   },
-  "lastUpdated": "2026-05-01T15:10:24.362074",
+  "lastUpdated": "2026-05-01T16:07:13.929218",
   "debugInfo": {
     "instagram_setup_warning": "Missing Instagram credentials",
     "tiktok_setup_warning": "Missing TikTok credentials"
