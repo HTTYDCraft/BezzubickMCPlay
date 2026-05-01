@@ -63,6 +63,25 @@
       "url": "https://www.twitch.tv/bezzubickmcplay",
       "streamId": "315911963350",
       "channel": "bezzubickmcplay"
+    },
+    {
+      "key": "youtube:D_7T2w6mUFE",
+      "dt": "2026-05-01T17:09:54Z",
+      "date": "2026-05-01",
+      "platform": "youtube",
+      "title": "🔴 Стрим на хейве, всме дарова  [Cтрим] | Minecraft",
+      "url": "https://www.youtube.com/watch?v=D_7T2w6mUFE",
+      "videoId": "D_7T2w6mUFE"
+    },
+    {
+      "key": "twitch:315933478485",
+      "dt": "2026-05-01T17:09:54Z",
+      "date": "2026-05-01",
+      "platform": "twitch",
+      "title": "🔴 Стрим на хейве ага да бедварс короч",
+      "url": "https://www.twitch.tv/bezzubickmcplay",
+      "streamId": "315933478485",
+      "channel": "bezzubickmcplay"
     }
   ]
 }

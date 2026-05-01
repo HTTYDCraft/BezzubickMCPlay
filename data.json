@@ -112,9 +112,18 @@
     }
   ],
   "liveStream": {
-    "type": "none"
+    "type": "youtube",
+    "id": "D_7T2w6mUFE",
+    "title": "🔴 Стрим на хейве, всме дарова  [Cтрим] | Minecraft",
+    "youtubeChannelId": "UCm6mheCT60mZ5qlxG5r2GeA",
+    "twitchLive": {
+      "type": "twitch",
+      "id": "315933478485",
+      "title": "🔴 Стрим на хейве ага да бедварс короч",
+      "twitchChannelName": "bezzubickmcplay"
+    }
   },
-  "lastUpdated": "2026-05-01T16:07:13.929218",
+  "lastUpdated": "2026-05-01T17:09:54.020954",
   "debugInfo": {
     "instagram_setup_warning": "Missing Instagram credentials",
     "tiktok_setup_warning": "Missing TikTok credentials"
