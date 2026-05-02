@@ -13,7 +13,7 @@
     {
       "id": "D_7T2w6mUFE",
       "title": "🔴 Стрим на хейве, всме дарова  [Cтрим] | Minecraft",
-      "thumbnailUrl": "https://i.ytimg.com/vi/D_7T2w6mUFE/maxresdefault_live.jpg"
+      "thumbnailUrl": "https://i.ytimg.com/vi/D_7T2w6mUFE/maxresdefault.jpg"
     },
     {
       "id": "wyzGY8LmYCA",
@@ -112,12 +112,9 @@
     }
   ],
   "liveStream": {
-    "type": "youtube",
-    "id": "D_7T2w6mUFE",
-    "title": "🔴 Стрим на хейве, всме дарова  [Cтрим] | Minecraft",
-    "youtubeChannelId": "UCm6mheCT60mZ5qlxG5r2GeA"
+    "type": "none"
   },
-  "lastUpdated": "2026-05-01T23:06:51.116530",
+  "lastUpdated": "2026-05-02T00:00:56.102385",
   "debugInfo": {
     "instagram_setup_warning": "Missing Instagram credentials",
     "tiktok_setup_warning": "Missing TikTok credentials"
