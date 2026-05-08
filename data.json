@@ -13,7 +13,7 @@
     {
       "id": "Tq9kv8BhWgA",
       "title": "🔴 Вечерний стрим (для тутлеса утренний)  [Cтрим] | Mindustry",
-      "thumbnailUrl": "https://i.ytimg.com/vi/Tq9kv8BhWgA/maxresdefault_live.jpg"
+      "thumbnailUrl": "https://i.ytimg.com/vi/Tq9kv8BhWgA/maxresdefault.jpg"
     },
     {
       "id": "D_7T2w6mUFE",
@@ -112,18 +112,9 @@
     }
   ],
   "liveStream": {
-    "type": "youtube",
-    "id": "Tq9kv8BhWgA",
-    "title": "🔴 Вечерний стрим (для тутлеса утренний)  [Cтрим] | Mindustry",
-    "youtubeChannelId": "UCm6mheCT60mZ5qlxG5r2GeA",
-    "twitchLive": {
-      "type": "twitch",
-      "id": "315981275221",
-      "title": "🔴 Вечерний стрим (для тутлеса утренний)  [Cтрим] | Mindustry",
-      "twitchChannelName": "bezzubickmcplay"
-    }
+    "type": "none"
   },
-  "lastUpdated": "2026-05-08T22:35:47.414545",
+  "lastUpdated": "2026-05-08T23:33:01.965928",
   "debugInfo": {
     "instagram_setup_warning": "Missing Instagram credentials",
     "tiktok_setup_warning": "Missing TikTok credentials"
