@@ -92,6 +92,25 @@
       "url": "https://www.twitch.tv/bezzubickmcplay",
       "streamId": "315935803221",
       "channel": "bezzubickmcplay"
+    },
+    {
+      "key": "youtube:Tq9kv8BhWgA",
+      "dt": "2026-05-08T20:40:31Z",
+      "date": "2026-05-08",
+      "platform": "youtube",
+      "title": "🔴 Вечерний стрим (для тутлеса утренний)  [Cтрим] | Mindustry",
+      "url": "https://www.youtube.com/watch?v=Tq9kv8BhWgA",
+      "videoId": "Tq9kv8BhWgA"
+    },
+    {
+      "key": "twitch:315980906837",
+      "dt": "2026-05-08T20:40:31Z",
+      "date": "2026-05-08",
+      "platform": "twitch",
+      "title": "🔴 Вечерний стрим (для тутлеса утренний)  [Cтрим] | Mindustry",
+      "url": "https://www.twitch.tv/bezzubickmcplay",
+      "streamId": "315980906837",
+      "channel": "bezzubickmcplay"
     }
   ]
 }
