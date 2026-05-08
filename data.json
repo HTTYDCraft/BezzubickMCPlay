@@ -4,7 +4,7 @@
     "telegram": 41,
     "instagram": 0,
     "x": 2,
-    "twitch": 6,
+    "twitch": 8,
     "tiktok": 0,
     "vk_group": 235,
     "vk_personal": 893
@@ -118,12 +118,12 @@
     "youtubeChannelId": "UCm6mheCT60mZ5qlxG5r2GeA",
     "twitchLive": {
       "type": "twitch",
-      "id": "315980906837",
+      "id": "315981275221",
       "title": "🔴 Вечерний стрим (для тутлеса утренний)  [Cтрим] | Mindustry",
       "twitchChannelName": "bezzubickmcplay"
     }
   },
-  "lastUpdated": "2026-05-08T20:40:31.842420",
+  "lastUpdated": "2026-05-08T21:39:25.849317",
   "debugInfo": {
     "instagram_setup_warning": "Missing Instagram credentials",
     "tiktok_setup_warning": "Missing TikTok credentials"
