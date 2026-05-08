@@ -11,6 +11,11 @@
   },
   "youtubeVideos": [
     {
+      "id": "Tq9kv8BhWgA",
+      "title": "🔴 Вечерний стрим (для тутлеса утренний)  [Cтрим] | Mindustry",
+      "thumbnailUrl": "https://i.ytimg.com/vi/Tq9kv8BhWgA/maxresdefault_live.jpg"
+    },
+    {
       "id": "D_7T2w6mUFE",
       "title": "🔴 Стрим на хейве, всме дарова  [Cтрим] | Minecraft",
       "thumbnailUrl": "https://i.ytimg.com/vi/D_7T2w6mUFE/maxresdefault.jpg"
@@ -104,17 +109,12 @@
       "id": "vgZLoztkpVw",
       "title": "🔴 ПРЕДНОВОГОДНИЙ СТРИМ! Отвечаю на вопросы, играем и веселимся| Minecraft",
       "thumbnailUrl": "https://i.ytimg.com/vi/vgZLoztkpVw/maxresdefault.jpg"
-    },
-    {
-      "id": "VSlrapIrbZ8",
-      "title": "🔴 НЕДЕЛЯ СТРИМОВ! День 1, THE HIVE!  [Cтрим] | Minecraft",
-      "thumbnailUrl": "https://i.ytimg.com/vi/VSlrapIrbZ8/maxresdefault.jpg"
     }
   ],
   "liveStream": {
     "type": "none"
   },
-  "lastUpdated": "2026-05-08T18:10:17.236890",
+  "lastUpdated": "2026-05-08T19:44:04.575572",
   "debugInfo": {
     "instagram_setup_warning": "Missing Instagram credentials",
     "tiktok_setup_warning": "Missing TikTok credentials"
