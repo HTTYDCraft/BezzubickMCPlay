@@ -4,7 +4,7 @@
     "telegram": 41,
     "instagram": 0,
     "x": 2,
-    "twitch": 7,
+    "twitch": 9,
     "tiktok": 0,
     "vk_group": 240,
     "vk_personal": 893
@@ -118,12 +118,12 @@
     "youtubeChannelId": "UCm6mheCT60mZ5qlxG5r2GeA",
     "twitchLive": {
       "type": "twitch",
-      "id": "316184429652",
+      "id": "317513974374",
       "title": "🔴 ПОСЛЕДНИЙ ВЕСЕННИЙ. Каникулы? [Cтрим] | Minecraft",
       "twitchChannelName": "bezzubickmcplay"
     }
   },
-  "lastUpdated": "2026-05-29T19:59:00.062368",
+  "lastUpdated": "2026-05-29T21:55:04.880222",
   "debugInfo": {
     "instagram_setup_warning": "Missing Instagram credentials",
     "tiktok_setup_warning": "Missing TikTok credentials"
