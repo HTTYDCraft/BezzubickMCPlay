@@ -121,6 +121,25 @@
       "url": "https://www.twitch.tv/bezzubickmcplay",
       "streamId": "315981275221",
       "channel": "bezzubickmcplay"
+    },
+    {
+      "key": "youtube:bffxaEeMhl0",
+      "dt": "2026-05-29T19:59:00Z",
+      "date": "2026-05-29",
+      "platform": "youtube",
+      "title": "🔴 ПОСЛЕДНИЙ ВЕСЕННИЙ. Каникулы? [Cтрим] | Minecraft",
+      "url": "https://www.youtube.com/watch?v=bffxaEeMhl0",
+      "videoId": "bffxaEeMhl0"
+    },
+    {
+      "key": "twitch:316184429652",
+      "dt": "2026-05-29T19:59:00Z",
+      "date": "2026-05-29",
+      "platform": "twitch",
+      "title": "🔴 ПОСЛЕДНИЙ ВЕСЕННИЙ. Каникулы? [Cтрим] | Minecraft",
+      "url": "https://www.twitch.tv/bezzubickmcplay",
+      "streamId": "316184429652",
+      "channel": "bezzubickmcplay"
     }
   ]
 }

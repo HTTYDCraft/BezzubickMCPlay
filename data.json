@@ -11,6 +11,11 @@
   },
   "youtubeVideos": [
     {
+      "id": "bffxaEeMhl0",
+      "title": "🔴 ПОСЛЕДНИЙ ВЕСЕННИЙ. Каникулы? [Cтрим] | Minecraft",
+      "thumbnailUrl": "https://i.ytimg.com/vi/bffxaEeMhl0/maxresdefault_live.jpg"
+    },
+    {
       "id": "Tq9kv8BhWgA",
       "title": "🔴 Вечерний стрим (для тутлеса утренний)  [Cтрим] | Mindustry",
       "thumbnailUrl": "https://i.ytimg.com/vi/Tq9kv8BhWgA/maxresdefault.jpg"
@@ -104,17 +109,21 @@
       "id": "usfmtjjJlhk",
       "title": "🔴 СТРИМ НА КРИСТАЛИКСЕ! | Minecraft",
       "thumbnailUrl": "https://i.ytimg.com/vi/usfmtjjJlhk/maxresdefault.jpg"
-    },
-    {
-      "id": "vgZLoztkpVw",
-      "title": "🔴 ПРЕДНОВОГОДНИЙ СТРИМ! Отвечаю на вопросы, играем и веселимся| Minecraft",
-      "thumbnailUrl": "https://i.ytimg.com/vi/vgZLoztkpVw/maxresdefault.jpg"
     }
   ],
   "liveStream": {
-    "type": "none"
+    "type": "youtube",
+    "id": "bffxaEeMhl0",
+    "title": "🔴 ПОСЛЕДНИЙ ВЕСЕННИЙ. Каникулы? [Cтрим] | Minecraft",
+    "youtubeChannelId": "UCm6mheCT60mZ5qlxG5r2GeA",
+    "twitchLive": {
+      "type": "twitch",
+      "id": "316184429652",
+      "title": "🔴 ПОСЛЕДНИЙ ВЕСЕННИЙ. Каникулы? [Cтрим] | Minecraft",
+      "twitchChannelName": "bezzubickmcplay"
+    }
   },
-  "lastUpdated": "2026-05-29T17:47:44.630693",
+  "lastUpdated": "2026-05-29T19:59:00.062368",
   "debugInfo": {
     "instagram_setup_warning": "Missing Instagram credentials",
     "tiktok_setup_warning": "Missing TikTok credentials"
