@@ -115,15 +115,9 @@
     "type": "youtube",
     "id": "bffxaEeMhl0",
     "title": "🔴 ПОСЛЕДНИЙ ВЕСЕННИЙ. Каникулы? [Cтрим] | Minecraft",
-    "youtubeChannelId": "UCm6mheCT60mZ5qlxG5r2GeA",
-    "twitchLive": {
-      "type": "twitch",
-      "id": "317513974374",
-      "title": "🔴 ПОСЛЕДНИЙ ВЕСЕННИЙ. Каникулы? [Cтрим] | Minecraft",
-      "twitchChannelName": "bezzubickmcplay"
-    }
+    "youtubeChannelId": "UCm6mheCT60mZ5qlxG5r2GeA"
   },
-  "lastUpdated": "2026-05-29T21:55:04.880222",
+  "lastUpdated": "2026-05-29T23:07:21.570794",
   "debugInfo": {
     "instagram_setup_warning": "Missing Instagram credentials",
     "tiktok_setup_warning": "Missing TikTok credentials"
