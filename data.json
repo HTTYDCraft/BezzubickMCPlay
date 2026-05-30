@@ -4,7 +4,7 @@
     "telegram": 41,
     "instagram": 0,
     "x": 2,
-    "twitch": 9,
+    "twitch": 8,
     "tiktok": 0,
     "vk_group": 241,
     "vk_personal": 893
@@ -114,9 +114,10 @@
   "liveStream": {
     "type": "none"
   },
-  "lastUpdated": "2026-05-30T17:31:33.340531",
+  "lastUpdated": "2026-05-30T18:42:17.476271",
   "debugInfo": {
     "instagram_setup_warning": "Missing Instagram credentials",
+    "x_error": "Expecting value: line 1 column 1 (char 0)",
     "tiktok_setup_warning": "Missing TikTok credentials"
   }
 }
