@@ -11,6 +11,11 @@
   },
   "youtubeVideos": [
     {
+      "id": "bffxaEeMhl0",
+      "title": "🔴 ПОСЛЕДНИЙ ВЕСЕННИЙ. Каникулы? [Cтрим] | Minecraft",
+      "thumbnailUrl": "https://i.ytimg.com/vi/bffxaEeMhl0/maxresdefault.jpg"
+    },
+    {
       "id": "Tq9kv8BhWgA",
       "title": "🔴 Вечерний стрим (для тутлеса утренний)  [Cтрим] | Mindustry",
       "thumbnailUrl": "https://i.ytimg.com/vi/Tq9kv8BhWgA/maxresdefault.jpg"
@@ -104,20 +109,14 @@
       "id": "usfmtjjJlhk",
       "title": "🔴 СТРИМ НА КРИСТАЛИКСЕ! | Minecraft",
       "thumbnailUrl": "https://i.ytimg.com/vi/usfmtjjJlhk/maxresdefault.jpg"
-    },
-    {
-      "id": "vgZLoztkpVw",
-      "title": "🔴 ПРЕДНОВОГОДНИЙ СТРИМ! Отвечаю на вопросы, играем и веселимся| Minecraft",
-      "thumbnailUrl": "https://i.ytimg.com/vi/vgZLoztkpVw/maxresdefault.jpg"
     }
   ],
   "liveStream": {
     "type": "none"
   },
-  "lastUpdated": "2026-05-31T12:19:53.190441",
+  "lastUpdated": "2026-05-31T14:14:21.173500",
   "debugInfo": {
     "instagram_setup_warning": "Missing Instagram credentials",
-    "x_error": "Expecting value: line 1 column 1 (char 0)",
     "tiktok_setup_warning": "Missing TikTok credentials"
   }
 }
