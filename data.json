@@ -114,8 +114,9 @@
   "liveStream": {
     "type": "none"
   },
-  "lastUpdated": "2026-06-02T12:47:29.641188",
+  "lastUpdated": "2026-06-02T17:09:44.593718",
   "debugInfo": {
+    "twitch_token_error": "HTTPSConnectionPool(host='id.twitch.tv', port=443): Max retries exceeded with url: /oauth2/token?client_id=wb360vvh0p9i7qgi3ilnj64a6cr1m0&client_secret=mougqizndhmoi8igcmc4whuz82xdxz&grant_type=client_credentials (Caused by ConnectTimeoutError(<HTTPSConnection(host='id.twitch.tv', port=443) at 0x7f23a4d9d310>, 'Connection to id.twitch.tv timed out. (connect timeout=15)'))",
     "instagram_setup_warning": "Missing Instagram credentials",
     "tiktok_setup_warning": "Missing TikTok credentials"
   }
