@@ -150,6 +150,25 @@
       "url": "https://www.twitch.tv/bezzubickmcplay",
       "streamId": "317513974374",
       "channel": "bezzubickmcplay"
+    },
+    {
+      "key": "youtube:xOp5YK7Jh6c",
+      "dt": "2026-06-11T18:23:06Z",
+      "date": "2026-06-11",
+      "platform": "youtube",
+      "title": "🔴 Create Aeronautics на стриме [Cтрим] | Minecraft",
+      "url": "https://www.youtube.com/watch?v=xOp5YK7Jh6c",
+      "videoId": "xOp5YK7Jh6c"
+    },
+    {
+      "key": "twitch:319884327387",
+      "dt": "2026-06-11T18:23:06Z",
+      "date": "2026-06-11",
+      "platform": "twitch",
+      "title": "🔴 Create Aeronautics на стриме [Cтрим] | Minecraft",
+      "url": "https://www.twitch.tv/bezzubickmcplay",
+      "streamId": "319884327387",
+      "channel": "bezzubickmcplay"
     }
   ]
 }
