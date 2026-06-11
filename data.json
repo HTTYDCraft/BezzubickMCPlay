@@ -11,11 +11,6 @@
   },
   "youtubeVideos": [
     {
-      "id": "xOp5YK7Jh6c",
-      "title": "🔴 Create Aeronautics на стриме [Cтрим] | Minecraft",
-      "thumbnailUrl": "https://i.ytimg.com/vi/xOp5YK7Jh6c/maxresdefault_live.jpg"
-    },
-    {
       "id": "3OioOVz4PJc",
       "title": "НА ЮТУБЕ НЕЧЕГО СМОТРЕТЬ - И В ЭТОМ ВИНОВАТ ТЫ!",
       "thumbnailUrl": "https://i.ytimg.com/vi/3OioOVz4PJc/maxresdefault.jpg"
@@ -109,21 +104,17 @@
       "id": "ucBhve_Jp2k",
       "title": "🔴 САМЫ СТАРЫЙ ЮТУБ СТРИМ ПО МАЙНКРАФТУ!  [Cтрим] | Minecraft",
       "thumbnailUrl": "https://i.ytimg.com/vi/ucBhve_Jp2k/maxresdefault.jpg"
+    },
+    {
+      "id": "iD6OM68Fy4k",
+      "title": "🔴 НОВЫЙ БЕДВАРС НА THE HIVE! Игра с подписчиками  [Cтрим] | Minecraft",
+      "thumbnailUrl": "https://i.ytimg.com/vi/iD6OM68Fy4k/maxresdefault.jpg"
     }
   ],
   "liveStream": {
-    "type": "youtube",
-    "id": "xOp5YK7Jh6c",
-    "title": "🔴 Create Aeronautics на стриме [Cтрим] | Minecraft",
-    "youtubeChannelId": "UCm6mheCT60mZ5qlxG5r2GeA",
-    "twitchLive": {
-      "type": "twitch",
-      "id": "319884327387",
-      "title": "🔴 Create Aeronautics на стриме [Cтрим] | Minecraft",
-      "twitchChannelName": "bezzubickmcplay"
-    }
+    "type": "none"
   },
-  "lastUpdated": "2026-06-11T20:39:52.457031",
+  "lastUpdated": "2026-06-11T22:26:42.195607",
   "debugInfo": {
     "instagram_setup_warning": "Missing Instagram credentials",
     "tiktok_setup_warning": "Missing TikTok credentials"
