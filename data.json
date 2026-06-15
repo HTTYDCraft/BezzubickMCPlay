@@ -11,6 +11,11 @@
   },
   "youtubeVideos": [
     {
+      "id": "SjE_VQtDSdg",
+      "title": "БОЛЬШИЕ ШАРЫ #Shorts",
+      "thumbnailUrl": "https://i.ytimg.com/vi/SjE_VQtDSdg/maxresdefault.jpg"
+    },
+    {
       "id": "3OioOVz4PJc",
       "title": "НА ЮТУБЕ НЕЧЕГО СМОТРЕТЬ - И В ЭТОМ ВИНОВАТ ТЫ!",
       "thumbnailUrl": "https://i.ytimg.com/vi/3OioOVz4PJc/maxresdefault.jpg"
@@ -104,17 +109,12 @@
       "id": "ucBhve_Jp2k",
       "title": "🔴 САМЫ СТАРЫЙ ЮТУБ СТРИМ ПО МАЙНКРАФТУ!  [Cтрим] | Minecraft",
       "thumbnailUrl": "https://i.ytimg.com/vi/ucBhve_Jp2k/maxresdefault.jpg"
-    },
-    {
-      "id": "iD6OM68Fy4k",
-      "title": "🔴 НОВЫЙ БЕДВАРС НА THE HIVE! Игра с подписчиками  [Cтрим] | Minecraft",
-      "thumbnailUrl": "https://i.ytimg.com/vi/iD6OM68Fy4k/maxresdefault.jpg"
     }
   ],
   "liveStream": {
     "type": "none"
   },
-  "lastUpdated": "2026-06-15T10:46:29.456751",
+  "lastUpdated": "2026-06-15T16:09:40.192038",
   "debugInfo": {
     "instagram_setup_warning": "Missing Instagram credentials",
     "tiktok_setup_warning": "Missing TikTok credentials"
