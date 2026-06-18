@@ -11,11 +11,6 @@
   },
   "youtubeVideos": [
     {
-      "id": "odaD_C6UR_s",
-      "title": "🔴 ИГРАЕМ В ОГРАНИЧЕННЫЙ МАЙНКРАФТ (прям как в россии) [Cтрим] | Minecraft",
-      "thumbnailUrl": "https://i.ytimg.com/vi/odaD_C6UR_s/maxresdefault_live.jpg"
-    },
-    {
       "id": "-h1vEb02DFc",
       "title": "ФАРМЛЮ БУЛЫЖНИК 6 ЧАСОВ В МАЙНКРАФТ | Minecraft",
       "thumbnailUrl": "https://i.ytimg.com/vi/-h1vEb02DFc/maxresdefault.jpg"
@@ -109,15 +104,17 @@
       "id": "iDyafiaFNuA",
       "title": "🔴 ЗАБРОШЕННЫЙ ОСТРОВ В ПЯТНИЦУ 13! The Forest  [Cтрим] | Minecraft",
       "thumbnailUrl": "https://i.ytimg.com/vi/iDyafiaFNuA/maxresdefault.jpg"
+    },
+    {
+      "id": "iN2mhlLvZ8I",
+      "title": "🔴 СБОРКА ХОРРОР В МАЙНКРАФТ! Теперь точно страшно.. [Стрим] | Minecraft",
+      "thumbnailUrl": "https://i.ytimg.com/vi/iN2mhlLvZ8I/maxresdefault.jpg"
     }
   ],
   "liveStream": {
-    "type": "youtube",
-    "id": "odaD_C6UR_s",
-    "title": "🔴 ИГРАЕМ В ОГРАНИЧЕННЫЙ МАЙНКРАФТ (прям как в россии) [Cтрим] | Minecraft",
-    "youtubeChannelId": "UCm6mheCT60mZ5qlxG5r2GeA"
+    "type": "none"
   },
-  "lastUpdated": "2026-06-18T21:06:29.769031",
+  "lastUpdated": "2026-06-18T23:01:28.290596",
   "debugInfo": {
     "instagram_setup_warning": "Missing Instagram credentials",
     "tiktok_setup_warning": "Missing TikTok credentials"
