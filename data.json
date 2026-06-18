@@ -6,10 +6,15 @@
     "x": 2,
     "twitch": 8,
     "tiktok": 0,
-    "vk_group": 244,
+    "vk_group": 245,
     "vk_personal": 892
   },
   "youtubeVideos": [
+    {
+      "id": "-h1vEb02DFc",
+      "title": "ФАРМЛЮ БУЛЫЖНИК 6 ЧАСОВ В МАЙНКРАФТ | Minecraft",
+      "thumbnailUrl": "https://i.ytimg.com/vi/-h1vEb02DFc/maxresdefault.jpg"
+    },
     {
       "id": "SjE_VQtDSdg",
       "title": "БОЛЬШИЕ ШАРЫ #Shorts",
@@ -104,17 +109,12 @@
       "id": "iN2mhlLvZ8I",
       "title": "🔴 СБОРКА ХОРРОР В МАЙНКРАФТ! Теперь точно страшно.. [Стрим] | Minecraft",
       "thumbnailUrl": "https://i.ytimg.com/vi/iN2mhlLvZ8I/maxresdefault.jpg"
-    },
-    {
-      "id": "ucBhve_Jp2k",
-      "title": "🔴 САМЫ СТАРЫЙ ЮТУБ СТРИМ ПО МАЙНКРАФТУ!  [Cтрим] | Minecraft",
-      "thumbnailUrl": "https://i.ytimg.com/vi/ucBhve_Jp2k/maxresdefault.jpg"
     }
   ],
   "liveStream": {
     "type": "none"
   },
-  "lastUpdated": "2026-06-18T09:44:38.073629",
+  "lastUpdated": "2026-06-18T12:40:49.791111",
   "debugInfo": {
     "instagram_setup_warning": "Missing Instagram credentials",
     "tiktok_setup_warning": "Missing TikTok credentials"
