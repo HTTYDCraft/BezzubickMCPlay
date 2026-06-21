@@ -16,12 +16,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: vapor/swiftly-action@v0.2
-
-      - name: Install Swift 6.3.2
-        run: |
-          swiftly install 6.3.2
-          swiftly use 6.3.2
+      - uses: swift-actions/setup-swift@v3
+        with:
+          swift-version: "6.3.2"
 
       - name: Build & generate site
         run: swift run BezzubickMCPlay
