@@ -1,9 +1,9 @@
-name: Deploy Publish Site
+name: Deploy Site + WASM
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -11,32 +11,95 @@ permissions:
   id-token: write
 
 jobs:
-  build-and-deploy:
-    runs-on: macos-14
+  build-site:
+    runs-on: macos-15
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Swift
-        uses: swift-actions/setup-swift@v1
+      - uses: swift-actions/setup-swift@v2
         with:
-          swift-version: "5.9"
+          swift-version: "6.0"
 
-      - name: Resolve dependencies
-        run: swift package resolve
-
-      - name: Build and generate site
+      - name: Build & generate site
         run: swift run BezzubickMCPlay
 
-      - name: Copy data files to output
+      - name: Copy data files
         run: |
           cp data.json Output/data.json 2>/dev/null || true
           cp streams_history.json Output/streams_history.json 2>/dev/null || true
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
-          path: './Output'
+          name: site-output
+          path: ./Output
 
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v2
+  build-wasm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: swift-actions/setup-swift@v2
+        with:
+          swift-version: "6.3.2"
+
+      - name: Install Swift SDK for WASM
+        run: |
+          swift sdk install \
+            "https://download.swift.org/swift-6.3.2-release/wasm-sdk/swift-6.3.2-RELEASE/swift-6.3.2-RELEASE_wasm.artifactbundle.tar.gz" \
+            --checksum a61f0584c93283589f8b2f42db05c1f9a182b506c2957271402992655591dd7c
+
+      - name: Build SiteClient WASM
+        run: swift build --swift-sdk swift-6.3.2-RELEASE_wasm --target SiteClient -c release
+
+      - name: Find and copy WASM binary
+        run: |
+          WASM_PATH=$(find .build -name "SiteClient.wasm" -path "*/wasm32*" | head -1)
+          if [ -n "$WASM_PATH" ]; then
+            mkdir -p /tmp/wasm
+            cp "$WASM_PATH" /tmp/wasm/SiteClient.wasm
+            echo "WASM built: $WASM_PATH ($(du -h /tmp/wasm/SiteClient.wasm | cut -f1))"
+          else
+            echo "WASM not found, skipping"
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wasm-output
+          path: /tmp/wasm/SiteClient.wasm
+          if-no-files-found: ignore
+
+  deploy:
+    needs: [build-site, build-wasm]
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: site-output
+          path: ./Output
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: wasm-output
+          path: ./wasm-artifact
+          if-no-files-found: ignore
+
+      - name: Merge WASM into site
+        run: |
+          mkdir -p Output/scripts
+          if [ -f ./wasm-artifact/SiteClient.wasm ]; then
+            cp ./wasm-artifact/SiteClient.wasm Output/scripts/
+            echo "WASM deployed ($(du -h Output/scripts/SiteClient.wasm | cut -f1))"
+          else
+            echo "No WASM file, deploying site only"
+          fi
+          ls -la Output/scripts/ 2>/dev/null || true
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./Output
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
