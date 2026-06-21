@@ -16,9 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: swift-actions/setup-swift@v2
-        with:
-          swift-version: "6.0"
+      - uses: swift-actions/setup-swift@v3
 
       - name: Build & generate site
         run: swift run BezzubickMCPlay
@@ -38,9 +36,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: swift-actions/setup-swift@v2
-        with:
-          swift-version: "6.3.2"
+      - name: Install Swift 6.3.2 via swiftly
+        run: |
+          curl -s https://raw.githubusercontent.com/swiftlang/swiftly/refs/heads/main/install.sh | bash
+          ~/.local/bin/swiftly install 6.3.2
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Install Swift SDK for WASM
         run: |
@@ -51,7 +51,7 @@ jobs:
       - name: Build SiteClient WASM
         run: swift build --swift-sdk swift-6.3.2-RELEASE_wasm --target SiteClient -c release
 
-      - name: Find and copy WASM binary
+      - name: Collect WASM binary
         run: |
           WASM_PATH=$(find .build -name "SiteClient.wasm" -path "*/wasm32*" | head -1)
           if [ -n "$WASM_PATH" ]; then
@@ -93,9 +93,8 @@ jobs:
             cp ./wasm-artifact/SiteClient.wasm Output/scripts/
             echo "WASM deployed ($(du -h Output/scripts/SiteClient.wasm | cut -f1))"
           else
-            echo "No WASM file, deploying site only"
+            echo "No WASM, deploying site only"
           fi
-          ls -la Output/scripts/ 2>/dev/null || true
 
       - uses: actions/upload-pages-artifact@v3
         with:
