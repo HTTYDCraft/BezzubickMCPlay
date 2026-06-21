@@ -125,7 +125,7 @@ let LINKS_STR_RU: [String: String] = [
 
 func setById(_ id: String, _ val: String) {
     let el = jsGlobal("document").getElementById!("id)
-    if !el.isUndefined { _ = el.textContent.set!(", val) }
+    if !el.isUndefined { _ = el.textContent.set(", val) }
 }
 
 func t(_ k: String) -> String {
@@ -151,15 +151,15 @@ let THEME_CLASSES: [String: String] = [
 func applyTheme(_ theme: String) {
     let body = jsGlobal("document").body.object!
     for cls in ["dark-theme", "light-theme", "glass-dark", "glass-light"] {
-        _ = body.classList.remove!(", cls)
+        _ = body.classList.remove(", cls)
     }
-    _ = body.classList.add!(", THEME_CLASSES[theme] ?? "dark-theme")
+    _ = body.classList.add(", THEME_CLASSES[theme] ?? "dark-theme")
     stateTheme = theme
     isDark = theme.contains("dark")
     let iconBottom = jsGlobal("document").getElementById!("theme-icon-bottom")
-    if !iconBottom.isUndefined { _ = iconBottom.textContent.set!(", THEME_ICONS[theme] ?? "light_mode") }
+    if !iconBottom.isUndefined { _ = iconBottom.textContent.set(", THEME_ICONS[theme] ?? "light_mode") }
     let iconTop = jsGlobal("document").getElementById!("theme-icon")
-    if !iconTop.isUndefined { _ = iconTop.textContent.set!(", THEME_ICONS[theme] ?? "light_mode") }
+    if !iconTop.isUndefined { _ = iconTop.textContent.set(", THEME_ICONS[theme] ?? "light_mode") }
 }
 
 func toggleTheme() {
@@ -176,7 +176,7 @@ func updateLangContent() {
     for i in 0..<Int(length) {
         let el = els[i]
         let lang = el.getAttribute!("data-lang").string ?? ""
-        _ = el.style.setProperty!("display", lang == stateLang ? "" : "none")
+        _ = el.style.setProperty("display", lang == stateLang ? "" : "none")
     }
 }
 
@@ -184,26 +184,26 @@ func updateLangContent() {
 
 func updateHomeTexts() {
     let s = stateLang == "en" ? HOME_STR_EN : HOME_STR_RU
-    setById("totals", (s.followers ?? "") + "\u{2014}")
-    setById("nav-title", s.navTitle ?? "")
-    setById("nav-desc", s.navDesc ?? "")
-    setById("go-links-text", s.navCta ?? "")
-    setById("go-links-btn-text-2", s.navCta ?? "")
-    setById("skin-title", s.skinTitle ?? "")
-    setById("skin-download-text", s.skinDl ?? "")
-    setById("videos-title", s.videosTitle ?? "")
-    setById("timeline-title", s.tlTitle ?? "")
-    setById("tl-expand-text", s.expand ?? "")
-    setById("tl-collapse-text", s.collapse ?? "")
-    setById("live-empty-title", s.liveEmpty ?? "")
-    setById("live-empty-sub", s.liveSub ?? "")
-    setById("legend-yt", s.legendYt ?? "")
-    setById("legend-tw", s.legendTw ?? "")
-    setById("legend-both", s.legendBoth ?? "")
-    setById("legend-planned", s.legendPlanned ?? "")
-    setById("legend-missed", s.legendMissed ?? "")
-    setById("twitch-text", s.twitchAlso ?? "")
-    setById("twitch-cta", s.twitchCta ?? "")
+    setById("totals", (s["followers"] ?? "") + "\u{2014}")
+    setById("nav-title", s["navTitle"] ?? "")
+    setById("nav-desc", s["navDesc"] ?? "")
+    setById("go-links-text", s["navCta"] ?? "")
+    setById("go-links-btn-text-2", s["navCta"] ?? "")
+    setById("skin-title", s["skinTitle"] ?? "")
+    setById("skin-download-text", s["skinDl"] ?? "")
+    setById("videos-title", s["videosTitle"] ?? "")
+    setById("timeline-title", s["tlTitle"] ?? "")
+    setById("tl-expand-text", s["expand"] ?? "")
+    setById("tl-collapse-text", s["collapse"] ?? "")
+    setById("live-empty-title", s["liveEmpty"] ?? "")
+    setById("live-empty-sub", s["liveSub"] ?? "")
+    setById("legend-yt", s["legendYt"] ?? "")
+    setById("legend-tw", s["legendTw"] ?? "")
+    setById("legend-both", s["legendBoth"] ?? "")
+    setById("legend-planned", s["legendPlanned"] ?? "")
+    setById("legend-missed", s["legendMissed"] ?? "")
+    setById("twitch-text", s["twitchAlso"] ?? "")
+    setById("twitch-cta", s["twitchCta"] ?? "")
     updateLangContent()
 }
 
@@ -211,21 +211,21 @@ func updateHomeTexts() {
 
 func updateLinksTexts() {
     let s = stateLang == "en" ? LINKS_STR_EN : LINKS_STR_RU
-    setById("modal-title", s.modalTitle ?? "")
-    setById("modal-description", s.modalDescription ?? "")
-    setById("modal-close", s.gotItButton ?? "")
-    setById("recent-videos-title", s.recentVideosTitle ?? "")
-    setById("minecraft-title", s.minecraftTitle ?? "")
-    setById("download-skin-text", s.downloadSkin ?? "")
-    setById("support-button-text", s.supportButton ?? "")
-    setById("offline-message", s.offlineMessage ?? "")
-    setById("dev-title", s.devPageTitle ?? "")
-    setById("dev-last-updated-label", s.devLastUpdatedLabel ?? "")
-    setById("dev-data-json-content-label", s.devDataJsonContentLabel ?? "")
-    setById("dev-debug-info-content-label", s.devDebugInfoContentLabel ?? "")
-    setById("back-to-main-text", s.backToMainText ?? "")
-    setById("twitch-message", s.twitchStreamAlsoLive ?? "")
-    setById("twitch-link-text", s.watchOnTwitch ?? "")
+    setById("modal-title", s["modalTitle"] ?? "")
+    setById("modal-description", s["modalDescription"] ?? "")
+    setById("modal-close", s["gotItButton"] ?? "")
+    setById("recent-videos-title", s["recentVideosTitle"] ?? "")
+    setById("minecraft-title", s["minecraftTitle"] ?? "")
+    setById("download-skin-text", s["downloadSkin"] ?? "")
+    setById("support-button-text", s["supportButton"] ?? "")
+    setById("offline-message", s["offlineMessage"] ?? "")
+    setById("dev-title", s["devPageTitle"] ?? "")
+    setById("dev-last-updated-label", s["devLastUpdatedLabel"] ?? "")
+    setById("dev-data-json-content-label", s["devDataJsonContentLabel"] ?? "")
+    setById("dev-debug-info-content-label", s["devDebugInfoContentLabel"] ?? "")
+    setById("back-to-main-text", s["backToMainText"] ?? "")
+    setById("twitch-message", s["twitchStreamAlsoLive"] ?? "")
+    setById("twitch-link-text", s["watchOnTwitch"] ?? "")
     updateLangContent()
 }
 
@@ -273,7 +273,7 @@ func renderCal() {
     let doc = jsGlobal("document")
 
     let label = doc.getElementById!("cal-label")
-    if !label.isUndefined { _ = label.textContent.set!(", "\(months[calMonth]) \(calYear)") }
+    if !label.isUndefined { _ = label.textContent.set(", "\(months[calMonth]) \(calYear)") }
 
     let head = doc.getElementById!("cal-weekdays")
     if !head.isUndefined { _ = head.innerHTML!("set", wdays.map { "<div>\($0)</div>" }.joined(separator: "")) }
@@ -351,7 +351,7 @@ func fetchData() async {
         total += fc[key].double ?? 0
     }
     let totals = doc.getElementById!("totals")
-    if !totals.isUndefined { _ = totals.textContent.set!(", t("followers") + fmtCount(total)) }
+    if !totals.isUndefined { _ = totals.textContent.set(", t("followers") + fmtCount(total)) }
 
     let linksSection = doc.getElementById!("links-section")
     if !linksSection.isUndefined { renderLinksPage(json: json) }
@@ -400,15 +400,15 @@ func renderLinksPage(json: JSValue) {
     let doc = jsGlobal("document")
 
     let nameEl = doc.getElementById!("profile-name")
-    if !nameEl.isUndefined { _ = nameEl.textContent.set!(", s["profileName"] ?? "") }
+    if !nameEl.isUndefined { _ = nameEl.textContent.set(", s["profileName"] ?? "") }
     let descEl = doc.getElementById!("profile-description")
-    if !descEl.isUndefined { _ = descEl.textContent.set!(", s.profileDescription ?? "") }
+    if !descEl.isUndefined { _ = descEl.textContent.set(", s["profileDescription"] ?? "") }
 
     let fc = json["followerCounts"].object!
     var total = 0.0
     for link in LINKS_CONFIG { total += fc[link.platformId].double ?? 0 }
     let tf = doc.getElementById!("total-followers")
-    if !tf.isUndefined { _ = tf.textContent.set!(", (s["totalFollowers"] ?? "") + fmtCount(total)) }
+    if !tf.isUndefined { _ = tf.textContent.set(", (s["totalFollowers"] ?? "") + fmtCount(total)) }
 
     let section = doc.getElementById!("links-section")
     if !section.isUndefined {
@@ -447,7 +447,7 @@ func renderLinksLiveStream(json: JSValue) {
     let doc = jsGlobal("document")
     let section = doc.getElementById!("live-stream-section")
     if !section.isUndefined {
-        if has { _ = section.classList.remove!(", "hidden") } else { _ = section.classList.add!(", "hidden") }
+        if has { _ = section.classList.remove(", "hidden") } else { _ = section.classList.add(", "hidden") }
     }
     if has {
         let embed = doc.getElementById!("live-embed")
@@ -481,7 +481,7 @@ func initSwipeGestures() {
             let e = args[0]
             pointerDown = true; swipeActive = false
             startX = e["touches"].isUndefined ? (e["clientX"].number ?? 0) : (e["touches"][0].clientX.number ?? 0)
-            _ = card.style.setProperty!("transition", "none")
+            _ = card.style.setProperty("transition", "none")
             return .undefined
         })
         let onMove = JSClosure({ args in
@@ -490,21 +490,21 @@ func initSwipeGestures() {
             currentX = e["touches"].isUndefined ? (e["clientX"].number ?? 0) : (e["touches"][0].clientX.number ?? 0)
             let dx = currentX - startX
             if !swipeActive && abs(dx) > 20 { swipeActive = true }
-            if swipeActive { _ = card.style.setProperty!("transform", "translateX(\(dx)px)") }
+            if swipeActive { _ = card.style.setProperty("transform", "translateX(\(dx)px)") }
             return .undefined
         })
         let onEnd = JSClosure({ _ in
             pointerDown = false
-            _ = card.style.setProperty!("transition", "transform .2s ease")
+            _ = card.style.setProperty("transition", "transform .2s ease")
             let dx = currentX - startX
             if swipeActive {
                 let threshold = 100.0
                 let direction = dx > 0 ? "right" : "left"
                 let targetX = direction == "right" ? 200 : -200
-                _ = card.style.setProperty!("transform", "translateX(\(targetX)px)")
+                _ = card.style.setProperty("transform", "translateX(\(targetX)px)")
                 if direction == "right" { _ = card.setAttribute!("data-swiped", "true") }
                 if direction == "left" { _ = card.setAttribute!("data-swiped", "false") }
-                _ = card.classList.add!(", "swiped")
+                _ = card.classList.add(", "swiped")
                 swipeActive = false
             }
             return .undefined
@@ -527,9 +527,9 @@ func setupModal() {
     if modal.isUndefined || btn.isUndefined { return }
     let seen = jsGlobal("localStorage").getItem!("visited_modal")
     if !seen.isUndefined { return }
-    _ = modal.classList.add!(", "active")
+    _ = modal.classList.add(", "active")
     _ = btn.addEventListener!("click", JSClosure({ _ in
-        _ = modal.classList.remove!(", "active")
+        _ = modal.classList.remove(", "active")
         _ = jsGlobal("localStorage").setItem!("visited_modal", "true")
         return .undefined
     }))
@@ -544,11 +544,11 @@ func setupDevView() {
     _ = devBtn.addEventListener!("click", JSClosure({ _ in
         let mainView = doc.getElementById!("main-view")
         let devView = doc.getElementById!("dev-view")
-        if !mainView.isUndefined { _ = mainView.classList.toggle!(", "hidden") }
+        if !mainView.isUndefined { _ = mainView.classList.toggle(", "hidden") }
         if !devView.isUndefined {
-            _ = devView.classList.toggle!(", "hidden")
+            _ = devView.classList.toggle(", "hidden")
             let content = doc.getElementById!("dev-data-json-content")
-            if !content.isUndefined { _ = content.textContent.set!(", "{}") }
+            if !content.isUndefined { _ = content.textContent.set(", "{}") }
             let upd = doc.getElementById!("dev-last-updated")
             if !upd.isUndefined {
                 let now = jsGlobal("Date").new()
@@ -558,7 +558,7 @@ func setupDevView() {
                 let hh = Int(now.getHours!(").number ?? 0)
                 let mm = Int(now.getMinutes!(").number ?? 0)
                 let ss = Int(now.getSeconds!(").number ?? 0)
-                _ = upd.textContent.set!(", "\(y)-\(zeroPad(m, 2))-\(zeroPad(d, 2))T\(zeroPad(hh, 2)):\(zeroPad(mm, 2)):\(zeroPad(ss, 2))")
+                _ = upd.textContent.set(", "\(y)-\(zeroPad(m, 2))-\(zeroPad(d, 2))T\(zeroPad(hh, 2)):\(zeroPad(mm, 2)):\(zeroPad(ss, 2))")
             }
         }
         return .undefined
@@ -568,8 +568,8 @@ func setupDevView() {
         _ = backBtn.addEventListener!("click", JSClosure({ _ in
             let mv = doc.getElementById!("main-view")
             let dv = doc.getElementById!("dev-view")
-            if !mv.isUndefined { _ = mv.classList.remove!(", "hidden") }
-            if !dv.isUndefined { _ = dv.classList.add!(", "hidden") }
+            if !mv.isUndefined { _ = mv.classList.remove(", "hidden") }
+            if !dv.isUndefined { _ = dv.classList.add(", "hidden") }
             return .undefined
         }))
     }
@@ -801,7 +801,7 @@ func setupOffline() {
         let online = jsGlobal("navigator").onLine.boolean ?? true
         let w = jsGlobal("document").getElementById!("offline-warning")
         if !w.isUndefined {
-            if online { _ = w.classList.add!(", "hidden") } else { _ = w.classList.remove!(", "hidden") }
+            if online { _ = w.classList.add(", "hidden") } else { _ = w.classList.remove(", "hidden") }
         }
         return .undefined
     })
@@ -833,13 +833,13 @@ func observeGlassState() {
     let body = jsGlobal("document").body.object!
     let obs = jsGlobal("MutationObserver")
     let closure = JSClosure({ _ in
-        let isGlass = body.classList.contains!(", "glass-dark").boolean ?? false || body.classList.contains!(", "glass-light").boolean ?? false
+        let isGlass = body.classList.contains(", "glass-dark").boolean ?? false || body.classList.contains(", "glass-light").boolean ?? false
         if isGlass { startRendering() } else { stopRendering() }
         return .undefined
     })
     _ = obs.new!("closure)
     _ = obs.observe!(body, JSValue(dictionaryLiteral: ("attributes", true), ("attributeFilter", ["class"])))
-    let isGlass = body.classList.contains!(", "glass-dark").boolean ?? false || body.classList.contains!(", "glass-light").boolean ?? false
+    let isGlass = body.classList.contains(", "glass-dark").boolean ?? false || body.classList.contains(", "glass-light").boolean ?? false
     if isGlass { startRendering() }
 }
 
@@ -849,10 +849,10 @@ func setupTimeline() {
     let detailsLen = details.length.number ?? 0
     for i in 0..<Int(detailsLen) {
         let d = details[i]
-        let icon = d.querySelector!(".material-symbols-outlined")
+        let icon = d.querySelector(".material-symbols-outlined")
         _ = d.addEventListener!(" "toggle", JSClosure({ _ in
             let open = d.open.boolean ?? false
-            _ = icon.style.setProperty!("transform", open ? "rotate(180deg)" : "rotate(0deg)")
+            _ = icon.style.setProperty("transform", open ? "rotate(180deg)" : "rotate(0deg)")
             return .undefined
         }))
     }
