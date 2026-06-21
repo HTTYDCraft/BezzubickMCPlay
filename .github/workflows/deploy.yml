@@ -38,11 +38,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Swift 6.3.2 via swiftly
+      - uses: vapor/swiftly-action@v0.2
+
+      - name: Install Swift 6.3.2
         run: |
-          curl -s https://raw.githubusercontent.com/swiftlang/swiftly/refs/heads/main/install.sh | bash
-          ~/.local/bin/swiftly install 6.3.2
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          swiftly install 6.3.2
+          swiftly use 6.3.2
 
       - name: Install Swift SDK for WASM
         run: |
