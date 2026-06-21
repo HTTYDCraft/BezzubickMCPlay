@@ -276,7 +276,7 @@ func renderCal() {
     if !label.isUndefined { _ = label.textContent.set(", "\(months[calMonth]) \(calYear)") }
 
     let head = doc.getElementById!("cal-weekdays")
-    if !head.isUndefined { _ = head.innerHTML!("set", wdays.map { "<div>\($0)</div>" }.joined(separator: "")) }
+    if !head.isUndefined { _ = head.innerHTML("set", wdays.map { "<div>\($0)</div>" }.joined(separator: "")) }
 
     let DateObj = jsGlobal("Date")
     let firstDow = DateObj.new(calYear, calMonth, 1)
@@ -312,7 +312,7 @@ func renderCal() {
         html += "<div class=\"\(cls.joined(separator: " "))\"><div>\(d)</div>\(dot)\(chips.isEmpty ? "" : "<div>\(chips)</div>")</div>"
     }
     let grid = doc.getElementById!("cal-grid")
-    if !grid.isUndefined { _ = grid.innerHTML!("set", html) }
+    if !grid.isUndefined { _ = grid.innerHTML("set", html) }
 }
 
 // MARK: - Data Fetch
@@ -329,7 +329,7 @@ func fetchData() async {
     let vids = json["youtubeVideos"].object!
     let carousel = doc.getElementById!("carousel")
     if !carousel.isUndefined {
-        _ = carousel.innerHTML!("set", "")
+        _ = carousel.innerHTML("set", "")
         let len = vids.length.number ?? 0
         for i in 0..<Int(len) {
             let v = vids[i]
@@ -337,11 +337,11 @@ func fetchData() async {
             let title = v["title"].string ?? ""
             let thumb = v["thumbnailUrl"].string ?? ""
             let a = doc.createElement!("a")
-            _ = a.setAttribute!("href", "https://www.youtube.com/watch?v=\(id)")
-            _ = a.setAttribute!("target", "_blank")
-            _ = a.setAttribute!("class", "flex-shrink-0 w-64 rounded-2xl overflow-hidden m3-shadow-md card")
-            _ = a.innerHTML!("set", "<img src=\"\(thumb)\" alt=\"\(title)\" class=\"w-full h-36 object-cover\"><div class=\"p-3\"><p class=\"text-sm font-medium leading-tight\">\(title)</p></div>")
-            _ = carousel.appendChild!("a)
+            _ = a.setAttribute("href", "https://www.youtube.com/watch?v=\(id)")
+            _ = a.setAttribute("target", "_blank")
+            _ = a.setAttribute("class", "flex-shrink-0 w-64 rounded-2xl overflow-hidden m3-shadow-md card")
+            _ = a.innerHTML("set", "<img src=\"\(thumb)\" alt=\"\(title)\" class=\"w-full h-36 object-cover\"><div class=\"p-3\"><p class=\"text-sm font-medium leading-tight\">\(title)</p></div>")
+            _ = carousel.appendChild("a)
         }
     }
 
@@ -412,31 +412,31 @@ func renderLinksPage(json: JSValue) {
 
     let section = doc.getElementById!("links-section")
     if !section.isUndefined {
-        _ = section.innerHTML!("set", "")
+        _ = section.innerHTML("set", "")
         for link in LINKS_CONFIG {
             let a = doc.createElement!("a")
-            _ = a.setAttribute!("href", link.url)
-            _ = a.setAttribute!("target", "_blank")
-            _ = a.setAttribute!("rel", "noopener noreferrer")
-            _ = a.setAttribute!("class", "card relative flex items-center justify-between p-4 rounded-2xl m3-shadow-md swipe-target cursor-pointer")
-            _ = a.setAttribute!("data-link-id", link.labelKey)
-            _ = a.setAttribute!("data-platform-id", link.platformId)
-            _ = a.setAttribute!("data-subscribe-url", link.subscribeUrl)
-            _ = a.setAttribute!("data-url", link.url)
+            _ = a.setAttribute("href", link.url)
+            _ = a.setAttribute("target", "_blank")
+            _ = a.setAttribute("rel", "noopener noreferrer")
+            _ = a.setAttribute("class", "card relative flex items-center justify-between p-4 rounded-2xl m3-shadow-md swipe-target cursor-pointer")
+            _ = a.setAttribute("data-link-id", link.labelKey)
+            _ = a.setAttribute("data-platform-id", link.platformId)
+            _ = a.setAttribute("data-subscribe-url", link.subscribeUrl)
+            _ = a.setAttribute("data-url", link.url)
             var countText = ""
             if link.showCount != 0 {
                 let c = fc[link.platformId].double ?? 0
                 countText = "<span class=\"text-sm text-gray-400 mr-2 follower-count-display\">\(fmtCount(c))</span>"
             }
             let label = s[link.labelKey] ?? link.labelKey
-            _ = a.innerHTML!("set", "<div class=\"flex items-center select-none\"><span class=\"material-symbols-outlined icon-large\">\(link.icon)</span><div><span class=\"block text-lg font-medium\">\(label)</span>\(countText)</div></div>")
-            _ = section.appendChild!("a)
+            _ = a.innerHTML("set", "<div class=\"flex items-center select-none\"><span class=\"material-symbols-outlined icon-large\">\(link.icon)</span><div><span class=\"block text-lg font-medium\">\(label)</span>\(countText)</div></div>")
+            _ = section.appendChild("a)
         }
         initSwipeGestures()
     }
 
     let btn = doc.getElementById!("support-button")
-    if !btn.isUndefined { _ = btn.setAttribute!("href", "https://www.donationalerts.com/r/bezzubickmcplay") }
+    if !btn.isUndefined { _ = btn.setAttribute("href", "https://www.donationalerts.com/r/bezzubickmcplay") }
 }
 
 // MARK: - Links Page Live Stream
@@ -453,10 +453,10 @@ func renderLinksLiveStream(json: JSValue) {
         let embed = doc.getElementById!("live-embed")
         if !embed.isUndefined {
             if info["type"].string == "youtube", let vid = info["id"].string {
-                _ = embed.setAttribute!("src", "https://www.youtube.com/embed/\(vid)?autoplay=1&mute=1")
+                _ = embed.setAttribute("src", "https://www.youtube.com/embed/\(vid)?autoplay=1&mute=1")
             } else if info["type"].string == "twitch", let ch = info["twitchChannelName"].string {
                 let parent = jsGlobal("window").location.hostname.string ?? "localhost"
-                _ = embed.setAttribute!("src", "https://player.twitch.tv/?channel=\(ch)&parent=\(parent)&autoplay=true&mute=1")
+                _ = embed.setAttribute("src", "https://player.twitch.tv/?channel=\(ch)&parent=\(parent)&autoplay=true&mute=1")
             }
         }
     }
@@ -502,8 +502,8 @@ func initSwipeGestures() {
                 let direction = dx > 0 ? "right" : "left"
                 let targetX = direction == "right" ? 200 : -200
                 _ = card.style.setProperty("transform", "translateX(\(targetX)px)")
-                if direction == "right" { _ = card.setAttribute!("data-swiped", "true") }
-                if direction == "left" { _ = card.setAttribute!("data-swiped", "false") }
+                if direction == "right" { _ = card.setAttribute("data-swiped", "true") }
+                if direction == "left" { _ = card.setAttribute("data-swiped", "false") }
                 _ = card.classList.add(", "swiped")
                 swipeActive = false
             }
@@ -656,7 +656,7 @@ func initWebGL() {
     let doc = jsGlobal("document")
     lgCanvas = doc.createElement!("canvas").object
     guard let canvas = lgCanvas else { return }
-    _ = canvas.setAttribute!("id", "lg-canvas")
+    _ = canvas.setAttribute("id", "lg-canvas")
     _ = canvas.style.cssText.set("position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:9998;display:block;")
     let body = doc.body.object!
     _ = body.insertBefore!("canvas, body.firstChild)
