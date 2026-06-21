@@ -1,0 +1,79 @@
+# Все ссылки сайта — редактируй هنا.
+# icon: имя Material Symbols иконки
+# order: порядок отображения
+# showCount: показывать ли счётчик подписчиков (берётся из data.json)
+# platform: ключ в data.json -> followerCounts
+
+links:
+  - label: "YouTube Канал"
+    url: "https://www.youtube.com/channel/UCm6mheCT60mZ5qlxG5r2GeA"
+    icon: "play_arrow"
+    order: 1
+    showCount: true
+    platform: "youtube"
+
+  - label: "Telegram Канал"
+    url: "https://t.me/bezzubickmcplay"
+    icon: "send"
+    order: 2
+    showCount: true
+    platform: "telegram"
+
+  - label: "Twitch Канал"
+    url: "https://www.twitch.tv/bezzubickmcplay"
+    icon: "live_tv"
+    order: 3
+    showCount: true
+    platform: "twitch"
+
+  - label: "TikTok"
+    url: "https://www.tiktok.com/@bezzubickmcplay"
+    icon: "music_note"
+    order: 4
+    showCount: false
+    platform: "tiktok"
+
+  - label: "Instagram"
+    url: "https://www.instagram.com/bezzubickmcplay/"
+    icon: "photo_camera"
+    order: 5
+    showCount: false
+    platform: "instagram"
+
+  - label: "X (Twitter)"
+    url: "https://x.com/bezzubickmcplay"
+    icon: "public"
+    order: 6
+    showCount: false
+    platform: "x"
+
+  - label: "Группа VK"
+    url: "https://vk.com/bezzubickmcplay"
+    icon: "group"
+    order: 7
+    showCount: true
+    platform: "vk_group"
+
+  - label: "Личная страница VK"
+    url: "https://vk.com/bezzubickmcplay_official"
+    icon: "person"
+    order: 8
+    showCount: true
+    platform: "vk_personal"
+
+# Кнопки поддержки (главная страница)
+heroButtons:
+  - label: "Подписаться на YouTube"
+    url: "https://www.youtube.com/channel/UCm6mheCT60mZ5qlxG5r2GeA?sub_confirmation=1"
+    icon: "subscriptions"
+    style: "support"
+
+  - label: "Telegram"
+    url: "https://t.me/bezzubickmcplay"
+    icon: "send"
+    style: "support"
+
+  - label: "Поддержать"
+    url: "https://www.donationalerts.com/r/bezzubickmcplay"
+    icon: "favorite"
+    style: "support"

@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   build-and-deploy:
-    runs-on: macos-latest
+    runs-on: macos-14
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -22,8 +22,19 @@ jobs:
         with:
           swift-version: "5.9"
 
-      - name: Build and Generate Site
-        run: swift run
+      - name: Resolve dependencies
+        run: swift package resolve
+
+      - name: Build and generate site
+        run: swift run BezzubickMCPlay
+
+      - name: Copy links page to output
+        run: cp -R links/ Output/links/
+
+      - name: Copy data files to output
+        run: |
+          cp data.json Output/data.json 2>/dev/null || true
+          cp streams_history.json Output/streams_history.json 2>/dev/null || true
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2

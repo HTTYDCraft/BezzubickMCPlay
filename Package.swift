@@ -2,23 +2,29 @@
 import PackageDescription
 
 let package = Package(
-    name: "MyWebsite",
-    platforms: [.macOS(.v12)],
+    name: "BezzubickMCPlay",
+    platforms: [.macOS(.v13)],
     products: [
-        .executable(
-            name: "MyWebsite",
-            targets: ["MyWebsite"]
-        )
+        .executable(name: "BezzubickMCPlay", targets: ["BezzubickMCPlay"]),
+        .executable(name: "UpdateData", targets: ["UpdateData"])
     ],
     dependencies: [
-        .package(url: "https://github.com/johnsundell/publish.git", from: "0.9.0")
+        .package(url: "https://github.com/johnsundell/publish.git", from: "0.9.0"),
+        .package(url: "https://github.com/johnsundell/plot", from: "0.14.0")
     ],
     targets: [
         .executableTarget(
-            name: "MyWebsite",
+            name: "BezzubickMCPlay",
             dependencies: [
-                .product(name: "Publish", package: "Publish")
-            ]
+                .product(name: "Publish", package: "publish"),
+                .product(name: "Plot", package: "plot")
+            ],
+            path: "Sources/BezzubickMCPlay"
+        ),
+        .executableTarget(
+            name: "UpdateData",
+            dependencies: [],
+            path: "Sources/UpdateData"
         )
     ]
 )
