@@ -130,8 +130,8 @@ func setById(_ id: String, _ val: String) {
 
 func t(_ k: String) -> String {
     let doc = jsGlobal("document")
-    let hasLinks = !doc.getElementById("links-section").isUndefined
-    let hasProfile = !doc.getElementById("profile-section").isUndefined
+    let hasLinks = !doc.getElementById!("links-section").isUndefined
+    let hasProfile = !doc.getElementById!("profile-section").isUndefined
     if hasLinks || hasProfile {
         return (stateLang == "en" ? LINKS_STR_EN : LINKS_STR_RU)[k] ?? k
     }
@@ -171,7 +171,7 @@ func toggleTheme() {
 
 func updateLangContent() {
     let doc = jsGlobal("document")
-    let els = doc.querySelectorAll("[data-lang]")
+    let els = doc.querySelectorAll!("[data-lang]")
     let length = els.length.number ?? 0
     for i in 0..<Int(length) {
         let el = els[i]
@@ -246,7 +246,7 @@ func setupCalendar() {
     calMonth = Int(now.getMonth().number ?? 0)
 
     let doc = jsGlobal("document")
-    let prev = doc.getElementById("cal-prev")
+    let prev = doc.getElementById!("cal-prev")
     if !prev.isUndefined {
         _ = prev.addEventListener("click", JSClosure({ _ in
             calMonth -= 1
@@ -255,7 +255,7 @@ func setupCalendar() {
             return .undefined
         }))
     }
-    let next = doc.getElementById("cal-next")
+    let next = doc.getElementById!("cal-next")
     if !next.isUndefined {
         _ = next.addEventListener("click", JSClosure({ _ in
             calMonth += 1
@@ -272,10 +272,10 @@ func renderCal() {
     let wdays = stateLang == "en" ? WDAYS_EN : WDAYS_RU
     let doc = jsGlobal("document")
 
-    let label = doc.getElementById("cal-label")
+    let label = doc.getElementById!("cal-label")
     if !label.isUndefined { _ = label.textContent.set("\(months[calMonth]) \(calYear)") }
 
-    let head = doc.getElementById("cal-weekdays")
+    let head = doc.getElementById!("cal-weekdays")
     if !head.isUndefined { _ = head.innerHTML.set(wdays.map { "<div>\($0)</div>" }.joined(separator: "")) }
 
     let DateObj = jsGlobal("Date")
@@ -311,7 +311,7 @@ func renderCal() {
         }
         html += "<div class=\"\(cls.joined(separator: " "))\"><div>\(d)</div>\(dot)\(chips.isEmpty ? "" : "<div>\(chips)</div>")</div>"
     }
-    let grid = doc.getElementById("cal-grid")
+    let grid = doc.getElementById!("cal-grid")
     if !grid.isUndefined { _ = grid.innerHTML.set(html) }
 }
 
@@ -327,7 +327,7 @@ func fetchData() async {
     let doc = jsGlobal("document")
 
     let vids = json.youtubeVideos
-    let carousel = doc.getElementById("carousel")
+    let carousel = doc.getElementById!("carousel")
     if !carousel.isUndefined {
         _ = carousel.innerHTML.set("")
         let len = vids.length.number ?? 0
@@ -350,10 +350,10 @@ func fetchData() async {
     for key in ["youtube", "telegram", "twitch", "vk_group", "vk_personal"] {
         total += fc[key].double ?? 0
     }
-    let totals = doc.getElementById("totals")
+    let totals = doc.getElementById!("totals")
     if !totals.isUndefined { _ = totals.textContent.set(t("followers") + fmtCount(total)) }
 
-    let linksSection = doc.getElementById("links-section")
+    let linksSection = doc.getElementById!("links-section")
     if !linksSection.isUndefined { renderLinksPage(json: json) }
 
     let ts2 = Int((jsGlobal("Date").new().getTime().number ?? 0))
@@ -399,18 +399,18 @@ func renderLinksPage(json: JSValue) {
     let s = stateLang == "en" ? LINKS_STR_EN : LINKS_STR_RU
     let doc = jsGlobal("document")
 
-    let nameEl = doc.getElementById("profile-name")
+    let nameEl = doc.getElementById!("profile-name")
     if !nameEl.isUndefined { _ = nameEl.textContent.set(s["profileName"] ?? "") }
-    let descEl = doc.getElementById("profile-description")
+    let descEl = doc.getElementById!("profile-description")
     if !descEl.isUndefined { _ = descEl.textContent.set(s["profileDescription"] ?? "") }
 
     let fc = json.followerCounts
     var total = 0.0
     for link in LINKS_CONFIG { total += fc[link.platformId].double ?? 0 }
-    let tf = doc.getElementById("total-followers")
+    let tf = doc.getElementById!("total-followers")
     if !tf.isUndefined { _ = tf.textContent.set((s["totalFollowers"] ?? "") + fmtCount(total)) }
 
-    let section = doc.getElementById("links-section")
+    let section = doc.getElementById!("links-section")
     if !section.isUndefined {
         _ = section.innerHTML.set("")
         for link in LINKS_CONFIG {
@@ -435,7 +435,7 @@ func renderLinksPage(json: JSValue) {
         initSwipeGestures()
     }
 
-    let btn = doc.getElementById("support-button")
+    let btn = doc.getElementById!("support-button")
     if !btn.isUndefined { _ = btn.setAttribute("href", "https://www.donationalerts.com/r/bezzubickmcplay") }
 }
 
@@ -445,12 +445,12 @@ func renderLinksLiveStream(json: JSValue) {
     let info = json.liveStream
     let has = !(info.isUndefined) && (info.type.string ?? "none") != "none"
     let doc = jsGlobal("document")
-    let section = doc.getElementById("live-stream-section")
+    let section = doc.getElementById!("live-stream-section")
     if !section.isUndefined {
         if has { _ = section.classList.remove("hidden") } else { _ = section.classList.add("hidden") }
     }
     if has {
-        let embed = doc.getElementById("live-embed")
+        let embed = doc.getElementById!("live-embed")
         if !embed.isUndefined {
             if info.type.string == "youtube", let vid = info.id.string {
                 _ = embed.setAttribute("src", "https://www.youtube.com/embed/\(vid)?autoplay=1&mute=1")
@@ -523,8 +523,8 @@ func initSwipeGestures() {
 
 func setupModal() {
     let doc = jsGlobal("document")
-    let modal = doc.getElementById("first-visit-modal")
-    let btn = doc.getElementById("modal-close")
+    let modal = doc.getElementById!("first-visit-modal")
+    let btn = doc.getElementById!("modal-close")
     if modal.isUndefined || btn.isUndefined { return }
     let seen = jsGlobal("localStorage").getItem("visited_modal")
     if !seen.isUndefined { return }
@@ -540,17 +540,17 @@ func setupModal() {
 
 func setupDevView() {
     let doc = jsGlobal("document")
-    let devBtn = doc.getElementById("dev-toggle")
+    let devBtn = doc.getElementById!("dev-toggle")
     if devBtn.isUndefined { return }
     _ = devBtn.addEventListener("click", JSClosure({ _ in
-        let mainView = doc.getElementById("main-view")
-        let devView = doc.getElementById("dev-view")
+        let mainView = doc.getElementById!("main-view")
+        let devView = doc.getElementById!("dev-view")
         if !mainView.isUndefined { _ = mainView.classList.toggle("hidden") }
         if !devView.isUndefined {
             _ = devView.classList.toggle("hidden")
-            let content = doc.getElementById("dev-data-json-content")
+            let content = doc.getElementById!("dev-data-json-content")
             if !content.isUndefined { _ = content.textContent.set("{}") }
-            let upd = doc.getElementById("dev-last-updated")
+            let upd = doc.getElementById!("dev-last-updated")
             if !upd.isUndefined {
                 let now = jsGlobal("Date").new()
                 let y = Int(now.getFullYear().number ?? 0)
@@ -564,11 +564,11 @@ func setupDevView() {
         }
         return .undefined
     }))
-    let backBtn = doc.getElementById("back-to-main-button")
+    let backBtn = doc.getElementById!("back-to-main-button")
     if !backBtn.isUndefined {
         _ = backBtn.addEventListener("click", JSClosure({ _ in
-            let mv = doc.getElementById("main-view")
-            let dv = doc.getElementById("dev-view")
+            let mv = doc.getElementById!("main-view")
+            let dv = doc.getElementById!("dev-view")
             if !mv.isUndefined { _ = mv.classList.remove("hidden") }
             if !dv.isUndefined { _ = dv.classList.add("hidden") }
             return .undefined
@@ -750,15 +750,15 @@ func stopRendering() { shouldRender = false }
         #if os(WASI)
         let ready = JSClosure({ _ in
             let doc = jsGlobal("document")
-            let isLinks = !doc.getElementById("profile-section").isUndefined
+            let isLinks = !doc.getElementById!("profile-section").isUndefined
 
             applyTheme(stateTheme)
             if isLinks { updateLinksTexts() } else { updateHomeTexts() }
 
             let toggleFn = JSClosure({ _ in toggleTheme(); return .undefined })
-            let themeBottom = doc.getElementById("theme-toggle-bottom")
+            let themeBottom = doc.getElementById!("theme-toggle-bottom")
             if !themeBottom.isUndefined { _ = themeBottom.addEventListener("click", toggleFn) }
-            let themeTop = doc.getElementById("theme-toggle")
+            let themeTop = doc.getElementById!("theme-toggle")
             if !themeTop.isUndefined { _ = themeTop.addEventListener("click", toggleFn) }
 
             let langFn = JSClosure({ _ in
@@ -767,9 +767,9 @@ func stopRendering() { shouldRender = false }
                 if !isLinks { renderCal() }
                 return .undefined
             })
-            let langBottom = doc.getElementById("lang-toggle-bottom")
+            let langBottom = doc.getElementById!("lang-toggle-bottom")
             if !langBottom.isUndefined { _ = langBottom.addEventListener("click", langFn) }
-            let langTop = doc.getElementById("language-toggle")
+            let langTop = doc.getElementById!("language-toggle")
             if !langTop.isUndefined { _ = langTop.addEventListener("click", langFn) }
 
             if !isLinks {
@@ -846,30 +846,30 @@ func observeGlassState() {
 
 func setupTimeline() {
     let doc = jsGlobal("document")
-    let details = doc.querySelectorAll("#timeline details")
+    let details = doc.querySelectorAll!("#timeline details")
     let detailsLen = details.length.number ?? 0
     for i in 0..<Int(detailsLen) {
         let d = details[i]
-        let icon = d.querySelector(".material-symbols-outlined")
+        let icon = d.querySelector!(".material-symbols-outlined")
         _ = d.addEventListener("toggle", JSClosure({ _ in
             let open = d.open.boolean ?? false
             _ = icon.style.setProperty("transform", open ? "rotate(180deg)" : "rotate(0deg)")
             return .undefined
         }))
     }
-    let expandBtn = doc.getElementById("tl-expand")
+    let expandBtn = doc.getElementById!("tl-expand")
     if !expandBtn.isUndefined {
         _ = expandBtn.addEventListener("click", JSClosure({ _ in
-            let all = doc.querySelectorAll("#timeline details")
+            let all = doc.querySelectorAll!("#timeline details")
             let allLen = all.length.number ?? 0
             for i in 0..<Int(allLen) { all[i].open = .boolean(true) }
             return .undefined
         }))
     }
-    let collapseBtn = doc.getElementById("tl-collapse")
+    let collapseBtn = doc.getElementById!("tl-collapse")
     if !collapseBtn.isUndefined {
         _ = collapseBtn.addEventListener("click", JSClosure({ _ in
-            let all = doc.querySelectorAll("#timeline details")
+            let all = doc.querySelectorAll!("#timeline details")
             let allLen = all.length.number ?? 0
             for i in 0..<Int(allLen) { all[i].open = .boolean(false) }
             return .undefined
