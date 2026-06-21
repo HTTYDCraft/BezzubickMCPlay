@@ -11,10 +11,49 @@ func bool(_ b: Bool) -> JSValue { .boolean(b) }
 
 // MARK: - Globals
 
-let DOCUMENT = JSObject.global.document!
-let WINDOW = JSObject.global.window!
-let NAVIGATOR = WINDOW.navigator
-func localStorage() -> JSObject { JSObject.global.localStorage! }
+let DOCUMENT = JSObject.global["document"]!
+let WINDOW = JSObject.global["window"]!
+let NAVIGATOR = WINDOW["navigator"]
+func localStorage() -> JSObject { JSObject.global["localStorage"]! }
+func jsDate() -> JSObject { JSObject.global["Date"]! }
+
+// MARK: - String helpers (no Foundation in WASM)
+
+func zeroPad(_ n: Int, _ width: Int) -> String {
+    var s = "\(n)"
+    while s.count < width { s = "0" + s }
+    return s
+}
+
+func fmtCount(_ val: Double) -> String {
+    if val >= 1_000_000 {
+        let m = val / 1_000_000
+        let rounded = (m * 10.0).rounded() / 10.0
+        let s = "\(rounded)"
+        if s.hasSuffix(".0") {
+            return String(s.dropLast(2)) + "M"
+        }
+        return s + "M"
+    }
+    if val >= 1_000 {
+        let k = val / 1_000
+        let rounded = (k * 10.0).rounded() / 10.0
+        let s = "\(rounded)"
+        if s.hasSuffix(".0") {
+            return String(s.dropLast(2)) + "K"
+        }
+        return s + "K"
+    }
+    return "\(Int(val))"
+}
+
+func replaceAll(_ s: String, _ from: String, _ to: String) -> String {
+    var result = s
+    while let range = result.range(of: from) {
+        result.replaceSubrange(range, with: to)
+    }
+    return result
+}
 
 // MARK: - State
 
@@ -24,42 +63,42 @@ var mouseYFrac = 0.5
 
 var stateTheme: String {
     get {
-        let v = localStorage().getItem("theme")
+        let v = localStorage()["getItem"]("theme")
         return v.isUndefined ? "dark" : (v.string ?? "dark")
     }
-    set { localStorage().setItem("theme", newValue) }
+    set { _ = localStorage()["setItem"]("theme", newValue) }
 }
 
 var stateLang: String {
     get {
-        let stored = localStorage().getItem("lang")
+        let stored = localStorage()["getItem"]("lang")
         if !stored.isUndefined, let s = stored.string { return s }
-        let navLang = NAVIGATOR.language.string ?? "ru"
+        let navLang = NAVIGATOR["language"].string ?? "ru"
         return navLang.hasPrefix("ru") ? "ru" : "en"
     }
-    set { localStorage().setItem("lang", newValue) }
+    set { _ = localStorage()["setItem"]("lang", newValue) }
 }
 
 // MARK: - Strings (Home Page)
 
 let HOME_STR_RU: [String: String] = [
-    "followers": "\u{412}\u{441}\u{435}\u{433}\u{43e} \u{43f}\u{43e}\u{434}\u{43f}\u{438}\u{441}\u{447}\u{438}\u{43a}\u{43e}\u{432}: ",
-    "navTitle": "\u{41d}\u{430}\u{432}\u{438}\u{433}\u{430}\u{446}\u{438}\u{44f}",
-    "navDesc": "\u{41f}\u{435}\u{440}\u{435}\u{439}\u{434}\u{438}\u{442}\u{435} \u{43d}\u{430} \u{441}\u{442}\u{440}\u{430}\u{43d}\u{438}\u{446}\u{443} \u{441}\u{43e} \u{432}\u{441}\u{435}\u{43c}\u{438} \u{43c}\u{43e}\u{438}\u{43c}\u{438} \u{441}\u{441}\u{44b}\u{43b}\u{43a}\u{430}\u{43c}\u{438}.",
-    "navCta": "\u{41f}\u{435}\u{440}\u{435}\u{439}\u{442}\u{438} \u{43a} \u{441}\u{441}\u{44b}\u{43b}\u{43a}\u{430}\u{43c}",
-    "skinTitle": "\u{41c}\u{43e}\u{439} \u{441}\u{43a}\u{438}\u{43d} Minecraft",
-    "skinDl": "\u{421}\u{43a}\u{430}\u{447}\u{430}\u{442}\u{44c} \u{441}\u{43a}\u{438}\u{43d}",
-    "videosTitle": "\u{41f}\u{43e}\u{441}\u{43b}\u{435}\u{434}\u{43d}\u{438}\u{435} \u{432}\u{438}\u{434}\u{435}\u{43e}",
-    "tlTitle": "\u{41b}\u{435}\u{43d}\u{442}\u{430} \u{43a}\u{430}\u{43d}\u{430}\u{43b}\u{430}",
-    "expand": "\u{420}\u{430}\u{437}\u{432}\u{435}\u{440}\u{43d}\u{443}\u{442}\u{44c}",
-    "collapse": "\u{421}\u{432}\u{435}\u{440}\u{43d}\u{443}\u{442}\u{44c}",
-    "liveEmpty": "\u{421}\u{435}\u{439}\u{447}\u{430}\u{441} \u{441}\u{442}\u{440}\u{438}\u{43c}\u{430} \u{43d}\u{435}\u{442}",
-    "liveSub": "\u{41e}\u{431}\u{44b}\u{447}\u{43d}\u{43e} \u{441}\u{442}\u{440}\u{438}\u{43c}\u{44b} \u{43f}\u{43e} \u{43f}\u{44f}\u{442}\u{43d}\u{438}\u{446}\u{430}\u{43c}, 17:00\u{2013}19:00 \u{41c}\u{421}\u{41a}.",
+    "followers": "Все подписчики: ",
+    "navTitle": "Навигация",
+    "navDesc": "Перейдите на страницу со всеми моими ссылками, ссулками, скином и инфой.",
+    "navCta": "Перейти к ссылкам",
+    "skinTitle": "Мой скин Minecraft",
+    "skinDl": "Скачать скин",
+    "videosTitle": "Последние видео",
+    "tlTitle": "Лента канала",
+    "expand": "Развернуть",
+    "collapse": "Свернуть",
+    "liveEmpty": "Сейчас стрима нет",
+    "liveSub": "Обычно стримы по пятницам, 17:00–19:00 МСК.",
     "legendYt": "YouTube", "legendTw": "Twitch",
-    "legendBoth": "\u{41e}\u{431}\u{430}", "legendPlanned": "\u{41f}\u{43e}\u{442}\u{435}\u{43d}\u{446}\u{438}\u{430}\u{43b}\u{44c}\u{43d}\u{44b}\u{439}",
-    "legendMissed": "\u{417}\u{430}\u{447}\u{451}\u{440}\u{43a}\u{43d}\u{443}\u{442}\u{44b}\u{435} \u{2014} \u{441}\u{442}\u{440}\u{438}\u{43c}\u{430} \u{43d}\u{435} \u{431}\u{44b}\u{43b}\u{43e}",
-    "twitchAlso": "\u{421}\u{442}\u{440}\u{438}\u{43c} \u{442}\u{430}\u{43a}\u{436}\u{435} \u{438}\u{434}\u{451}\u{442} \u{43d}\u{430} Twitch!",
-    "twitchCta": "\u{421}\u{43c}\u{43e}\u{442}\u{440}\u{435}\u{442}\u{44c} \u{43d}\u{430} Twitch"
+    "legendBoth": "Оба", "legendPlanned": "Потенциальный",
+    "legendMissed": "Зачёркнутые — стрима не было",
+    "twitchAlso": "Стрим также идёт на Twitch!",
+    "twitchCta": "Смотреть на Twitch"
 ]
 let HOME_STR_EN: [String: String] = [
     "followers": "Total Subscribers: ",
@@ -67,9 +106,9 @@ let HOME_STR_EN: [String: String] = [
     "navCta": "Go to Links", "skinTitle": "My Minecraft Skin", "skinDl": "Download Skin",
     "videosTitle": "Latest Videos", "tlTitle": "Channel Timeline",
     "expand": "Expand", "collapse": "Collapse",
-    "liveEmpty": "No stream right now", "liveSub": "Streams are usually on Fridays, 17:00\u{2013}19:00 MSK.",
+    "liveEmpty": "No stream right now", "liveSub": "Streams are usually on Fridays, 17:00–19:00 MSK.",
     "legendYt": "YouTube", "legendTw": "Twitch", "legendBoth": "Both", "legendPlanned": "Planned",
-    "legendMissed": "Struck-out \u{2014} there was no stream",
+    "legendMissed": "Struck-out — there was no stream",
     "twitchAlso": "Stream is also live on Twitch!", "twitchCta": "Watch on Twitch"
 ]
 
@@ -96,37 +135,37 @@ let LINKS_STR_EN: [String: String] = [
     "watchOnTwitch": "Watch on Twitch"
 ]
 let LINKS_STR_RU: [String: String] = [
-    "recentVideosTitle": "\u{41f}\u{43e}\u{441}\u{43b}\u{435}\u{434}\u{43d}\u{438}\u{435} \u{432}\u{438}\u{434}\u{435}\u{43e}",
-    "modalTitle": "\u{414}\u{43e}\u{431}\u{440}\u{43e} \u{43f}\u{43e}\u{436}\u{430}\u{43b}\u{43e}\u{432}\u{430}\u{442}\u{44c}!",
-    "modalDescription": "\u{41f}\u{440}\u{43e}\u{432}\u{435}\u{434}\u{438}\u{442}\u{435} \u{432}\u{43f}\u{440}\u{430}\u{432}\u{43e} \u{43f}\u{43e} \u{43a}\u{430}\u{440}\u{442}\u{43e}\u{447}\u{43a}\u{435} \u{441}\u{441}\u{44b}\u{43b}\u{43a}\u{438}, \u{447}\u{442}\u{43e}\u{431}\u{44b} \u{43f}\u{43e}\u{434}\u{43f}\u{438}\u{441}\u{430}\u{442}\u{44c}\u{441}\u{44f}. \u{41f}\u{440}\u{43e}\u{432}\u{435}\u{434}\u{438}\u{442}\u{435} \u{432}\u{43b}\u{435}\u{432}\u{43e} \u{43f}\u{43e} YouTube-\u{441}\u{441}\u{44b}\u{43b}\u{43a}\u{430}\u{43c}, \u{447}\u{442}\u{43e}\u{431}\u{44b} \u{43e}\u{442}\u{43a}\u{440}\u{44b}\u{442}\u{44c} \u{43f}\u{43e}\u{441}\u{43b}\u{435}\u{434}\u{43d}\u{435}\u{435} \u{432}\u{438}\u{434}\u{435}\u{43e} \u{438}\u{43b}\u{438} \u{43f}\u{440}\u{44f}\u{43c}\u{43e}\u{439} \u{44d}\u{444}\u{438}\u{440}.",
-    "gotItButton": "\u{41f}\u{43e}\u{43d}\u{44f}\u{442}\u{43d}\u{43e}!",
-    "totalFollowers": "\u{412}\u{441}\u{435}\u{433}\u{43e} \u{43f}\u{43e}\u{434}\u{43f}\u{438}\u{441}\u{447}\u{438}\u{43a}\u{43e}\u{432}: ",
-    "minecraftTitle": "\u{41c}\u{43e}\u{439} \u{441}\u{43a}\u{438}\u{43d} Minecraft",
-    "downloadSkin": "\u{421}\u{43a}\u{430}\u{447}\u{430}\u{442}\u{44c} \u{441}\u{43a}\u{438}\u{43d}",
-    "loading": "\u{417}\u{430}\u{433}\u{440}\u{443}\u{437}\u{43a}\u{430}...",
-    "supportButton": "\u{41f}\u{43e}\u{434}\u{434}\u{435}\u{440}\u{436}\u{430}\u{442}\u{44c} \u{43c}\u{435}\u{43d}\u{44f}",
-    "offlineMessage": "\u{412}\u{44b} \u{43d}\u{435} \u{432} \u{441}\u{435}\u{442}\u{438}.",
-    "devPageTitle": "\u{418}\u{43d}\u{444}\u{43e} \u{434}\u{43b}\u{44f} \u{440}\u{430}\u{437}\u{440}\u{430}\u{431}\u{43e}\u{442}\u{447}\u{438}\u{43a}\u{43e}\u{432}",
-    "devLastUpdatedLabel": "\u{41f}\u{43e}\u{441}\u{43b}\u{435}\u{434}\u{43d}\u{435}\u{435} \u{43e}\u{431}\u{43d}\u{43e}\u{432}\u{43b}\u{435}\u{43d}\u{438}\u{435}:",
+    "recentVideosTitle": "Последние видео",
+    "modalTitle": "Добро пожаловать!",
+    "modalDescription": "Проведите вправо по карточке ссылки, чтобы подписаться. Проведите влево по YouTube-ссылкам, чтобы открыть последнее видео или прямой эфир.",
+    "gotItButton": "Понятно!",
+    "totalFollowers": "Всего подписчиков: ",
+    "minecraftTitle": "Мой скин Minecraft",
+    "downloadSkin": "Скачать скин",
+    "loading": "Загрузка...",
+    "supportButton": "Поддержать меня",
+    "offlineMessage": "Вы не в сети.",
+    "devPageTitle": "Инфо для разработчиков",
+    "devLastUpdatedLabel": "Последнее обновление:",
     "devDataJsonContentLabel": "data.json:", "devDebugInfoContentLabel": "API Debug:",
-    "backToMainText": "\u{41d}\u{430} \u{433}\u{43b}\u{430}\u{432}\u{43d}\u{443}\u{44e}",
-    "openLinkButton": "\u{41e}\u{442}\u{43a}\u{440}\u{44b}\u{442}\u{44c}", "closeButton": "\u{417}\u{430}\u{43a}\u{440}\u{44b}\u{442}\u{44c}",
-    "profileName": "BezzubickMCPlay", "profileDescription": "\u{41c}\u{430}\u{439}\u{43d}\u{43a}\u{440}\u{430}\u{444}\u{442} | \u{421}\u{442}\u{440}\u{438}\u{43c}\u{44b} | \u{422}\u{432}\u{43e}\u{440}\u{447}\u{435}\u{441}\u{442}\u{432}\u{43e}",
-    "avatarAlt": "\u{410}\u{432}\u{430}\u{442}\u{430}\u{440} BezzubickMCPlay",
-    "twitchStreamAlsoLive": "\u{421}\u{442}\u{440}\u{438}\u{43c} \u{442}\u{430}\u{43a}\u{436}\u{435} \u{43d}\u{430} Twitch!",
-    "youtubeChannelLabel": "\u{41a}\u{430}\u{43d}\u{430}\u{43b} YouTube",
-    "telegramChannelLabel": "\u{41a}\u{430}\u{43d}\u{430}\u{43b} Telegram",
-    "instagramProfileLabel": "\u{41f}\u{440}\u{43e}\u{444}\u{438}\u{43b}\u{44c} Instagram",
-    "xTwitterProfileLabel": "\u{41f}\u{440}\u{43e}\u{444}\u{438}\u{43b}\u{44c} X (Twitter)",
-    "twitchChannelLabel": "\u{41a}\u{430}\u{43d}\u{430}\u{43b} Twitch",
-    "tiktokProfileLabel": "\u{41f}\u{440}\u{43e}\u{444}\u{438}\u{43b}\u{44c} TikTok",
-    "vkGroupLabel": "\u{413}\u{440}\u{443}\u{43f}\u{43f}\u{430} VK",
-    "vkPersonalPageLabel": "\u{421}\u{442}\u{440}\u{430}\u{43d}\u{438}\u{446}\u{430} VK",
-    "watchOnTwitch": "\u{421}\u{43c}\u{43e}\u{442}\u{440}\u{435}\u{442}\u{44c} \u{43d}\u{430} Twitch"
+    "backToMainText": "На главную",
+    "openLinkButton": "Открыть", "closeButton": "Закрыть",
+    "profileName": "BezzubickMCPlay", "profileDescription": "Майнкрафт | Стримы | Творчество",
+    "avatarAlt": "Аватар BezzubickMCPlay",
+    "twitchStreamAlsoLive": "Стрим также идёт на Twitch!",
+    "youtubeChannelLabel": "Канал YouTube",
+    "telegramChannelLabel": "Канал Telegram",
+    "instagramProfileLabel": "Профиль Instagram",
+    "xTwitterProfileLabel": "Профиль X (Twitter)",
+    "twitchChannelLabel": "Канал Twitch",
+    "tiktokProfileLabel": "Профиль TikTok",
+    "vkGroupLabel": "Группа VK",
+    "vkPersonalPageLabel": "Страница VK",
+    "watchOnTwitch": "Смотреть на Twitch"
 ]
 
 func t(_ k: String) -> String {
-    if DOCUMENT.getElementById("links-section") != nil || DOCUMENT.getElementById("profile-section") != nil {
+    if DOCUMENT["getElementById"]("links-section").toBool ?? false || DOCUMENT["getElementById"]("profile-section").toBool ?? false {
         return (stateLang == "en" ? LINKS_STR_EN : LINKS_STR_RU)[k] ?? k
     }
     return (stateLang == "en" ? HOME_STR_EN : HOME_STR_RU)[k] ?? k
@@ -143,15 +182,15 @@ let THEME_CLASSES: [String: String] = [
 ]
 
 func applyTheme(_ theme: String) {
-    let body = DOCUMENT.body!
+    let body = DOCUMENT["body"]!
     for cls in ["dark-theme", "light-theme", "glass-dark", "glass-light"] {
-        _ = body.classList.remove(cls)
+        _ = body["classList"]["remove"](cls)
     }
-    _ = body.classList.add(THEME_CLASSES[theme] ?? "dark-theme")
+    _ = body["classList"]["add"](THEME_CLASSES[theme] ?? "dark-theme")
     stateTheme = theme
     isDark = theme.contains("dark")
-    if let icon = DOCUMENT.getElementById("theme-icon-bottom") { icon.textContent = THEME_ICONS[theme] ?? "light_mode" }
-    if let icon = DOCUMENT.getElementById("theme-icon") { icon.textContent = THEME_ICONS[theme] ?? "light_mode" }
+    if let icon = DOCUMENT["getElementById"]("theme-icon-bottom"), !icon.isUndefined { _ = icon["textContent"].set(THEME_ICONS[theme] ?? "light_mode") }
+    if let icon = DOCUMENT["getElementById"]("theme-icon"), !icon.isUndefined { _ = icon["textContent"].set(THEME_ICONS[theme] ?? "light_mode") }
 }
 
 func toggleTheme() {
@@ -162,28 +201,23 @@ func toggleTheme() {
 // MARK: - Language
 
 func updateLangContent() {
-    let els = DOCUMENT.querySelectorAll("[data-lang]")
-    for i in 0..<els.length {
+    let els = DOCUMENT["querySelectorAll"]("[data-lang]")
+    let length = els["length"].number ?? 0
+    for i in 0..<Int(length) {
         let el = els[i]
-        let lang = el.getAttribute("data-lang").isUndefined ? "" : (el.getAttribute("data-lang").string ?? "")
-        _ = el.style.setProperty("display", lang == stateLang ? "" : "none")
+        let lang = el["getAttribute"]("data-lang").string ?? ""
+        _ = el["style"]["setProperty"]("display", lang == stateLang ? "" : "none")
     }
-}
-
-func fmtCount(_ val: Double) -> String {
-    if val >= 1_000_000 { return String(format: "%.1f", val / 1_000_000).replacingOccurrences(of: ".0", with: "") + "M" }
-    if val >= 1_000 { return String(format: "%.1f", val / 1_000).replacingOccurrences(of: ".0", with: "") + "K" }
-    return String(Int(val))
 }
 
 // MARK: - Home Page Texts
 
 func updateHomeTexts() {
     func set(_ id: String, _ val: String) {
-        if let e = DOCUMENT.getElementById(id) { e.textContent = val }
+        if let e = DOCUMENT["getElementById"](id), !e.isUndefined { _ = e["textContent"].set(val) }
     }
     let s = stateLang == "en" ? HOME_STR_EN : HOME_STR_RU
-    set("totals", s["followers"] ?? "" + "\u{2014}")
+    set("totals", (s["followers"] ?? "") + "\u{2014}")
     set("nav-title", s["navTitle"] ?? "")
     set("nav-desc", s["navDesc"] ?? "")
     set("go-links-text", s["navCta"] ?? "")
@@ -210,7 +244,7 @@ func updateHomeTexts() {
 
 func updateLinksTexts() {
     func set(_ id: String, _ val: String) {
-        if let e = DOCUMENT.getElementById(id) { e.textContent = val }
+        if let e = DOCUMENT["getElementById"](id), !e.isUndefined { _ = e["textContent"].set(val) }
     }
     let s = stateLang == "en" ? LINKS_STR_EN : LINKS_STR_RU
     set("modal-title", s["modalTitle"] ?? "")
@@ -243,24 +277,20 @@ var calMonth = 0
 var streamEvents: [String: (yt: Bool, tw: Bool, ytUrl: String, twUrl: String)] = [:]
 
 func setupCalendar() {
-    let now = Date()
-    calYear = Int(now.timeIntervalSince1970 / 31536000) + 1970
-    calMonth = Int((now.timeIntervalSince1970.truncatingRemainder(dividingBy: 2629746)) / 21914.58)
-    // Use JS Date for proper year/month
-    let jsDate = JSObject.global.Date!.new()
+    let jsDate = jsDate().new()
     calYear = jsDate.getFullYear().integer ?? 2026
     calMonth = jsDate.getMonth().integer ?? 0
 
-    if let prev = DOCUMENT.getElementById("cal-prev") {
-        _ = prev.addEventListener("click", JSClosure { _ in
+    if let prev = DOCUMENT["getElementById"]("cal-prev"), !prev.isUndefined {
+        _ = prev["addEventListener"]("click", JSClosure { _ in
             calMonth -= 1
             if calMonth < 0 { calMonth = 11; calYear -= 1 }
             renderCal()
             return .undefined
         })
     }
-    if let next = DOCUMENT.getElementById("cal-next") {
-        _ = next.addEventListener("click", JSClosure { _ in
+    if let next = DOCUMENT["getElementById"]("cal-next"), !next.isUndefined {
+        _ = next["addEventListener"]("click", JSClosure { _ in
             calMonth += 1
             if calMonth > 11 { calMonth = 0; calYear += 1 }
             renderCal()
@@ -273,30 +303,30 @@ func setupCalendar() {
 func renderCal() {
     let months = stateLang == "en" ? MONTHS_EN : MONTHS_RU
     let wdays = stateLang == "en" ? WDAYS_EN : WDAYS_RU
-    if let label = DOCUMENT.getElementById("cal-label") {
-        label.textContent = "\(months[calMonth]) \(calYear)"
+    if let label = DOCUMENT["getElementById"]("cal-label"), !label.isUndefined {
+        _ = label["textContent"].set("\(months[calMonth]) \(calYear)")
     }
-    if let head = DOCUMENT.getElementById("cal-weekdays") {
-        head.innerHTML = wdays.map { "<div>\($0)</div>" }.joined(separator: "")
+    if let head = DOCUMENT["getElementById"]("cal-weekdays"), !head.isUndefined {
+        _ = head["innerHTML"].set(wdays.map { "<div>\($0)</div>" }.joined(separator: ""))
     }
-    let firstDow = JSObject.global.Date!.new(int(calYear), int(calMonth), int(1))
+    let firstDow = jsDate().new(calYear, calMonth, 1)
     let startDow = ((firstDow.getDay().integer ?? 0) + 6) % 7
-    let daysInMonth = JSObject.global.Date!.new(int(calYear), int(calMonth + 1), int(0)).getDate().integer ?? 30
-    let today = JSObject.global.Date!.new()
-    _ = today.setHours(0, 0, 0, 0)
-    let todayTime = today.getTime().double ?? 0
+    let daysInMonth = jsDate().new(calYear, calMonth + 1, 0)["getDate"]().integer ?? 30
+    let today = jsDate().new()
+    _ = today["setHours"](0, 0, 0, 0)
+    let todayTime = today["getTime"]().double ?? 0
 
     var html = ""
     for _ in 0..<startDow { html += "<div></div>" }
     for d in 1...daysInMonth {
-        let dt = JSObject.global.Date!.new(int(calYear), int(calMonth), int(d))
-        let isToday = (dt.getTime().double ?? 0) == todayTime
-        let isPast = (dt.getTime().double ?? 0) < todayTime
-        let dow = ((dt.getDay().integer ?? 0) + 6) % 7
+        let dt = jsDate().new(calYear, calMonth, d)
+        let isToday = (dt["getTime"]().double ?? 0) == todayTime
+        let isPast = (dt["getTime"]().double ?? 0) < todayTime
+        let dow = ((dt["getDay"]().integer ?? 0) + 6) % 7
         var cls = ["cell"]
         if dow == 4 { cls.append("fri") }
         if isToday { cls.append("today") }
-        let ds = "\(calYear)-\(String(format: "%02d", calMonth + 1))-\(String(format: "%02d", d))"
+        let ds = "\(calYear)-\(zeroPad(calMonth + 1, 2))-\(zeroPad(d, 2))"
         var dot = ""
         var chips = ""
         if let info = streamEvents[ds] {
@@ -310,61 +340,66 @@ func renderCal() {
         }
         html += "<div class=\"\(cls.joined(separator: " "))\"><div>\(d)</div>\(dot)\(chips.isEmpty ? "" : "<div>\(chips)</div>")</div>"
     }
-    if let grid = DOCUMENT.getElementById("cal-grid") {
-        grid.innerHTML = html
+    if let grid = DOCUMENT["getElementById"]("cal-grid"), !grid.isUndefined {
+        _ = grid["innerHTML"].set(html)
     }
 }
 
 // MARK: - Data Fetch
 
 func fetchData() async {
-    let url = "/data.json?t=\(Int(Date().timeIntervalSince1970 * 1000))"
-    guard let resp = try? await WINDOW.fetch(url), resp.ok.boolean ?? false else { return }
-    guard let json = try? await resp.json() else { return }
+    let ts = (jsDate().new()["getTime"]().double ?? 0)
+    let url = "/data.json?t=\(Int(ts))"
+    let resp = WINDOW["fetch"](url)
+    let respVal = try? await resp
+    guard (respVal?["ok"].boolean ?? false) else { return }
+    guard let json = try? await respVal?["json"]() else { return }
 
     // Home page: video carousel + follower counts
-    let vids = json.youtubeVideos
-    if let el = DOCUMENT.getElementById("carousel") {
-        _ = el.set("innerHTML", .string(""))
-        let len = vids.length.number ?? 0
+    let vids = json["youtubeVideos"]
+    if let el = DOCUMENT["getElementById"]("carousel"), !el.isUndefined {
+        _ = el["innerHTML"].set("")
+        let len = vids["length"].number ?? 0
         for i in 0..<Int(len) {
             let v = vids[i]
-            let id = v.id.string ?? ""
-            let title = v.title.string ?? ""
-            let thumb = v.thumbnailUrl.string ?? ""
-            let a = DOCUMENT.createElement("a")
-            _ = a.setAttribute("href", "https://www.youtube.com/watch?v=\(id)")
-            _ = a.setAttribute("target", "_blank")
-            a.className = "flex-shrink-0 w-64 rounded-2xl overflow-hidden m3-shadow-md card"
-            a.innerHTML = "<img src=\"\(thumb)\" alt=\"\(title)\" class=\"w-full h-36 object-cover\"><div class=\"p-3\"><p class=\"text-sm font-medium leading-tight\">\(title)</p></div>"
-            _ = el.appendChild(a)
+            let id = v["id"].string ?? ""
+            let title = v["title"].string ?? ""
+            let thumb = v["thumbnailUrl"].string ?? ""
+            let a = DOCUMENT["createElement"]("a")
+            _ = a["setAttribute"]("href", "https://www.youtube.com/watch?v=\(id)")
+            _ = a["setAttribute"]("target", "_blank")
+            _ = a["setAttribute"]("class", "flex-shrink-0 w-64 rounded-2xl overflow-hidden m3-shadow-md card")
+            _ = a["innerHTML"].set("<img src=\"\(thumb)\" alt=\"\(title)\" class=\"w-full h-36 object-cover\"><div class=\"p-3\"><p class=\"text-sm font-medium leading-tight\">\(title)</p></div>")
+            _ = el["appendChild"](a)
         }
     }
-    let fc = json.followerCounts
+    let fc = json["followerCounts"]
     var total = 0.0
     for key in ["youtube", "telegram", "twitch", "vk_group", "vk_personal"] {
         total += fc[key].double ?? 0
     }
-    if let totals = DOCUMENT.getElementById("totals") {
-        totals.textContent = t("followers") + fmtCount(total)
+    if let totals = DOCUMENT["getElementById"]("totals"), !totals.isUndefined {
+        _ = totals["textContent"].set(t("followers") + fmtCount(total))
     }
 
     // Links page
-    let linksSection = DOCUMENT.getElementById("links-section")
-    if linksSection != nil { renderLinksPage(json: json) }
+    let linksSection = DOCUMENT["getElementById"]("links-section")
+    if linksSection != nil && !(linksSection?.isUndefined ?? true) { renderLinksPage(json: json) }
 
     // Streams history for calendar
-    if let resp2 = try? await WINDOW.fetch("/streams_history.json?t=\(Int(Date().timeIntervalSince1970 * 1000))"),
-       resp2.ok.boolean ?? false,
-       let hist = try? await resp2.json() {
-        let events = hist.events
-        let len = events.length.number ?? 0
+    let ts2 = (jsDate().new()["getTime"]().double ?? 0)
+    let resp2Val = try? await WINDOW["fetch"]("/streams_history.json?t=\(Int(ts2))")
+    if let resp2Val = resp2Val,
+       resp2Val["ok"].boolean ?? false,
+       let hist = try? await resp2Val["json"]() {
+        let events = hist["events"]
+        let len = events["length"].number ?? 0
         streamEvents = [:]
         for i in 0..<Int(len) {
             let e = events[i]
-            let date = e.date.string ?? ""
-            let platform = e.platform.string ?? ""
-            let url = e.url.string ?? ""
+            let date = e["date"].string ?? ""
+            let platform = e["platform"].string ?? ""
+            let url = e["url"].string ?? ""
             if streamEvents[date] == nil { streamEvents[date] = (yt: false, tw: false, ytUrl: "", twUrl: "") }
             if platform == "youtube" { streamEvents[date]?.yt = true; streamEvents[date]?.ytUrl = url }
             if platform == "twitch" { streamEvents[date]?.tw = true; streamEvents[date]?.twUrl = url }
@@ -395,64 +430,64 @@ func renderLinksPage(json: JSValue) {
     let s = stateLang == "en" ? LINKS_STR_EN : LINKS_STR_RU
 
     // Profile
-    if let name = DOCUMENT.getElementById("profile-name") { name.textContent = s["profileName"] ?? "" }
-    if let desc = DOCUMENT.getElementById("profile-description") { desc.textContent = s["profileDescription"] ?? "" }
+    if let name = DOCUMENT["getElementById"]("profile-name"), !name.isUndefined { _ = name["textContent"].set(s["profileName"] ?? "") }
+    if let desc = DOCUMENT["getElementById"]("profile-description"), !desc.isUndefined { _ = desc["textContent"].set(s["profileDescription"] ?? "") }
 
     // Follower counts
-    let fc = json.followerCounts
+    let fc = json["followerCounts"]
     var total = 0.0
     for link in LINKS_CONFIG {
         total += fc[link.platformId].double ?? 0
     }
-    if let tf = DOCUMENT.getElementById("total-followers") {
-        tf.textContent = s["totalFollowers"] ?? "" + fmtCount(total)
+    if let tf = DOCUMENT["getElementById"]("total-followers"), !tf.isUndefined {
+        _ = tf["textContent"].set((s["totalFollowers"] ?? "") + fmtCount(total))
     }
 
     // Links
-    if let section = DOCUMENT.getElementById("links-section") {
-        _ = section.set("innerHTML", .string(""))
+    if let section = DOCUMENT["getElementById"]("links-section"), !section.isUndefined {
+        _ = section["innerHTML"].set("")
         for link in LINKS_CONFIG {
-            let a = DOCUMENT.createElement("a")
-            _ = a.setAttribute("href", link.url)
-            _ = a.setAttribute("target", "_blank")
-            _ = a.setAttribute("rel", "noopener noreferrer")
-            a.className = "card relative flex items-center justify-between p-4 rounded-2xl m3-shadow-md swipe-target cursor-pointer"
-            _ = a.setAttribute("data-link-id", link.labelKey)
-            _ = a.setAttribute("data-platform-id", link.platformId)
-            _ = a.setAttribute("data-subscribe-url", link.subscribeUrl)
-            _ = a.setAttribute("data-url", link.url)
+            let a = DOCUMENT["createElement"]("a")
+            _ = a["setAttribute"]("href", link.url)
+            _ = a["setAttribute"]("target", "_blank")
+            _ = a["setAttribute"]("rel", "noopener noreferrer")
+            _ = a["setAttribute"]("class", "card relative flex items-center justify-between p-4 rounded-2xl m3-shadow-md swipe-target cursor-pointer")
+            _ = a["setAttribute"]("data-link-id", link.labelKey)
+            _ = a["setAttribute"]("data-platform-id", link.platformId)
+            _ = a["setAttribute"]("data-subscribe-url", link.subscribeUrl)
+            _ = a["setAttribute"]("data-url", link.url)
             var countText = ""
             if link.showCount != 0 {
                 let c = fc[link.platformId].double ?? 0
                 countText = "<span class=\"text-sm text-gray-400 mr-2 follower-count-display\">\(fmtCount(c))</span>"
             }
             let label = s[link.labelKey] ?? link.labelKey
-            a.innerHTML = "<div class=\"flex items-center select-none\"><span class=\"material-symbols-outlined icon-large\">\(link.icon)</span><div><span class=\"block text-lg font-medium\">\(label)</span>\(countText)</div></div>"
-            _ = section.appendChild(a)
+            _ = a["innerHTML"].set("<div class=\"flex items-center select-none\"><span class=\"material-symbols-outlined icon-large\">\(link.icon)</span><div><span class=\"block text-lg font-medium\">\(label)</span>\(countText)</div></div>")
+            _ = section["appendChild"](a)
         }
         initSwipeGestures()
     }
 
     // Support button
-    if let btn = DOCUMENT.getElementById("support-button") {
-        _ = btn.setAttribute("href", "https://www.donationalerts.com/r/bezzubickmcplay")
+    if let btn = DOCUMENT["getElementById"]("support-button"), !btn.isUndefined {
+        _ = btn["setAttribute"]("href", "https://www.donationalerts.com/r/bezzubickmcplay")
     }
 }
 
 // MARK: - Links Page Live Stream
 
 func renderLinksLiveStream(json: JSValue) {
-    let info = json.liveStream
-    let has = !(info.isUndefined) && (info.type.string ?? "none") != "none"
-    if let section = DOCUMENT.getElementById("live-stream-section") {
-        if has { _ = section.classList.remove("hidden") } else { _ = section.classList.add("hidden") }
+    let info = json["liveStream"]
+    let has = !(info.isUndefined) && (info["type"].string ?? "none") != "none"
+    if let section = DOCUMENT["getElementById"]("live-stream-section"), !section.isUndefined {
+        if has { _ = section["classList"]["remove"]("hidden") } else { _ = section["classList"]["add"]("hidden") }
     }
-    if has, let embed = DOCUMENT.getElementById("live-embed") {
-        if info.type.string == "youtube", let vid = info.id.string {
-            _ = embed.setAttribute("src", "https://www.youtube.com/embed/\(vid)?autoplay=1&mute=1")
-        } else if info.type.string == "twitch", let ch = info.twitchChannelName.string {
-            let parent = (WINDOW.location.hostname.string ?? "localhost")
-            _ = embed.setAttribute("src", "https://player.twitch.tv/?channel=\(ch)&parent=\(parent)&autoplay=true&mute=1")
+    if has, let embed = DOCUMENT["getElementById"]("live-embed"), !embed.isUndefined {
+        if info["type"].string == "youtube", let vid = info["id"].string {
+            _ = embed["setAttribute"]("src", "https://www.youtube.com/embed/\(vid)?autoplay=1&mute=1")
+        } else if info["type"].string == "twitch", let ch = info["twitchChannelName"].string {
+            let parent = WINDOW["location"]["hostname"].string ?? "localhost"
+            _ = embed["setAttribute"]("src", "https://player.twitch.tv/?channel=\(ch)&parent=\(parent)&autoplay=true&mute=1")
         }
     }
 }
@@ -460,12 +495,13 @@ func renderLinksLiveStream(json: JSValue) {
 // MARK: - Swipe Gestures
 
 func initSwipeGestures() {
-    let cards = DOCUMENT.querySelectorAll(".swipe-target")
-    for i in 0..<cards.length {
+    let cards = DOCUMENT["querySelectorAll"](".swipe-target")
+    let length = cards["length"].number ?? 0
+    for i in 0..<Int(length) {
         let card = cards[i]
-        let platformId = card.getAttribute("data-platform-id").isUndefined ? "" : (card.getAttribute("data-platform-id").string ?? "")
-        let url = card.getAttribute("data-url").isUndefined ? "" : (card.getAttribute("data-url").string ?? "")
-        let subUrl = card.getAttribute("data-subscribe-url").isUndefined ? "" : (card.getAttribute("data-subscribe-url").string ?? "")
+        let platformId = card["getAttribute"]("data-platform-id").string ?? ""
+        let url = card["getAttribute"]("data-url").string ?? ""
+        let subUrl = card["getAttribute"]("data-subscribe-url").string ?? ""
         var startX = 0.0
         var currentX = 0.0
         var pointerDown = false
@@ -474,57 +510,57 @@ func initSwipeGestures() {
         let onStart = JSClosure { args in
             let e = args[0]
             pointerDown = true; swipeActive = false
-            startX = e.touches.isUndefined ? (e.clientX.double ?? 0) : (e.touches[0].clientX.double ?? 0)
-            _ = card.style.setProperty("transition", "none")
+            startX = e["touches"].isUndefined ? (e["clientX"].double ?? 0) : (e["touches"][0]["clientX"].double ?? 0)
+            _ = card["style"]["setProperty"]("transition", "none")
             return .undefined
         }
         let onMove = JSClosure { args in
             guard pointerDown else { return .undefined }
             let e = args[0]
-            currentX = e.touches.isUndefined ? (e.clientX.double ?? 0) : (e.touches[0].clientX.double ?? 0)
+            currentX = e["touches"].isUndefined ? (e["clientX"].double ?? 0) : (e["touches"][0]["clientX"].double ?? 0)
             let dx = currentX - startX
             if !swipeActive && abs(dx) > 20 { swipeActive = true }
             if swipeActive {
-                _ = card.style.setProperty("transform", "translateX(\(dx)px)")
+                _ = card["style"]["setProperty"]("transform", "translateX(\(dx)px)")
             }
             return .undefined
         }
         let onEnd = JSClosure { _ in
             pointerDown = false
-            _ = card.style.setProperty("transition", "transform .2s ease")
+            _ = card["style"]["setProperty"]("transition", "transform .2s ease")
             let dx = currentX - startX
             if swipeActive {
                 let threshold = 100.0
                 if dx > threshold {
-                    if !subUrl.isEmpty { WINDOW.open(subUrl) } else { WINDOW.open(url) }
+                    if !subUrl.isEmpty { WINDOW["open"](subUrl) } else { WINDOW["open"](url) }
                 } else if dx < -threshold && platformId == "youtube" {
-                    WINDOW.open(url)
+                    WINDOW["open"](url)
                 }
             }
-            _ = card.style.setProperty("transform", "translateX(0)")
+            _ = card["style"]["setProperty"]("transform", "translateX(0)")
             swipeActive = false
             return .undefined
         }
-        _ = card.addEventListener("touchstart", onStart)
-        _ = card.addEventListener("touchmove", onMove)
-        _ = card.addEventListener("touchend", onEnd)
-        _ = card.addEventListener("mousedown", onStart)
-        _ = card.addEventListener("mousemove", onMove)
-        _ = card.addEventListener("mouseup", onEnd)
+        _ = card["addEventListener"]("touchstart", onStart)
+        _ = card["addEventListener"]("touchmove", onMove)
+        _ = card["addEventListener"]("touchend", onEnd)
+        _ = card["addEventListener"]("mousedown", onStart)
+        _ = card["addEventListener"]("mousemove", onMove)
+        _ = card["addEventListener"]("mouseup", onEnd)
     }
 }
 
 // MARK: - First Visit Modal
 
 func setupModal() {
-    guard let modal = DOCUMENT.getElementById("first-visit-modal"),
-          let btn = DOCUMENT.getElementById("modal-close") else { return }
-    let seen = localStorage().getItem("visited_modal")
+    guard let modal = DOCUMENT["getElementById"]("first-visit-modal"), !modal.isUndefined,
+          let btn = DOCUMENT["getElementById"]("modal-close"), !btn.isUndefined else { return }
+    let seen = localStorage()["getItem"]("visited_modal")
     if !seen.isUndefined { return }
-    _ = modal.classList.add("active")
-    _ = btn.addEventListener("click", JSClosure { _ in
-        _ = modal.classList.remove("active")
-        localStorage().setItem("visited_modal", "true")
+    _ = modal["classList"]["add"]("active")
+    _ = btn["addEventListener"]("click", JSClosure { _ in
+        _ = modal["classList"]["remove"]("active")
+        _ = localStorage()["setItem"]("visited_modal", "true")
         return .undefined
     })
 }
@@ -532,26 +568,33 @@ func setupModal() {
 // MARK: - Dev View
 
 func setupDevView() {
-    guard let devBtn = DOCUMENT.getElementById("dev-toggle") else { return }
-    _ = devBtn.addEventListener("click", JSClosure { _ in
-        let mainView = DOCUMENT.getElementById("main-view")
-        let devView = DOCUMENT.getElementById("dev-view")
-        if let mv = mainView { _ = mv.classList.toggle("hidden") }
-        if let dv = devView {
-            _ = dv.classList.toggle("hidden")
-            if let content = DOCUMENT.getElementById("dev-data-json-content") {
-                content.textContent = "{}"
+    guard let devBtn = DOCUMENT["getElementById"]("dev-toggle"), !devBtn.isUndefined else { return }
+    _ = devBtn["addEventListener"]("click", JSClosure { _ in
+        let mainView = DOCUMENT["getElementById"]("main-view")
+        let devView = DOCUMENT["getElementById"]("dev-view")
+        if let mv = mainView, !mv.isUndefined { _ = mv["classList"]["toggle"]("hidden") }
+        if let dv = devView, !dv.isUndefined {
+            _ = dv["classList"]["toggle"]("hidden")
+            if let content = DOCUMENT["getElementById"]("dev-data-json-content"), !content.isUndefined {
+                _ = content["textContent"].set("{}")
             }
-            if let upd = DOCUMENT.getElementById("dev-last-updated") {
-                upd.textContent = ISO8601DateFormatter().string(from: Date())
+            if let upd = DOCUMENT["getElementById"]("dev-last-updated"), !upd.isUndefined {
+                let now = jsDate().new()
+                let y = now.getFullYear().integer ?? 0
+                let m = zeroPad(now.getMonth().integer! + 1, 2)
+                let d = zeroPad(now.getDate().integer! + 0, 2)
+                let hh = zeroPad(now.getHours().integer!, 2)
+                let mm = zeroPad(now.getMinutes().integer!, 2)
+                let ss = zeroPad(now.getSeconds().integer!, 2)
+                _ = upd["textContent"].set("\(y)-\(m)-\(d)T\(hh):\(mm):\(ss)")
             }
         }
         return .undefined
     })
-    if let backBtn = DOCUMENT.getElementById("back-to-main-button") {
-        _ = backBtn.addEventListener("click", JSClosure { _ in
-            _ = DOCUMENT.getElementById("main-view")?.classList.remove("hidden")
-            _ = DOCUMENT.getElementById("dev-view")?.classList.add("hidden")
+    if let backBtn = DOCUMENT["getElementById"]("back-to-main-button"), !backBtn.isUndefined {
+        _ = backBtn["addEventListener"]("click", JSClosure { _ in
+            _ = DOCUMENT["getElementById"]("main-view")?["classList"]["remove"]("hidden")
+            _ = DOCUMENT["getElementById"]("dev-view")?["classList"]["add"]("hidden")
             return .undefined
         })
     }
@@ -630,69 +673,75 @@ void main() {
 
 func compileShader(_ src: String, _ type: Int32) -> JSObject? {
     guard let gl = gl else { return nil }
-    let s = gl.createShader(type)
-    gl.shaderSource(s, src)
-    gl.compileShader(s)
-    guard gl.getShaderParameter(s, gl.COMPILE_STATUS).boolean ?? false else { return nil }
+    let s = gl["createShader"](type)
+    gl["shaderSource"](s, src)
+    gl["compileShader"](s)
+    guard gl["getShaderParameter"](s, gl["COMPILE_STATUS"]).boolean ?? false else { return nil }
     return s
 }
 
 func initWebGL() {
-    canvas = DOCUMENT.createElement("canvas")
+    canvas = DOCUMENT["createElement"]("canvas")
     guard let canvas = canvas else { return }
-    _ = canvas.setAttribute("id", "lg-canvas")
-    canvas.style.cssText = "position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:9998;display:block;"
-    _ = DOCUMENT.body!.insertBefore(canvas, DOCUMENT.body!.firstChild)
-    gl = canvas.getContext("webgl2")
-    guard let gl = gl, let vs = compileShader(VERTEX_SHADER, gl.VERTEX_SHADER),
-          let fs = compileShader(FRAGMENT_SHADER, gl.FRAGMENT_SHADER) else { return }
-    let prog = gl.createProgram()
-    gl.attachShader(prog, vs); gl.attachShader(prog, fs); gl.linkProgram(prog)
-    guard gl.getProgramParameter(prog, gl.LINK_STATUS).boolean ?? false else { return }
-    shaderProgram = prog; gl.useProgram(prog)
+    _ = canvas["setAttribute"]("id", "lg-canvas")
+    _ = canvas["style"]["cssText"].set("position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:9998;display:block;")
+    let body = DOCUMENT["body"]!
+    _ = body["insertBefore"](canvas, body["firstChild"])
+    gl = canvas["getContext"]("webgl2")
+    guard let gl = gl, let vs = compileShader(VERTEX_SHADER, gl["VERTEX_SHADER"].int32 ?? 0x8B31),
+          let fs = compileShader(FRAGMENT_SHADER, gl["FRAGMENT_SHADER"].int32 ?? 0x8B30) else { return }
+    let prog = gl["createProgram"]()
+    gl["attachShader"](prog, vs); gl["attachShader"](prog, fs); gl["linkProgram"](prog)
+    guard gl["getProgramParameter"](prog, gl["LINK_STATUS"]).boolean ?? false else { return }
+    shaderProgram = prog; gl["useProgram"](prog)
     for name in ["uPanel", "uResolution", "uMouse", "uDark"] {
-        uniforms[name] = gl.getUniformLocation(prog, name)
+        uniforms[name] = gl["getUniformLocation"](prog, name)
     }
-    let buf = gl.createBuffer()
-    gl.bindBuffer(gl.ARRAY_BUFFER, buf)
-    gl.bufferData(gl.ARRAY_BUFFER, [-1,-1, 0,0, 1,-1, 1,0, -1,1, 0,1, 1,1, 1,1], gl.STATIC_DRAW)
-    let posL = gl.getAttribLocation(prog, "aPos")
-    let uvL = gl.getAttribLocation(prog, "aUV")
-    gl.enableVertexAttribArray(posL); gl.vertexAttribPointer(posL, 2, gl.FLOAT, false, 16, 0)
-    gl.enableVertexAttribArray(uvL); gl.vertexAttribPointer(uvL, 2, gl.FLOAT, false, 16, 8)
+    let buf = gl["createBuffer"]()
+    gl["bindBuffer"](gl["ARRAY_BUFFER"], buf)
+    gl["bufferData"](gl["ARRAY_BUFFER"], [-1,-1, 0,0, 1,-1, 1,0, -1,1, 0,1, 1,1, 1,1], gl["STATIC_DRAW"])
+    let posL = gl["getAttribLocation"](prog, "aPos")
+    let uvL = gl["getAttribLocation"](prog, "aUV")
+    gl["enableVertexAttribArray"](posL); gl["vertexAttribPointer"](posL, 2, gl["FLOAT"], false, 16, 0)
+    gl["enableVertexAttribArray"](uvL); gl["vertexAttribPointer"](uvL, 2, gl["FLOAT"], false, 16, 8)
 }
 
 func scanCards() {
-    let cards = DOCUMENT.querySelectorAll(".card")
+    let cards = DOCUMENT["querySelectorAll"](".card")
     panelData = []
-    for i in 0..<cards.length {
-        let r = cards[i].getBoundingClientRect()
-        let (x, y, w, h) = (r.left.double ?? 0, r.top.double ?? 0, r.width.double ?? 0, r.height.double ?? 0)
+    let length = cards["length"].number ?? 0
+    for i in 0..<Int(length) {
+        let r = cards[i]["getBoundingClientRect"]()
+        let x = r["left"].double ?? 0
+        let y = r["top"].double ?? 0
+        let w = r["width"].double ?? 0
+        let h = r["height"].double ?? 0
         if w > 10 && h > 10 { panelData.append((x, y, w, h)) }
     }
 }
 
 func renderFrame() {
     guard let gl = gl, let prog = shaderProgram else { return }
-    let dpr = min(WINDOW.devicePixelRatio.double ?? 1.0, 2.0)
-    let ww = WINDOW.innerWidth.double ?? 1, wh = WINDOW.innerHeight.double ?? 1
-    canvas?.width = ww * dpr; canvas?.height = wh * dpr
-    gl.viewport(0, 0, ww * dpr, wh * dpr)
-    gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT)
-    gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
-    if let u = uniforms["uResolution"] { gl.uniform2f(u, ww * dpr, wh * dpr) }
-    if let u = uniforms["uMouse"] { gl.uniform2f(u, mouseXFrac, mouseYFrac) }
-    if let u = uniforms["uDark"] { gl.uniform1f(u, isDark ? 1.0 : 0.0) }
+    let dpr = min(WINDOW["devicePixelRatio"].double ?? 1.0, 2.0)
+    let ww = WINDOW["innerWidth"].double ?? 1, wh = WINDOW["innerHeight"].double ?? 1
+    _ = canvas?["width"].set(ww * dpr)
+    _ = canvas?["height"].set(wh * dpr)
+    gl["viewport"](0, 0, ww * dpr, wh * dpr)
+    gl["clearColor"](0, 0, 0, 0); gl["clear"](gl["COLOR_BUFFER_BIT"])
+    gl["enable"](gl["BLEND"]); gl["blendFunc"](gl["SRC_ALPHA"], gl["ONE_MINUS_SRC_ALPHA"])
+    if let u = uniforms["uResolution"] { gl["uniform2f"](u, ww * dpr, wh * dpr) }
+    if let u = uniforms["uMouse"] { gl["uniform2f"](u, mouseXFrac, mouseYFrac) }
+    if let u = uniforms["uDark"] { gl["uniform1f"](u, isDark ? 1.0 : 0.0) }
     for panel in panelData {
-        if let u = uniforms["uPanel"] { gl.uniform4f(u, panel.x * dpr, (wh - panel.y - panel.h) * dpr, panel.w * dpr, panel.h * dpr) }
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
+        if let u = uniforms["uPanel"] { gl["uniform4f"](u, panel.x * dpr, (wh - panel.y - panel.h) * dpr, panel.w * dpr, panel.h * dpr) }
+        gl["drawArrays"](gl["TRIANGLE_STRIP"], 0, 4)
     }
 }
 
 func scheduleFrame() {
     guard shouldRender else { return }
     let closure = JSClosure { _ in renderFrame(); scheduleFrame(); return .undefined }
-    animFrameId = WINDOW.requestAnimationFrame(closure)
+    animFrameId = WINDOW["requestAnimationFrame"](closure)
 }
 
 func startRendering() {
@@ -710,17 +759,14 @@ func stopRendering() { shouldRender = false }
     static func main() async {
         #if os(WASI)
         let ready = JSClosure { _ in
-            // Detect page
-            let isLinks = DOCUMENT.getElementById("profile-section") != nil
+            let isLinks = !(DOCUMENT["getElementById"]("profile-section").isUndefined)
 
-            // Theme
             applyTheme(stateTheme)
             if isLinks { updateLinksTexts() } else { updateHomeTexts() }
 
-            // Toggles
             let toggleFn = JSClosure { _ in toggleTheme(); return .undefined }
-            DOCUMENT.getElementById("theme-toggle-bottom")?.addEventListener("click", toggleFn)
-            DOCUMENT.getElementById("theme-toggle")?.addEventListener("click", toggleFn)
+            DOCUMENT["getElementById"]("theme-toggle-bottom")?["addEventListener"]("click", toggleFn)
+            DOCUMENT["getElementById"]("theme-toggle")?["addEventListener"]("click", toggleFn)
 
             let langFn = JSClosure { _ in
                 stateLang = stateLang == "ru" ? "en" : "ru"
@@ -728,33 +774,29 @@ func stopRendering() { shouldRender = false }
                 if !isLinks { renderCal() }
                 return .undefined
             }
-            DOCUMENT.getElementById("lang-toggle-bottom")?.addEventListener("click", langFn)
-            DOCUMENT.getElementById("language-toggle")?.addEventListener("click", langFn)
+            DOCUMENT["getElementById"]("lang-toggle-bottom")?["addEventListener"]("click", langFn)
+            DOCUMENT["getElementById"]("language-toggle")?["addEventListener"]("click", langFn)
 
-            // Home page
             if !isLinks {
                 setupCalendar()
                 setupTimeline()
             }
 
-            // Links page
             if isLinks {
                 setupModal()
                 setupDevView()
             }
 
-            // Common
             setupOffline()
             setupMouseTracking()
             setupScrollRescan()
             observeGlassState()
 
-            // Fetch data
             Task { await fetchData() }
 
             return .undefined
         }
-        _ = DOCUMENT.addEventListener("DOMContentLoaded", ready)
+        _ = DOCUMENT["addEventListener"]("DOMContentLoaded", ready)
         #endif
     }
 }
@@ -763,65 +805,69 @@ func stopRendering() { shouldRender = false }
 
 func setupOffline() {
     let fn = JSClosure { _ in
-        let online = NAVIGATOR.onLine.boolean ?? true
-        if let w = DOCUMENT.getElementById("offline-warning") {
-            if online { _ = w.classList.add("hidden") } else { _ = w.classList.remove("hidden") }
+        let online = NAVIGATOR["onLine"].boolean ?? true
+        if let w = DOCUMENT["getElementById"]("offline-warning"), !w.isUndefined {
+            if online { _ = w["classList"]["add"]("hidden") } else { _ = w["classList"]["remove"]("hidden") }
         }
         return .undefined
     }
-    _ = WINDOW.addEventListener("online", fn)
-    _ = WINDOW.addEventListener("offline", fn)
+    _ = WINDOW["addEventListener"]("online", fn)
+    _ = WINDOW["addEventListener"]("offline", fn)
 }
 
 func setupMouseTracking() {
     let fn = JSClosure { args in
         let e = args[0]
-        mouseXFrac = (e.clientX.double ?? 0) / (WINDOW.innerWidth.double ?? 1)
-        mouseYFrac = 1.0 - (e.clientY.double ?? 0) / (WINDOW.innerHeight.double ?? 1)
+        mouseXFrac = (e["clientX"].double ?? 0) / (WINDOW["innerWidth"].double ?? 1)
+        mouseYFrac = 1.0 - (e["clientY"].double ?? 0) / (WINDOW["innerHeight"].double ?? 1)
         return .undefined
     }
-    _ = WINDOW.addEventListener("mousemove", fn)
-    _ = WINDOW.addEventListener("touchmove", fn)
+    _ = WINDOW["addEventListener"]("mousemove", fn)
+    _ = WINDOW["addEventListener"]("touchmove", fn)
 }
 
 func setupScrollRescan() {
     let fn = JSClosure { _ in scanCards(); return .undefined }
-    _ = WINDOW.addEventListener("scroll", fn)
-    _ = WINDOW.addEventListener("resize", fn)
+    _ = WINDOW["addEventListener"]("scroll", fn)
+    _ = WINDOW["addEventListener"]("resize", fn)
 }
 
 func observeGlassState() {
-    let body = DOCUMENT.body!
-    let obs = JSObject.global.MutationObserver!
+    let body = DOCUMENT["body"]!
+    let obs = JSObject.global["MutationObserver"]!
     let closure = JSClosure { _ in
-        let isGlass = body.classList.contains("glass-dark") || body.classList.contains("glass-light")
+        let isGlass = body["classList"]["contains"]("glass-dark").toBool ?? false || body["classList"]["contains"]("glass-light").toBool ?? false
         if isGlass { startRendering() } else { stopRendering() }
         return .undefined
     }
-    _ = obs.new(closure)
-    _ = obs.observe(body, ["attributes": true, "attributeFilter": ["class"]])
-    let isGlass = body.classList.contains("glass-dark") || body.classList.contains("glass-light")
+    _ = obs["new"](closure)
+    _ = obs["observe"](body, ["attributes": true, "attributeFilter": ["class"]])
+    let isGlass = body["classList"]["contains"]("glass-dark").toBool ?? false || body["classList"]["contains"]("glass-light").toBool ?? false
     if isGlass { startRendering() }
 }
 
 func setupTimeline() {
-    let details = DOCUMENT.querySelectorAll("#timeline details")
-    for i in 0..<details.length {
+    let details = DOCUMENT["querySelectorAll"]("#timeline details")
+    let detailsLen = details["length"].number ?? 0
+    for i in 0..<Int(detailsLen) {
         let d = details[i]
-        let icon = d.querySelector(".material-symbols-outlined")
-        _ = d.addEventListener("toggle", JSClosure { _ in
-            _ = icon?.style.setProperty("transform", (d.open?.boolean ?? false) ? "rotate(180deg)" : "rotate(0deg)")
+        let icon = d["querySelector"](".material-symbols-outlined")
+        _ = d["addEventListener"]("toggle", JSClosure { _ in
+            let open = d["open"].boolean ?? false
+            _ = icon?["style"]["setProperty"]("transform", open ? "rotate(180deg)" : "rotate(0deg)")
             return .undefined
         })
     }
-    DOCUMENT.getElementById("tl-expand")?.addEventListener("click", JSClosure { _ in
-        let all = DOCUMENT.querySelectorAll("#timeline details")
-        for i in 0..<all.length { all[i].open = .boolean(true) }
+    DOCUMENT["getElementById"]("tl-expand")?["addEventListener"]("click", JSClosure { _ in
+        let all = DOCUMENT["querySelectorAll"]("#timeline details")
+        let allLen = all["length"].number ?? 0
+        for i in 0..<Int(allLen) { all[i]["open"] = .boolean(true) }
         return .undefined
     })
-    DOCUMENT.getElementById("tl-collapse")?.addEventListener("click", JSClosure { _ in
-        let all = DOCUMENT.querySelectorAll("#timeline details")
-        for i in 0..<all.length { all[i].open = .boolean(false) }
+    DOCUMENT["getElementById"]("tl-collapse")?["addEventListener"]("click", JSClosure { _ in
+        let all = DOCUMENT["querySelectorAll"]("#timeline details")
+        let allLen = all["length"].number ?? 0
+        for i in 0..<Int(allLen) { all[i]["open"] = .boolean(false) }
         return .undefined
     })
 }

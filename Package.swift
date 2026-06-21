@@ -48,7 +48,7 @@ let package = Package(
             ],
             path: "Sources/SiteClient",
             swiftSettings: [
-                .swiftLanguageMode(.v6)
+                .swiftLanguageMode(.v5)
             ]
         )
     ]
