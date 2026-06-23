@@ -44,7 +44,8 @@ let package = Package(
         .executableTarget(
             name: "SiteClient",
             dependencies: [
-                .product(name: "JavaScriptKit", package: "JavaScriptKit")
+                .product(name: "JavaScriptKit", package: "JavaScriptKit"),
+                .product(name: "JavaScriptEventLoop", package: "JavaScriptKit")
             ],
             path: "Sources/SiteClient",
             swiftSettings: [
