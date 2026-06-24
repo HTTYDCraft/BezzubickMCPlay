@@ -75,7 +75,13 @@ jobs:
 
       - name: Collect WASM binary
         run: |
-          WASM_PATH=$(find .build -name "SiteClient.wasm" | head -1)
+          echo "=== Build artifacts ==="
+          find .build -type f -name "*.wasm" 2>/dev/null || echo "No .wasm files found"
+          echo "=== Swift build output path ==="
+          swift build --swift-sdk swift-6.3.2-RELEASE_wasm -c release --show-bin-path 2>/dev/null || true
+          echo "=== Search all .build ==="
+          find .build -name "SiteClient*" -type f 2>/dev/null | head -20 || true
+          WASM_PATH=$(find .build -name "SiteClient.wasm" -type f 2>/dev/null | head -1)
           if [ -n "$WASM_PATH" ]; then
             mkdir -p /tmp/wasm
             cp "$WASM_PATH" /tmp/wasm/SiteClient.wasm
