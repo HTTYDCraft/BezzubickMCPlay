@@ -70,48 +70,72 @@ jobs:
             "https://download.swift.org/swift-6.3.2-release/wasm-sdk/swift-6.3.2-RELEASE/swift-6.3.2-RELEASE_wasm.artifactbundle.tar.gz" \
             --checksum a61f0584c93283589f8b2f42db05c1f9a182b506c2957271402992655591dd7c
 
-      - name: Build SiteClient WASM
-        run: swift build --swift-sdk swift-6.3.2-RELEASE_wasm --target SiteClient -c release
-
-      - name: Manual WASM link
+      - name: Build & link SiteClient WASM
         run: |
+          set -e
+          swift build --swift-sdk swift-6.3.2-RELEASE_wasm --target SiteClient -c release
           BIN_DIR=$(swift build --swift-sdk swift-6.3.2-RELEASE_wasm -c release --show-bin-path 2>/dev/null)
-          echo "=== bin dir: $BIN_DIR ==="
-          # Try to link manually — SwiftPM on ARM64 skips linking step
+          echo "BIN_DIR=$BIN_DIR"
+
+          # Check if SwiftPM already linked
+          WASM_FILE=$(find "$BIN_DIR" -name "*.wasm" -type f 2>/dev/null | head -1)
+          if [ -n "$WASM_FILE" ]; then
+            mkdir -p /tmp/wasm
+            cp "$WASM_FILE" /tmp/wasm/SiteClient.wasm
+            echo "SwiftPM linked WASM at $WASM_FILE"
+            exit 0
+          fi
+          echo "SwiftPM did not link (ARM64 bug). Linking manually..."
+
+          # Find wasm-ld (follow symlinks to toolchain)
           WASM_LD=$(find /home/runner/.local/share/swiftly/toolchains -name wasm-ld -type f 2>/dev/null | head -1)
-          SDK_DIR=$(find ~/.config/swiftpm/swift-sdks -name "WASI.sdk" -type d 2>/dev/null | head -1)
           if [ -z "$WASM_LD" ]; then
-            echo "wasm-ld not found, trying alternative locations"
             WASM_LD=$(find / -name wasm-ld -type f 2>/dev/null | head -1)
           fi
-          echo "=== wasm-ld: $WASM_LD ==="
-          echo "=== SDK: $SDK_DIR ==="
-          if [ -n "$WASM_LD" ] && [ -n "$SDK_DIR" ]; then
-            TOOLCHAIN=$(dirname $(dirname "$WASM_LD"))
-            echo "=== toolchain: $TOOLCHAIN ==="
-            mkdir -p /tmp/wasm
-            OBJS=$(find "$BIN_DIR" -name "*.o" -type f 2>/dev/null | tr '\n' ' ')
-            echo "=== Objects ($(echo $OBJS | wc -w)) ==="
-            SWIFT_LIBS=$(find "$TOOLCHAIN/usr/lib/swift_static/wasi" -name "*.a" -type f 2>/dev/null | sort | tr '\n' ' ')
-            echo "=== Swift libs ==="
-            echo "$SWIFT_LIBS" | tr ' ' '\n'
-            "$WASM_LD" \
-              --no-entry \
-              --export=main \
-              --allow-undefined \
-              --strip-all \
-              $OBJS \
-              -L"$SDK_DIR/share/wasi-sysroot/lib/wasm32-wasi" \
-              -L"$SDK_DIR/lib/wasi" \
-              -lc \
-              --whole-archive \
-              $SWIFT_LIBS \
-              --no-whole-archive \
-              -o /tmp/wasm/SiteClient.wasm 2>&1
-            ls -lh /tmp/wasm/SiteClient.wasm 2>/dev/null && echo "WASM LINK OK" || echo "WASM LINK FAILED"
-          else
-            echo "Cannot link — wasm-ld or SDK_DIR missing"
+          REAL_WASM_LD=$(readlink -f "$WASM_LD" 2>/dev/null || echo "$WASM_LD")
+          TOOLCHAIN=$(dirname "$(dirname "$REAL_WASM_LD")")
+          echo "wasm-ld: $WASM_LD -> $REAL_WASM_LD"
+          echo "toolchain: $TOOLCHAIN"
+
+          # Find WASI SDK via swift sdk list
+          SDK_DIR=""
+          SDK_PATH=$(swift sdk list 2>/dev/null | grep -oP '"path"\s*:\s*"\K[^"]+' | head -1)
+          if [ -n "$SDK_PATH" ]; then
+            SDK_DIR=$(find "$SDK_PATH" -name "WASI.sdk" -type d 2>/dev/null | head -1)
           fi
+          # Fallback: search ~/.config
+          if [ -z "$SDK_DIR" ]; then
+            SDK_DIR=$(find ~/.config/swiftpm -name "WASI.sdk" -type d 2>/dev/null | head -1)
+          fi
+          echo "SDK_DIR: $SDK_DIR"
+
+          OBJS=$(find "$BIN_DIR" -name "*.o" -type f 2>/dev/null | tr '\n' ' ')
+          SWIFT_LIBS=$(find "$TOOLCHAIN/usr/lib/swift_static/wasi" -name "*.a" -type f 2>/dev/null | sort | tr '\n' ' ')
+          echo "Objects: $(echo $OBJS | wc -w)"
+          echo "Swift libs: $(echo $SWIFT_LIBS | wc -w)"
+
+          mkdir -p /tmp/wasm
+
+          if [ -n "$SDK_DIR" ]; then
+            WASI_LIB_DIR=$(find "$SDK_DIR" -path "*/share/wasi-sysroot/lib/wasm32-wasi" -type d 2>/dev/null | head -1)
+            CRT1=$(find "$SDK_DIR" -name "crt1.o" -type f 2>/dev/null | head -1)
+            "$WASM_LD" \
+              --no-entry --export=main --allow-undefined --strip-all \
+              $OBJS \
+              -L"$WASI_LIB_DIR" -lc \
+              $CRT1 \
+              --whole-archive $SWIFT_LIBS --no-whole-archive \
+              -o /tmp/wasm/SiteClient.wasm 2>&1
+          else
+            # Last resort: link without WASI libc (assume no libc usage)
+            "$WASM_LD" \
+              --no-entry --export=main --allow-undefined --strip-all \
+              $OBJS \
+              --whole-archive $SWIFT_LIBS --no-whole-archive \
+              -o /tmp/wasm/SiteClient.wasm 2>&1
+          fi
+
+          ls -lh /tmp/wasm/SiteClient.wasm 2>/dev/null && echo "WASM OK" || echo "WASM FAILED"
 
       - uses: actions/upload-artifact@v4
         with:
