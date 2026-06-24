@@ -431,7 +431,7 @@ let linksCSS = linksPageStylesheet.render()
 let linksJS = """
 var BASE='\(baseURL)';
 var instantiate=null;try{var jk=await import('https://cdn.jsdelivr.net/npm/javascriptkit@0.53.0/dist/javascriptkit.js');instantiate=jk.instantiate}catch(e){console.warn('[JK] CDN import failed',e)}
-var skinview3d=null;try{await import(BASE+'/scripts/skinview3d.bundle.js');skinview3d=window.skinview3d||null;}catch(e){console.warn('[Skin] bundle load failed',e)}
+var skinview3d=window.skinview3d||null;
 
 var params = new URLSearchParams(location.search);
 var appConfig={dataUrl:BASE+'/data.json',showLiveStreamSection:true,showProfileSection:true,showMinecraftSkinSection:true,showLinksSection:true,showYouTubeVideosSection:true,showSupportButton:true,developmentMode:true,showDevToggle:true,showLanguageToggle:true,showThemeToggle:true,supportUrl:'https://www.donationalerts.com/r/bezzubickmcplay'};
@@ -635,12 +635,13 @@ struct BezzubickHTMLFactory: HTMLFactory {
                     )
                 ),
                 .raw("<script>\(siteJS)</script>"),
+                .raw("<script defer src=\"\(baseURL)/scripts/skinview3d.bundle.js\"></script>"),
                 .element(named: "script", nodes: [
                     .attribute(named: "type", value: "module"),
                     .raw("""
                     var BASE='\(baseURL)';
                     var instantiate=null;try{var jk=await import('https://cdn.jsdelivr.net/npm/javascriptkit@0.53.0/dist/javascriptkit.js');instantiate=jk.instantiate}catch(e){console.warn('[JK] CDN import failed',e)}
-                    var skinview3d=null;try{await import(BASE+'/scripts/skinview3d.bundle.js');skinview3d=window.skinview3d||null;}catch(e){console.warn('[Skin] bundle load failed',e)}
+                    var skinview3d=window.skinview3d||null;
                     try {
                       const resp = await fetch(BASE+'/scripts/SiteClient.wasm');
                       if(!resp.ok)throw new Error('HTTP '+resp.status);
@@ -758,6 +759,7 @@ struct BezzubickHTMLFactory: HTMLFactory {
                             .h3(.id("modal-title"), .class("text-2xl font-bold mb-4")),
                             .p(.id("modal-description"), .class("text-base mb-6")),
                             .button(.id("modal-close"), .class("primary-button px-6 py-3 rounded-full font-medium"))))),
+                .raw("<script defer src=\"\(baseURL)/scripts/skinview3d.bundle.js\"></script>"),
                 .element(named: "script", nodes: [
                     .attribute(named: "type", value: "module"),
                     .raw(linksJS)])

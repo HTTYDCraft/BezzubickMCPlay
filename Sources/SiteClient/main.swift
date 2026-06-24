@@ -659,7 +659,6 @@ let PI = 3.14159265359
 var bgTexture: JSValue = .undefined
 var texWidth = 512.0
 var texHeight = 512.0
-var closureStore: [String: JSClosure] = [:]
 
 let VERTEX_SHADER = """
 #version 300 es
@@ -905,16 +904,35 @@ func initWebGL() {
   _ = glCtx.texParameteri(glCtx.TEXTURE_2D, glCtx.TEXTURE_WRAP_S, glCtx.CLAMP_TO_EDGE)
   _ = glCtx.texParameteri(glCtx.TEXTURE_2D, glCtx.TEXTURE_WRAP_T, glCtx.CLAMP_TO_EDGE)
 
-  // Create initial background texture from gradient (synchronous fallback)
+  // Create initial background texture (procedural — looks good with glass refraction)
   let bgCanvas = docObj.createElement("canvas")
   _ = bgCanvas.setAttribute("width", "512")
   _ = bgCanvas.setAttribute("height", "512")
   let bgCtx = bgCanvas.getContext("2d")
-  let grad = bgCtx.createLinearGradient(0, 0, 512, 512)
-  _ = grad.addColorStop(0, "#ff9a9e")
-  _ = grad.addColorStop(1, "#fad0c4")
-  bgCtx.fillStyle = grad
+  // Dark base
+  bgCtx.fillStyle = .string("#0d0d1a")
   _ = bgCtx.fillRect(0, 0, 512, 512)
+  // Large colorful blobs for refraction features
+  let colors = ["#6b2fa0", "#2563eb", "#0891b2", "#7c3aed", "#db2777"]
+  for i in 0..<5 {
+    let cx = 512.0 * (0.15 + 0.7 * Double(i) / 4.0 + 0.05 * ((JSObject.global.Math.random()).number ?? 0))
+    let cy = 200.0 + 200.0 * ((JSObject.global.Math.random()).number ?? 0)
+    let r = 80.0 + 120.0 * ((JSObject.global.Math.random()).number ?? 0)
+    let rad = bgCtx.createRadialGradient(cx, cy, 0, cx, cy, r)
+    _ = rad.addColorStop(0, colors[i])
+    _ = rad.addColorStop(1, "transparent")
+    bgCtx.fillStyle = rad
+    _ = bgCtx.fillRect(Int(cx - r), Int(cy - r), Int(2 * r), Int(2 * r))
+  }
+  // Scattered bright dots for starfield effect
+  for _ in 0..<200 {
+    let x = 512.0 * ((JSObject.global.Math.random()).number ?? 0)
+    let y = 512.0 * ((JSObject.global.Math.random()).number ?? 0)
+    let s = 1.0 + 2.0 * ((JSObject.global.Math.random()).number ?? 0)
+    let a = 0.3 + 0.7 * ((JSObject.global.Math.random()).number ?? 0)
+    bgCtx.fillStyle = .string("rgba(255,255,255,\(a))")
+    _ = bgCtx.fillRect(Int(x), Int(y), Int(s), Int(s))
+  }
   _ = glCtx.activeTexture(glCtx.TEXTURE0)
   let texture = glCtx.createTexture()
   bgTexture = texture
@@ -926,36 +944,8 @@ func initWebGL() {
   _ = glCtx.texParameteri(glCtx.TEXTURE_2D, glCtx.TEXTURE_WRAP_S, glCtx.CLAMP_TO_EDGE)
   _ = glCtx.texParameteri(glCtx.TEXTURE_2D, glCtx.TEXTURE_WRAP_T, glCtx.CLAMP_TO_EDGE)
 
-  // Start async load of real background image (replaces gradient when done)
-  loadBackgroundImage()
-}
-
-func loadBackgroundImage() {
-  let img = JSObject.global.Image.new()
-  img.crossOrigin = "anonymous"
-
-  let onload = JSClosure { _ in
-    if glCtx.isUndefined { return .undefined }
-    _ = glCtx.activeTexture(glCtx.TEXTURE0)
-    _ = glCtx.bindTexture(glCtx.TEXTURE_2D, bgTexture)
-    _ = glCtx.texImage2D(glCtx.TEXTURE_2D, 0, glCtx.RGBA, glCtx.RGBA, glCtx.UNSIGNED_BYTE, img)
-    texWidth = img.width.number ?? 512
-    texHeight = img.height.number ?? 512
-    closureStore["bgOnload"] = nil
-    closureStore["bgOnerror"] = nil
-    return .undefined
-  }
-  let onerror = JSClosure { _ in
-    closureStore["bgOnload"] = nil
-    closureStore["bgOnerror"] = nil
-    return .undefined
-  }
-
-  closureStore["bgOnload"] = onload
-  closureStore["bgOnerror"] = onerror
-  img.onload = onload.jsValue
-  img.onerror = onerror.jsValue
-  img.src = .string("https://plus.unsplash.com/premium_photo-1677094766116-aa0f8742d36b?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")
+  texWidth = 512
+  texHeight = 512
 }
 
 func renderFrame() {
