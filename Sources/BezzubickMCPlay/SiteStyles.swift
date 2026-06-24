@@ -189,23 +189,23 @@ public let siteStylesheet: Stylesheet = Stylesheet {
     // MARK: - Apple Liquid Glass Dark Theme
 
     CSSSelector("body.glass-dark") {
-        backgroundColor("#000000")
+        background("linear-gradient(135deg, #0a0a0f 0%, #000000 50%, #0d0d1a 100%)")
         color("#FFFFFF")
     }
 
     CSSSelector("body.glass-dark .card") {
-        backgroundColor("rgba(255,255,255,0.05)")
-        backdropFilter("blur(20px)")
-        prop("-webkit-backdrop-filter", "blur(20px)")
-        border("1px solid rgba(255,255,255,0.1)")
+        backgroundColor("rgba(255,255,255,0.04)")
+        backdropFilter("blur(24px)")
+        prop("-webkit-backdrop-filter", "blur(24px)")
+        border("1px solid rgba(255,255,255,0.08)")
         borderRadius("20px")
-        boxShadow("inset 0 1px 0 0 rgba(255,255,255,0.08), 0 8px 32px rgba(0,0,0,0.4)")
+        boxShadow("inset 0 1px 0 0 rgba(255,255,255,0.06), 0 8px 32px rgba(0,0,0,0.5)")
     }
 
     CSSSelector("body.glass-dark .card:hover") {
-        backgroundColor("rgba(255,255,255,0.08)")
-        borderColor("rgba(255,255,255,0.18)")
-        boxShadow("inset 0 1px 0 0 rgba(255,255,255,0.12), 0 0 20px rgba(187,134,252,0.15), 0 8px 32px rgba(0,0,0,0.5)")
+        backgroundColor("rgba(255,255,255,0.07)")
+        borderColor("rgba(255,255,255,0.15)")
+        boxShadow("inset 0 1px 0 0 rgba(255,255,255,0.1), 0 0 30px rgba(187,134,252,0.12), 0 8px 32px rgba(0,0,0,0.6)")
         transform("translateY(-3px)")
     }
 
@@ -343,30 +343,30 @@ public let siteStylesheet: Stylesheet = Stylesheet {
     // MARK: - Apple Liquid Glass Light Theme
 
     CSSSelector("body.glass-light") {
-        backgroundColor("#F2F2F7")
+        background("linear-gradient(135deg, #E8E0F0 0%, #F2F2F7 50%, #E0E8F0 100%)")
         color("#000000")
     }
 
     CSSSelector("body.glass-light .card") {
-        backgroundColor("rgba(255,255,255,0.7)")
-        backdropFilter("blur(12px)")
-        prop("-webkit-backdrop-filter", "blur(12px)")
+        backgroundColor("rgba(255,255,255,0.65)")
+        backdropFilter("blur(20px)")
+        prop("-webkit-backdrop-filter", "blur(20px)")
         border("1px solid rgba(255,255,255,0.5)")
         borderRadius("20px")
-        boxShadow("inset 0 1px 0 0 rgba(255,255,255,0.6), 0 8px 32px rgba(0,0,0,0.08)")
+        boxShadow("inset 0 1px 0 0 rgba(255,255,255,0.6), 0 8px 32px rgba(0,0,0,0.06)")
     }
 
     CSSSelector("body.glass-light .card:hover") {
-        backgroundColor("rgba(255,255,255,0.85)")
+        backgroundColor("rgba(255,255,255,0.8)")
         borderColor("rgba(255,255,255,0.8)")
-        boxShadow("inset 0 1px 0 0 rgba(255,255,255,0.8), 0 0 20px rgba(98,0,238,0.08), 0 8px 32px rgba(0,0,0,0.1)")
+        boxShadow("inset 0 1px 0 0 rgba(255,255,255,0.8), 0 0 30px rgba(98,0,238,0.06), 0 8px 32px rgba(0,0,0,0.08)")
         transform("translateY(-3px)")
     }
 
     CSSSelector("body.glass-light .control-button") {
         backgroundColor("rgba(255,255,255,0.6)")
-        backdropFilter("blur(8px)")
-        prop("-webkit-backdrop-filter", "blur(8px)")
+        backdropFilter("blur(12px)")
+        prop("-webkit-backdrop-filter", "blur(12px)")
         border("1px solid rgba(255,255,255,0.4)")
         color("#000000")
         borderRadius("16px")
@@ -1258,23 +1258,23 @@ public let linksPageStylesheet: Stylesheet = Stylesheet {
     // MARK: - Apple Liquid Glass Dark Theme (Links)
 
     CSSSelector("body.glass-dark") {
-        backgroundColor("#000000")
+        background("linear-gradient(135deg, #0a0a0f 0%, #000000 50%, #0d0d1a 100%)")
         color("#FFFFFF")
     }
 
     CSSSelector("body.glass-dark .card") {
-        backgroundColor("rgba(255,255,255,0.05)")
-        backdropFilter("blur(20px)")
-        prop("-webkit-backdrop-filter", "blur(20px)")
-        border("1px solid rgba(255,255,255,0.1)")
+        backgroundColor("rgba(255,255,255,0.04)")
+        backdropFilter("blur(24px)")
+        prop("-webkit-backdrop-filter", "blur(24px)")
+        border("1px solid rgba(255,255,255,0.08)")
         borderRadius("20px")
-        boxShadow("inset 0 1px 0 0 rgba(255,255,255,0.08), 0 8px 32px rgba(0,0,0,0.4)")
+        boxShadow("inset 0 1px 0 0 rgba(255,255,255,0.06), 0 8px 32px rgba(0,0,0,0.5)")
     }
 
     CSSSelector("body.glass-dark .card:hover") {
-        backgroundColor("rgba(255,255,255,0.08)")
-        borderColor("rgba(255,255,255,0.18)")
-        boxShadow("inset 0 1px 0 0 rgba(255,255,255,0.12), 0 0 20px rgba(187,134,252,0.15), 0 8px 32px rgba(0,0,0,0.5)")
+        backgroundColor("rgba(255,255,255,0.07)")
+        borderColor("rgba(255,255,255,0.15)")
+        boxShadow("inset 0 1px 0 0 rgba(255,255,255,0.1), 0 0 30px rgba(187,134,252,0.12), 0 8px 32px rgba(0,0,0,0.6)")
         transform("translateY(-3px)")
     }
 
@@ -1360,23 +1360,23 @@ public let linksPageStylesheet: Stylesheet = Stylesheet {
     // MARK: - Apple Liquid Glass Light Theme (Links)
 
     CSSSelector("body.glass-light") {
-        backgroundColor("#F2F2F7")
+        background("linear-gradient(135deg, #E8E0F0 0%, #F2F2F7 50%, #E0E8F0 100%)")
         color("#000000")
     }
 
     CSSSelector("body.glass-light .card") {
-        backgroundColor("rgba(255,255,255,0.7)")
-        backdropFilter("blur(12px)")
-        prop("-webkit-backdrop-filter", "blur(12px)")
+        backgroundColor("rgba(255,255,255,0.65)")
+        backdropFilter("blur(20px)")
+        prop("-webkit-backdrop-filter", "blur(20px)")
         border("1px solid rgba(255,255,255,0.5)")
         borderRadius("20px")
-        boxShadow("inset 0 1px 0 0 rgba(255,255,255,0.6), 0 8px 32px rgba(0,0,0,0.08)")
+        boxShadow("inset 0 1px 0 0 rgba(255,255,255,0.6), 0 8px 32px rgba(0,0,0,0.06)")
     }
 
     CSSSelector("body.glass-light .card:hover") {
-        backgroundColor("rgba(255,255,255,0.85)")
+        backgroundColor("rgba(255,255,255,0.8)")
         borderColor("rgba(255,255,255,0.8)")
-        boxShadow("inset 0 1px 0 0 rgba(255,255,255,0.8), 0 0 20px rgba(98,0,238,0.08), 0 8px 32px rgba(0,0,0,0.1)")
+        boxShadow("inset 0 1px 0 0 rgba(255,255,255,0.8), 0 0 30px rgba(98,0,238,0.06), 0 8px 32px rgba(0,0,0,0.08)")
         transform("translateY(-3px)")
     }
 
