@@ -163,6 +163,7 @@ jobs:
       - name: Merge WASM into site
         run: |
           mkdir -p Output/scripts
+          cp -r Resources/scripts/. Output/scripts/ 2>/dev/null || true
           if [ -f ./wasm-artifact/SiteClient.wasm ]; then
             cp ./wasm-artifact/SiteClient.wasm Output/scripts/
             echo "WASM deployed ($(du -h Output/scripts/SiteClient.wasm | cut -f1))"

@@ -213,7 +213,7 @@ var S={theme:urlDebugTheme||urlTheme||storedTheme||(preferMaterial?'dark':'glass
  function setTheme(t){S.theme=t;localStorage.setItem('theme',t);
  var cls=t==='dark'?'dark-theme':t==='light'?'light-theme':t==='glass-dark'?'glass-dark':'glass-light';
  document.body.className=cls;
- document.documentElement.style.background=t.startsWith('glass')?(t==='glass-dark'?'linear-gradient(135deg,#0a0a0f,#1a1a2e,#0a0a0f)':'linear-gradient(135deg,#f5f0ff,#e8e0f0,#f5f0ff)'):(t.includes('dark')?'#0a0a0f':'#f5f0ff');
+ document.documentElement.style.background=t.startsWith('glass')?(t==='glass-dark'?'#000000':'#ffffff'):(t.includes('dark')?'#000000':'#f5f0ff');
  var icon=document.getElementById('theme-icon-bottom');
  if(icon)icon.textContent=t==='dark'?'light_mode':t==='light'?'dark_mode':t==='glass-dark'?'light_mode':'dark_mode';}
 function toggleTheme(){var order=['dark','light','glass-dark','glass-light'];var idx=order.indexOf(S.theme);setTheme(order[(idx+1)%4]);}
@@ -429,11 +429,11 @@ let linksCSS = linksPageStylesheet.render()
 // MARK: - Links Page JS (ES module with inlined config + strings)
 
 let linksJS = """
+var BASE='\(baseURL)';
 var instantiate=null;try{var jk=await import('https://cdn.jsdelivr.net/npm/javascriptkit@0.53.0/dist/javascriptkit.js');instantiate=jk.instantiate}catch(e){console.warn('[JK] CDN import failed',e)}
-var skinview3d=null;try{skinview3d=await import('https://cdn.jsdelivr.net/npm/skinview3d@3.4.1/+esm')}catch(e){console.warn('[Skin] CDN import failed',e)}
+var skinview3d=null;try{await import(BASE+'/scripts/skinview3d.bundle.js');skinview3d=window.skinview3d||null;}catch(e){console.warn('[Skin] bundle load failed',e)}
 
 var params = new URLSearchParams(location.search);
-var BASE='\(baseURL)';
 var appConfig={dataUrl:BASE+'/data.json',showLiveStreamSection:true,showProfileSection:true,showMinecraftSkinSection:true,showLinksSection:true,showYouTubeVideosSection:true,showSupportButton:true,developmentMode:true,showDevToggle:true,showLanguageToggle:true,showThemeToggle:true,supportUrl:'https://www.donationalerts.com/r/bezzubickmcplay'};
 var profileConfig={name_key:'profileName',description_key:'profileDescription',avatar:BASE+'/assets/avatar.png',minecraftSkinUrl:BASE+'/assets/skin.png'};
 var linksConfig=[
@@ -453,7 +453,7 @@ ru:{recentVideosTitle:'\\u041f\\u043e\\u0441\\u043b\\u0435\\u0434\\u043d\\u0438\
 var DOM={};var state={theme:params.get('debugTheme')||params.get('theme')||localStorage.getItem('theme')||((navigator.userAgent.includes('Chrome')&&!navigator.userAgent.includes('Edg')&&(navigator.userAgent.includes('Android')||navigator.userAgent.includes('Windows')))?'dark':'glass-dark'),lang:params.get('lang')||localStorage.getItem('lang')||(navigator.language.startsWith('ru')?'ru':'en'),data:{followerCounts:{},youtubeVideos:[],liveStream:{type:'none'}},skinViewerInstance:null,skinControlsEl:null,currentAnimKey:'idle'};
 
 function setVisibility(el,visible){if(!el)return;el.classList.toggle('hidden',!visible);}
-function applyTheme(theme){document.body.classList.remove('dark-theme','light-theme','glass-dark','glass-light');var cls=theme==='dark'?'dark-theme':theme==='light'?'light-theme':theme==='glass-dark'?'glass-dark':'glass-light';document.body.classList.add(cls);localStorage.setItem('theme',theme);document.documentElement.style.background=theme.startsWith('glass')?(theme==='glass-dark'?'linear-gradient(135deg,#0a0a0f,#1a1a2e,#0a0a0f)':'linear-gradient(135deg,#f5f0ff,#e8e0f0,#f5f0ff)'):(theme.includes('dark')?'#0a0a0f':'#f5f0ff');if(DOM.themeIcon)DOM.themeIcon.textContent=theme==='dark'?'light_mode':theme==='light'?'dark_mode':theme==='glass-dark'?'light_mode':'dark_mode';}
+function applyTheme(theme){document.body.classList.remove('dark-theme','light-theme','glass-dark','glass-light');var cls=theme==='dark'?'dark-theme':theme==='light'?'light-theme':theme==='glass-dark'?'glass-dark':'glass-light';document.body.classList.add(cls);localStorage.setItem('theme',theme);document.documentElement.style.background=theme.startsWith('glass')?(theme==='glass-dark'?'#000000':'#ffffff'):(theme.includes('dark')?'#000000':'#f5f0ff');if(DOM.themeIcon)DOM.themeIcon.textContent=theme==='dark'?'light_mode':theme==='light'?'dark_mode':theme==='glass-dark'?'light_mode':'dark_mode';}
 function formatCount(num){if(num==null||isNaN(num))return strings[state.lang].loading;if(num>=1e6)return(num/1e6).toFixed(1).replace(/\\.0$/,'')+'M';if(num>=1e3)return(num/1e3).toFixed(1).replace(/\\.0$/,'')+'K';return String(num);}
 async function fetchAppData(){var url=(appConfig.dataUrl||BASE+'/data.json')+'?t='+Date.now();try{var res=await fetch(url,{cache:'no-store'});if(!res.ok)throw new Error('HTTP '+res.status);return await res.json();}catch(e){console.warn('[Data Fetch] Fallback -> /data.json',e);try{var res2=await fetch(BASE+'/data.json?t='+Date.now(),{cache:'no-store'});if(res2.ok)return await res2.json();}catch(x){}return{followerCounts:{},youtubeVideos:[],liveStream:{type:'none'},debugInfo:{fetch_error:String(e)}};}}
 function updateGridLiveState(){var has=appConfig.showLiveStreamSection&&state.data.liveStream&&state.data.liveStream.type!=='none';if(!DOM.contentGrid)return;DOM.contentGrid.classList.toggle('grid-has-live',has);DOM.contentGrid.classList.toggle('grid-no-live',!has);}
@@ -640,7 +640,7 @@ struct BezzubickHTMLFactory: HTMLFactory {
                     .raw("""
                     var BASE='\(baseURL)';
                     var instantiate=null;try{var jk=await import('https://cdn.jsdelivr.net/npm/javascriptkit@0.53.0/dist/javascriptkit.js');instantiate=jk.instantiate}catch(e){console.warn('[JK] CDN import failed',e)}
-                    var skinview3d=null;try{skinview3d=await import('https://cdn.jsdelivr.net/npm/skinview3d@3.4.1/+esm')}catch(e){console.warn('[Skin] CDN import failed',e)}
+                    var skinview3d=null;try{await import(BASE+'/scripts/skinview3d.bundle.js');skinview3d=window.skinview3d||null;}catch(e){console.warn('[Skin] bundle load failed',e)}
                     try {
                       const resp = await fetch(BASE+'/scripts/SiteClient.wasm');
                       if(!resp.ok)throw new Error('HTTP '+resp.status);

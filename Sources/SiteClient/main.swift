@@ -202,7 +202,10 @@ func applyTheme(_ theme: String) {
   isDark = theme.contains("dark")
 
   // Set html background for overscroll coverage
-  let htmlBg = isDark ? "#0a0a0f" : "#f5f0ff"
+  let htmlBg: String
+  if isDark { htmlBg = "#000000" }
+  else if stateTheme.contains("glass") { htmlBg = "#ffffff" }
+  else { htmlBg = "#f5f0ff" }
   _ = doc.documentElement.style.setProperty("background-color", htmlBg)
 
   let iconBottom = doc.getElementById("theme-icon-bottom")
@@ -653,6 +656,11 @@ var targetMouseY = 0.5
 let SMOOTHING = 0.05
 let PI = 3.14159265359
 
+var bgTexture: JSValue = .undefined
+var texWidth = 512.0
+var texHeight = 512.0
+var closureStore: [String: JSClosure] = [:]
+
 let VERTEX_SHADER = """
 #version 300 es
 precision mediump float;
@@ -833,9 +841,7 @@ func initWebGL() {
   let canvas = lgCanvas
   if canvas.isUndefined { return }
   _ = canvas.setAttribute("id", "lg-canvas")
-  let bgColor = isDark ? "#0a0a0f" : "#f5f0ff"
-  canvas.style.cssText = .string("position:fixed;top:-100px;left:-100px;width:calc(100vw + 200px);height:calc(100vh + 200px);pointer-events:none;z-index:-1;display:block;background-color:\(bgColor);")
-  _ = doc.documentElement.style.setProperty("background-color", bgColor)
+  canvas.style.cssText = .string("position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:-1;display:block;")
   let body: JSValue = docObj.body
   _ = body.insertBefore(canvas, body.firstChild)
   glCtx = canvas.getContext("webgl2")
@@ -882,40 +888,6 @@ func initWebGL() {
   _ = glCtx.enableVertexAttribArray(uvL)
   _ = glCtx.vertexAttribPointer(uvL, 2, glCtx.FLOAT, false, 20, 12)
 
-  // Create background texture
-  let texCanvas = docObj.createElement("canvas")
-  _ = texCanvas.setAttribute("width", "512")
-  _ = texCanvas.setAttribute("height", "512")
-  let texCtx = texCanvas.getContext("2d")
-  let grad = texCtx.createLinearGradient(0, 0, 512, 512)
-  if isDark {
-    _ = grad.addColorStop(0, "#0a0a0f")
-    _ = grad.addColorStop(1, "#0d0d1a")
-  } else {
-    _ = grad.addColorStop(0, "#e8e0f0")
-    _ = grad.addColorStop(1, "#f5f0ff")
-  }
-  texCtx.fillStyle = grad
-  _ = texCtx.fillRect(0, 0, 512, 512)
-  for _ in 0..<5000 {
-    let x = (JSObject.global.Math.random()).number ?? 0
-    let y = (JSObject.global.Math.random()).number ?? 0
-    let r = (JSObject.global.Math.random()).number ?? 0
-    let a = isDark ? (r * 0.06) : (r * 0.15 + 0.05)
-    let c = isDark ? "255,255,255" : "100,80,160"
-    texCtx.fillStyle = .string("rgba(\(c),\(a))")
-    _ = texCtx.fillRect(x * 512, y * 512, 2, 2)
-  }
-  _ = glCtx.activeTexture(glCtx.TEXTURE0)
-  let texture = glCtx.createTexture()
-  _ = glCtx.bindTexture(glCtx.TEXTURE_2D, texture)
-  _ = glCtx.pixelStorei(glCtx.UNPACK_FLIP_Y_WEBGL, 1)
-  _ = glCtx.texImage2D(glCtx.TEXTURE_2D, 0, glCtx.RGBA, glCtx.RGBA, glCtx.UNSIGNED_BYTE, texCanvas)
-  _ = glCtx.texParameteri(glCtx.TEXTURE_2D, glCtx.TEXTURE_MIN_FILTER, glCtx.LINEAR)
-  _ = glCtx.texParameteri(glCtx.TEXTURE_2D, glCtx.TEXTURE_MAG_FILTER, glCtx.LINEAR)
-  _ = glCtx.texParameteri(glCtx.TEXTURE_2D, glCtx.TEXTURE_WRAP_S, glCtx.CLAMP_TO_EDGE)
-  _ = glCtx.texParameteri(glCtx.TEXTURE_2D, glCtx.TEXTURE_WRAP_T, glCtx.CLAMP_TO_EDGE)
-
   // Create mask texture (white = fully opaque)
   let maskCanvas = docObj.createElement("canvas")
   _ = maskCanvas.setAttribute("width", "512")
@@ -932,11 +904,64 @@ func initWebGL() {
   _ = glCtx.texParameteri(glCtx.TEXTURE_2D, glCtx.TEXTURE_MAG_FILTER, glCtx.LINEAR)
   _ = glCtx.texParameteri(glCtx.TEXTURE_2D, glCtx.TEXTURE_WRAP_S, glCtx.CLAMP_TO_EDGE)
   _ = glCtx.texParameteri(glCtx.TEXTURE_2D, glCtx.TEXTURE_WRAP_T, glCtx.CLAMP_TO_EDGE)
+
+  // Create initial background texture from gradient (synchronous fallback)
+  let bgCanvas = docObj.createElement("canvas")
+  _ = bgCanvas.setAttribute("width", "512")
+  _ = bgCanvas.setAttribute("height", "512")
+  let bgCtx = bgCanvas.getContext("2d")
+  let grad = bgCtx.createLinearGradient(0, 0, 512, 512)
+  _ = grad.addColorStop(0, "#ff9a9e")
+  _ = grad.addColorStop(1, "#fad0c4")
+  bgCtx.fillStyle = grad
+  _ = bgCtx.fillRect(0, 0, 512, 512)
+  _ = glCtx.activeTexture(glCtx.TEXTURE0)
+  let texture = glCtx.createTexture()
+  bgTexture = texture
+  _ = glCtx.bindTexture(glCtx.TEXTURE_2D, texture)
+  _ = glCtx.pixelStorei(glCtx.UNPACK_FLIP_Y_WEBGL, 1)
+  _ = glCtx.texImage2D(glCtx.TEXTURE_2D, 0, glCtx.RGBA, glCtx.RGBA, glCtx.UNSIGNED_BYTE, bgCanvas)
+  _ = glCtx.texParameteri(glCtx.TEXTURE_2D, glCtx.TEXTURE_MIN_FILTER, glCtx.LINEAR)
+  _ = glCtx.texParameteri(glCtx.TEXTURE_2D, glCtx.TEXTURE_MAG_FILTER, glCtx.LINEAR)
+  _ = glCtx.texParameteri(glCtx.TEXTURE_2D, glCtx.TEXTURE_WRAP_S, glCtx.CLAMP_TO_EDGE)
+  _ = glCtx.texParameteri(glCtx.TEXTURE_2D, glCtx.TEXTURE_WRAP_T, glCtx.CLAMP_TO_EDGE)
+
+  // Start async load of real background image (replaces gradient when done)
+  loadBackgroundImage()
+}
+
+func loadBackgroundImage() {
+  let img = JSObject.global.Image.new()
+  img.crossOrigin = "anonymous"
+
+  let onload = JSClosure { _ in
+    if glCtx.isUndefined { return .undefined }
+    _ = glCtx.activeTexture(glCtx.TEXTURE0)
+    _ = glCtx.bindTexture(glCtx.TEXTURE_2D, bgTexture)
+    _ = glCtx.texImage2D(glCtx.TEXTURE_2D, 0, glCtx.RGBA, glCtx.RGBA, glCtx.UNSIGNED_BYTE, img)
+    texWidth = img.width.number ?? 512
+    texHeight = img.height.number ?? 512
+    closureStore["bgOnload"] = nil
+    closureStore["bgOnerror"] = nil
+    return .undefined
+  }
+  let onerror = JSClosure { _ in
+    console.warn("[LiquidGlass] Failed to load background image, using gradient")
+    closureStore["bgOnload"] = nil
+    closureStore["bgOnerror"] = nil
+    return .undefined
+  }
+
+  closureStore["bgOnload"] = onload
+  closureStore["bgOnerror"] = onerror
+  img.onload = onload
+  img.onerror = onerror
+  img.src = .string("https://plus.unsplash.com/premium_photo-1677094766116-aa0f8742d36b?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")
 }
 
 func renderFrame() {
   if glCtx.isUndefined || shaderProg.isUndefined { return }
-  let dpr = min(win.devicePixelRatio.number ?? 1.0, 2.0)
+  let dpr = win.devicePixelRatio.number ?? 1.0
   let ww = win.innerWidth.number ?? 1
   let wh = win.innerHeight.number ?? 1
 
@@ -953,14 +978,9 @@ func renderFrame() {
   smoothMouseX += (targetMouseX - smoothMouseX) * SMOOTHING
   smoothMouseY += (targetMouseY - smoothMouseY) * SMOOTHING
 
-  // Update canvas background to match theme
-  let bgColor = isDark ? "#0a0a0f" : "#f5f0ff"
-  if !lgCanvas.isUndefined { lgCanvas.style.backgroundColor = .string(bgColor) }
-  _ = doc.documentElement.style.setProperty("background-color", bgColor)
-
   // Set uniforms
   if let u = uniformLocs["uResolution"] { _ = glCtx.uniform2f(u, ww * dpr, wh * dpr) }
-  if let u = uniformLocs["uTextureResolution"] { _ = glCtx.uniform2f(u, 512, 512) }
+  if let u = uniformLocs["uTextureResolution"] { _ = glCtx.uniform2f(u, texWidth, texHeight) }
   if let u = uniformLocs["uMousePos"] { _ = glCtx.uniform2f(u, smoothMouseX, smoothMouseY) }
   if let u = uniformLocs["uTMousePos"] { _ = glCtx.uniform2f(u, targetMouseX, targetMouseY) }
   if let u = uniformLocs["uRadius"] { _ = glCtx.uniform1f(u, 0.3) }
