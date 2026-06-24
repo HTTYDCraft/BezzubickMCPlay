@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   build-site:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@v4
 
@@ -45,7 +45,7 @@ jobs:
           path: ./Output
 
   build-wasm:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@v4
 
@@ -89,7 +89,7 @@ jobs:
 
   merge-deploy:
     needs: [build-site, build-wasm]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     steps:
       - uses: actions/download-artifact@v4
         with:
