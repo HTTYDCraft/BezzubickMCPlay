@@ -33,8 +33,7 @@ func fmtCount(_ val: Double) -> String {
 // MARK: - State
 
 var isDark = true
-var mouseXFrac = 0.5
-var mouseYFrac = 0.5
+
 
 let localStorage = JSObject.global.localStorage
 
@@ -632,16 +631,24 @@ func setupDevView() {
   }
 }
 
-// MARK: - WebGL Liquid Glass
+// MARK: - WebGL Liquid Glass (exact reference copy)
 
 var glCtx: JSValue = .undefined
 var shaderProg: JSValue = .undefined
 var uniformLocs: [String: JSValue] = [:]
 var lgCanvas: JSValue = .undefined
-var panelData: [(x: Double, y: Double, w: Double, h: Double)] = []
 var shouldRender = false
 var rafId: JSValue = .undefined
 var rafClosure: JSClosure?
+
+// Smooth mouse
+var smoothMouseX = 0.5
+var smoothMouseY = 0.5
+var targetMouseX = 0.5
+var targetMouseY = 0.5
+let SMOOTHING = 0.05
+let PI = 3.14159265359
+var startTime = 0.0
 
 let VERTEX_SHADER = """
 #version 300 es
@@ -660,43 +667,123 @@ let FRAGMENT_SHADER = """
 precision highp float;
 in vec2 vUV;
 out vec4 fragColor;
-uniform vec4 uPanel;
 uniform vec2 uResolution;
-uniform vec2 uMouse;
+uniform vec2 uMousePos;
+uniform vec2 uTMousePos;
+uniform float uRadius;
+uniform float uDistort;
+uniform float uDispersion;
+uniform float uRotSpeed;
+uniform float uShadowIntensity;
+uniform float uShadowOffsetX;
+uniform float uShadowOffsetY;
+uniform float uShadowBlur;
+uniform float uHighlightIntensity;
+uniform float uHighlightSize;
+uniform float uHighlightOffsetX;
+uniform float uHighlightOffsetY;
 uniform float uDark;
-float sdRoundedBox(vec2 p, vec2 b, float r) {
-    vec2 q = abs(p) - b + r;
-    return length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - r;
+uniform float uTime;
+const float PI = 3.14159265359;
+mat2 rot(float a) {
+    float c = cos(a), s = sin(a);
+    return mat2(c, -s, s, c);
+}
+float sdCircle(vec2 uv, float r) {
+    return length(uv) - r;
+}
+float getDist(vec2 uv) {
+    float sd = sdCircle(uv, uRadius);
+    vec2 asp = vec2(uResolution.x / uResolution.y, 1.0);
+    vec2 mp = uTMousePos * asp;
+    float md = length(vUV * asp - mp);
+    float fall = smoothstep(0.0, 0.8, md);
+    float tweak = mix(0.02 / max(fall, 0.001), 0.1 / max(fall, 0.001), uDistort * sd);
+    tweak = min(-tweak, 0.0);
+    return sd - tweak;
+}
+float getShadow(vec2 uv, vec2 lightPos) {
+    vec2 shadowOffset = vec2(uShadowOffsetX, uShadowOffsetY);
+    vec2 shadowPos = uv - lightPos + shadowOffset;
+    vec2 asp = vec2(uResolution.x / uResolution.y, 1.0);
+    vec2 st = shadowPos * asp;
+    st *= 1.0 / (0.4920 + 0.2);
+    st = rot(-uRotSpeed * 2.0 * PI) * st;
+    float shadowDist = getDist(st);
+    float shadow = 1.0 - smoothstep(-uShadowBlur, uShadowBlur, shadowDist);
+    float distanceFromLight = length(uv - lightPos);
+    float attenuation = 1.0 - smoothstep(0.0, 1.0, distanceFromLight);
+    return shadow * uShadowIntensity * attenuation;
+}
+float getHighlight(vec2 uv, vec2 lightPos) {
+    vec2 highlightOffset = vec2(uHighlightOffsetX, uHighlightOffsetY);
+    vec2 highlightPos = uv - lightPos + highlightOffset;
+    vec2 asp = vec2(uResolution.x / uResolution.y, 1.0);
+    vec2 st = highlightPos * asp;
+    st *= 1.0 / (0.4920 + 0.2);
+    st = rot(-uRotSpeed * 2.0 * PI) * st;
+    float highlightRadius = uRadius * uHighlightSize;
+    float highlightDist = sdCircle(st, highlightRadius);
+    float highlight = 1.0 - smoothstep(-0.02, 0.02, highlightDist);
+    float centerDist = length(st);
+    float centerFalloff = 1.0 - smoothstep(0.0, highlightRadius * 0.8, centerDist);
+    highlight *= centerFalloff;
+    float distanceFromLight = length(uv - lightPos);
+    float attenuation = 1.0 - smoothstep(0.0, 1.0, distanceFromLight);
+    return highlight * uHighlightIntensity * attenuation;
 }
 vec3 bgGradient(vec2 uv) {
     vec3 a = mix(vec3(0.02,0.02,0.06), vec3(0.88,0.86,0.95), uDark);
     vec3 b = mix(vec3(0.06,0.03,0.12), vec3(0.95,0.90,0.92), uDark);
-    return mix(a, b, uv.y*0.5+0.5+sin(uv.x*2.0)*0.1);
+    return mix(a, b, uv.y*0.5+0.5+sin(uv.x*2.0+uTime)*0.1);
+}
+vec3 refrakt(float sd, vec2 st, vec3 bg, vec2 originalUV) {
+    vec2 offset = mix(vec2(0), normalize(st) / max(abs(sd), 0.001), length(st));
+    float disp = uDispersion * 0.01;
+    vec2 redOffset = offset * disp * 1.2;
+    vec2 greenOffset = offset * disp * 1.0;
+    vec2 blueOffset = offset * disp * 0.8;
+    vec2 redUV = originalUV + redOffset;
+    vec2 greenUV = originalUV + greenOffset;
+    vec2 blueUV = originalUV + blueOffset;
+    float r = bgGradient(redUV).r;
+    float g = bgGradient(greenUV).g;
+    float b = bgGradient(blueUV).b;
+    float shadow = getShadow(originalUV, uMousePos);
+    r = mix(r, 0.0, shadow);
+    g = mix(g, 0.0, shadow);
+    b = mix(b, 0.0, shadow);
+    float op = smoothstep(0.0, 0.0025, -sd);
+    return mix(bg, vec3(r, g, b), op);
+}
+vec3 getEffect(vec2 st, vec3 bg, vec2 originalUV) {
+    float eps = 0.0005;
+    vec3 sum = vec3(0.0);
+    sum += refrakt(getDist(st), st, bg, originalUV);
+    sum += refrakt(getDist(st + vec2(eps, 0)), st + vec2(eps, 0), bg, originalUV);
+    sum += refrakt(getDist(st - vec2(eps, 0)), st - vec2(eps, 0), bg, originalUV);
+    sum += refrakt(getDist(st + vec2(0, eps)), st + vec2(0, eps), bg, originalUV);
+    sum += refrakt(getDist(st - vec2(0, eps)), st - vec2(0, eps), bg, originalUV);
+    return sum * 0.2;
 }
 void main() {
-    vec2 px = vUV * uResolution;
-    vec2 halfS = uPanel.zw * 0.5;
-    vec2 center = uPanel.xy + halfS;
-    vec2 p = px - center;
-    float cr = min(20.0, min(halfS.x, halfS.y) * 0.3);
-    float d = sdRoundedBox(p, halfS, cr);
-    vec2 asp = vec2(uResolution.x/uResolution.y, 1.0);
-    float md = length((px/uResolution.y)*asp - uMouse*asp);
-    vec2 dir = length(p) > 0.001 ? normalize(p) : vec2(0,1);
-    vec2 off = -dir * smoothstep(0.6,0.0,md)*10.0 / max(abs(d)+4.0,1.0);
-    vec2 uv = px/uResolution + off;
-    float ca = 0.008 * smoothstep(0.4,0.0,md);
-    vec3 bg = vec3(bgGradient(uv+vec2(ca,0)).r, bgGradient(uv).g, bgGradient(uv-vec2(0,ca)).b);
-    float edge = smoothstep(0.0,-16.0,d);
-    float inner = smoothstep(-1.0,-5.0,d);
-    vec3 tint = mix(vec3(0.88,0.90,0.95), vec3(1.0), uDark);
-    vec3 col = mix(bg*0.3, tint, edge*0.65) * mix(0.78,1.0,inner);
-    vec2 hlC = normalize(vec2(-0.35,0.55))*uPanel.z*0.2;
-    col += (1.0-smoothstep(-6.0,8.0,length(p-hlC)-uPanel.z*0.16))*mix(0.12,0.2,uDark);
-    col -= (1.0-smoothstep(-4.0,12.0,length(p-normalize(vec2(0.25,-0.45))*uPanel.z*0.15)-uPanel.z*0.2))*0.06;
-    col -= (1.0-smoothstep(-35.0,-6.0,d))*mix(0.3,0.15,uDark);
-    col += exp(-pow(abs(d+2.5),2.0)/14.0)*0.14;
-    fragColor = vec4(col, smoothstep(1.5,-2.5,d));
+    vec2 uv = vUV;
+    vec3 bg = bgGradient(uv);
+    float shadow = getShadow(uv, uMousePos);
+    bg = mix(bg, vec3(0.0), shadow);
+    vec2 st = uv - uMousePos;
+    st *= vec2(uResolution.x / uResolution.y, 1.0);
+    st *= 1.0 / (0.4920 + 0.2);
+    st = rot(-uRotSpeed * 2.0 * PI) * st;
+    vec3 color = getEffect(st, bg, uv);
+    float highlight = getHighlight(uv, uMousePos);
+    float exposure = 1.0 + highlight * 2.5;
+    vec3 exposedColor = 1.0 - exp(-color * exposure);
+    vec3 brightenedColor = color * (1.0 + highlight * 1.8);
+    color = mix(exposedColor, brightenedColor, 0.3);
+    vec3 warmTint = vec3(1.02, 1.01, 0.98);
+    color *= mix(vec3(1.0), warmTint, highlight * 0.3);
+    fragColor = vec4(color, 1.0);
 }
 """
 
@@ -733,7 +820,9 @@ func initWebGL() {
   guard glCtx.getProgramParameter(prog, glCtx.LINK_STATUS).boolean ?? false else { return }
   shaderProg = prog
   _ = glCtx.useProgram(prog)
-  for name in ["uPanel", "uResolution", "uMouse", "uDark"] {
+  for name in ["uResolution", "uMousePos", "uTMousePos", "uRadius", "uDistort", "uDispersion", "uRotSpeed",
+               "uShadowIntensity", "uShadowOffsetX", "uShadowOffsetY", "uShadowBlur",
+               "uHighlightIntensity", "uHighlightSize", "uHighlightOffsetX", "uHighlightOffsetY", "uDark", "uTime"] {
     uniformLocs[name] = glCtx.getUniformLocation(prog, name)
   }
 
@@ -749,20 +838,8 @@ func initWebGL() {
   _ = glCtx.vertexAttribPointer(posL, 2, glCtx.FLOAT, false, 16, 0)
   _ = glCtx.enableVertexAttribArray(uvL)
   _ = glCtx.vertexAttribPointer(uvL, 2, glCtx.FLOAT, false, 16, 8)
-}
 
-func scanCards() {
-  let cards = doc.querySelectorAll(".card")
-  panelData = []
-  let length = Int(cards.length.number ?? 0)
-  for i in 0..<length {
-    let r = cards[i].getBoundingClientRect()
-    let x = r.left.number ?? 0
-    let y = r.top.number ?? 0
-    let w = r.width.number ?? 0
-    let h = r.height.number ?? 0
-    if w > 10 && h > 10 { panelData.append((x, y, w, h)) }
-  }
+  startTime = DateObj.new().getTime!().number ?? 0
 }
 
 func renderFrame() {
@@ -782,23 +859,34 @@ func renderFrame() {
   _ = glCtx.enable(glCtx.BLEND)
   _ = glCtx.blendFunc(glCtx.SRC_ALPHA, glCtx.ONE_MINUS_SRC_ALPHA)
 
-  if let u = uniformLocs["uResolution"] {
-    if !u.isUndefined { _ = glCtx.uniform2f(u, ww * dpr, wh * dpr) }
-  }
-  if let u = uniformLocs["uMouse"] {
-    if !u.isUndefined { _ = glCtx.uniform2f(u, mouseXFrac, mouseYFrac) }
-  }
-  if let u = uniformLocs["uDark"] {
-    if !u.isUndefined { _ = glCtx.uniform1f(u, isDark ? 1.0 : 0.0) }
-  }
-  for panel in panelData {
-    if let u = uniformLocs["uPanel"] {
-      if !u.isUndefined {
-        _ = glCtx.uniform4f(u, panel.x * dpr, (wh - panel.y - panel.h) * dpr, panel.w * dpr, panel.h * dpr)
-      }
-    }
-    _ = glCtx.drawArrays(glCtx.TRIANGLE_STRIP, 0, 4)
-  }
+  // Smooth mouse
+  smoothMouseX += (targetMouseX - smoothMouseX) * SMOOTHING
+  smoothMouseY += (targetMouseY - smoothMouseY) * SMOOTHING
+
+  // Time for rotation animation
+  let now = DateObj.new().getTime!().number ?? 0
+  let elapsed = (now - startTime) / 1000.0
+
+  // Set uniforms matching reference parameter defaults
+  if let u = uniformLocs["uResolution"] { _ = glCtx.uniform2f(u, ww * dpr, wh * dpr) }
+  if let u = uniformLocs["uMousePos"] { _ = glCtx.uniform2f(u, smoothMouseX, smoothMouseY) }
+  if let u = uniformLocs["uTMousePos"] { _ = glCtx.uniform2f(u, targetMouseX, targetMouseY) }
+  if let u = uniformLocs["uRadius"] { _ = glCtx.uniform1f(u, 0.3) }
+  if let u = uniformLocs["uDistort"] { _ = glCtx.uniform1f(u, 2.3) }
+  if let u = uniformLocs["uDispersion"] { _ = glCtx.uniform1f(u, 0.7) }
+  if let u = uniformLocs["uRotSpeed"] { _ = glCtx.uniform1f(u, 1.0) }
+  if let u = uniformLocs["uShadowIntensity"] { _ = glCtx.uniform1f(u, 0.3) }
+  if let u = uniformLocs["uShadowOffsetX"] { _ = glCtx.uniform1f(u, 0.01) }
+  if let u = uniformLocs["uShadowOffsetY"] { _ = glCtx.uniform1f(u, 0.08) }
+  if let u = uniformLocs["uShadowBlur"] { _ = glCtx.uniform1f(u, 0.4) }
+  if let u = uniformLocs["uHighlightIntensity"] { _ = glCtx.uniform1f(u, 0.4) }
+  if let u = uniformLocs["uHighlightSize"] { _ = glCtx.uniform1f(u, 1.25) }
+  if let u = uniformLocs["uHighlightOffsetX"] { _ = glCtx.uniform1f(u, 0.01) }
+  if let u = uniformLocs["uHighlightOffsetY"] { _ = glCtx.uniform1f(u, 0.03) }
+  if let u = uniformLocs["uDark"] { _ = glCtx.uniform1f(u, isDark ? 1.0 : 0.0) }
+  if let u = uniformLocs["uTime"] { _ = glCtx.uniform1f(u, elapsed) }
+
+  _ = glCtx.drawArrays(glCtx.TRIANGLE_STRIP, 0, 4)
 }
 
 func scheduleFrame() {
@@ -817,7 +905,6 @@ func startRendering() {
   guard !shouldRender else { return }
   shouldRender = true
   if glCtx.isUndefined { initWebGL() }
-  scanCards()
   scheduleFrame()
 }
 
@@ -841,18 +928,14 @@ func setupOffline() {
 func setupMouseTracking() {
   let fn = JSClosure { args in
     let e = args[0]
-    mouseXFrac = (e.clientX.number ?? 0) / (win.innerWidth.number ?? 1)
-    mouseYFrac = 1.0 - (e.clientY.number ?? 0) / (win.innerHeight.number ?? 1)
+    targetMouseX = (e.clientX.number ?? 0) / (win.innerWidth.number ?? 1)
+    targetMouseY = 1.0 - (e.clientY.number ?? 0) / (win.innerHeight.number ?? 1)
     return .undefined
   }
+  smoothMouseX = targetMouseX
+  smoothMouseY = targetMouseY
   _ = win.addEventListener("mousemove", fn)
   _ = win.addEventListener("touchmove", fn)
-}
-
-func setupScrollRescan() {
-  let fn = JSClosure { _ in scanCards(); return .undefined }
-  _ = win.addEventListener("scroll", fn)
-  _ = win.addEventListener("resize", fn)
 }
 
 func observeGlassState() {
@@ -942,7 +1025,6 @@ let readyClosure = JSClosure { _ in
 
   setupOffline()
   setupMouseTracking()
-  setupScrollRescan()
   observeGlassState()
 
   Task { await fetchData() }
