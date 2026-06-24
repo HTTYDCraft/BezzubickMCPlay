@@ -921,7 +921,7 @@ func setupGeometry() {
 }
 
 func createTexture(_ unit: Int32, _ source: JSValue) {
-  _ = glCtx.activeTexture(glCtx.TEXTURE0 + unit)
+  _ = glCtx.activeTexture(0x84C0 + unit)
   let t = glCtx.createTexture()
   _ = glCtx.bindTexture(glCtx.TEXTURE_2D, t)
   _ = glCtx.pixelStorei(glCtx.UNPACK_FLIP_Y_WEBGL, 1)
@@ -952,13 +952,14 @@ func setupTextures() {
   img.crossOrigin = .string("anonymous")
   let loadHandler = JSClosure { _ in
     createTexture(0, img)
-    texWidth = (img.width.number ?? 512).toDouble()
-    texHeight = (img.height.number ?? 512).toDouble()
+    texWidth = img.width.number ?? 512
+    texHeight = img.height.number ?? 512
     textureClosures.removeAll()
     return .undefined
   }
   let errorHandler = JSClosure { _ in
-    console.warn("Failed to load default background image, falling back to gradient")
+    let jsConsole = JSObject.global.console
+    _ = jsConsole.warn!("Failed to load default background image, falling back to gradient")
     let grad = createGradientCanvas()
     createTexture(0, grad)
     texWidth = 512
