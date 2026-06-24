@@ -75,7 +75,7 @@ jobs:
 
       - name: Collect WASM binary
         run: |
-          WASM_PATH=$(find .build -name "SiteClient.wasm" -path "*/wasm32*" | head -1)
+          WASM_PATH=$(find .build -name "SiteClient.wasm" | head -1)
           if [ -n "$WASM_PATH" ]; then
             mkdir -p /tmp/wasm
             cp "$WASM_PATH" /tmp/wasm/SiteClient.wasm
