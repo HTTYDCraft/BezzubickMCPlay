@@ -210,11 +210,12 @@ var preferMaterial=isChrome&&(isAndroid||isWindows);
 var storedTheme=localStorage.getItem('theme');
 var S={theme:urlDebugTheme||urlTheme||storedTheme||(preferMaterial?'dark':'glass-dark'),lang:urlLang||localStorage.getItem('lang')||(navigator.language.startsWith('ru')?'ru':'en')};
 
-function setTheme(t){S.theme=t;localStorage.setItem('theme',t);
-var cls=t==='dark'?'dark-theme':t==='light'?'light-theme':t==='glass-dark'?'glass-dark':'glass-light';
-document.body.className=cls;
-var icon=document.getElementById('theme-icon-bottom');
-if(icon)icon.textContent=t==='dark'?'light_mode':t==='light'?'dark_mode':t==='glass-dark'?'light_mode':'dark_mode';}
+ function setTheme(t){S.theme=t;localStorage.setItem('theme',t);
+ var cls=t==='dark'?'dark-theme':t==='light'?'light-theme':t==='glass-dark'?'glass-dark':'glass-light';
+ document.body.className=cls;
+ document.documentElement.style.backgroundColor=t.includes('dark')?'#0a0a0f':'#f5f0ff';
+ var icon=document.getElementById('theme-icon-bottom');
+ if(icon)icon.textContent=t==='dark'?'light_mode':t==='light'?'dark_mode':t==='glass-dark'?'light_mode':'dark_mode';}
 function toggleTheme(){var order=['dark','light','glass-dark','glass-light'];var idx=order.indexOf(S.theme);setTheme(order[(idx+1)%4]);}
 
 var STR={ru:{followers:'\\u0412\\u0441\\u0435\\u0433\\u043e \\u043f\\u043e\\u0434\\u043f\\u0438\\u0441\\u0447\\u0438\\u043a\\u043e\\u0432: ',
@@ -452,7 +453,7 @@ ru:{recentVideosTitle:'\\u041f\\u043e\\u0441\\u043b\\u0435\\u0434\\u043d\\u0438\
 var DOM={};var state={theme:params.get('debugTheme')||params.get('theme')||localStorage.getItem('theme')||((navigator.userAgent.includes('Chrome')&&!navigator.userAgent.includes('Edg')&&(navigator.userAgent.includes('Android')||navigator.userAgent.includes('Windows')))?'dark':'glass-dark'),lang:params.get('lang')||localStorage.getItem('lang')||(navigator.language.startsWith('ru')?'ru':'en'),data:{followerCounts:{},youtubeVideos:[],liveStream:{type:'none'}},skinViewerInstance:null,skinControlsEl:null,currentAnimKey:'idle'};
 
 function setVisibility(el,visible){if(!el)return;el.classList.toggle('hidden',!visible);}
-function applyTheme(theme){document.body.classList.remove('dark-theme','light-theme','glass-dark','glass-light');var cls=theme==='dark'?'dark-theme':theme==='light'?'light-theme':theme==='glass-dark'?'glass-dark':'glass-light';document.body.classList.add(cls);localStorage.setItem('theme',theme);if(DOM.themeIcon)DOM.themeIcon.textContent=theme==='dark'?'light_mode':theme==='light'?'dark_mode':theme==='glass-dark'?'light_mode':'dark_mode';}
+function applyTheme(theme){document.body.classList.remove('dark-theme','light-theme','glass-dark','glass-light');var cls=theme==='dark'?'dark-theme':theme==='light'?'light-theme':theme==='glass-dark'?'glass-dark':'glass-light';document.body.classList.add(cls);localStorage.setItem('theme',theme);document.documentElement.style.backgroundColor=theme.includes('dark')?'#0a0a0f':'#f5f0ff';if(DOM.themeIcon)DOM.themeIcon.textContent=theme==='dark'?'light_mode':theme==='light'?'dark_mode':theme==='glass-dark'?'light_mode':'dark_mode';}
 function formatCount(num){if(num==null||isNaN(num))return strings[state.lang].loading;if(num>=1e6)return(num/1e6).toFixed(1).replace(/\\.0$/,'')+'M';if(num>=1e3)return(num/1e3).toFixed(1).replace(/\\.0$/,'')+'K';return String(num);}
 async function fetchAppData(){var url=(appConfig.dataUrl||BASE+'/data.json')+'?t='+Date.now();try{var res=await fetch(url,{cache:'no-store'});if(!res.ok)throw new Error('HTTP '+res.status);return await res.json();}catch(e){console.warn('[Data Fetch] Fallback -> /data.json',e);try{var res2=await fetch(BASE+'/data.json?t='+Date.now(),{cache:'no-store'});if(res2.ok)return await res2.json();}catch(x){}return{followerCounts:{},youtubeVideos:[],liveStream:{type:'none'},debugInfo:{fetch_error:String(e)}};}}
 function updateGridLiveState(){var has=appConfig.showLiveStreamSection&&state.data.liveStream&&state.data.liveStream.type!=='none';if(!DOM.contentGrid)return;DOM.contentGrid.classList.toggle('grid-has-live',has);DOM.contentGrid.classList.toggle('grid-no-live',!has);}

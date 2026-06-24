@@ -189,7 +189,6 @@ public let siteStylesheet: Stylesheet = Stylesheet {
     // MARK: - Apple Liquid Glass Dark Theme
 
     CSSSelector("body.glass-dark") {
-        background("linear-gradient(135deg, #0a0a0f 0%, #000000 50%, #0d0d1a 100%)")
         color("#FFFFFF")
     }
 
@@ -343,7 +342,6 @@ public let siteStylesheet: Stylesheet = Stylesheet {
     // MARK: - Apple Liquid Glass Light Theme
 
     CSSSelector("body.glass-light") {
-        background("linear-gradient(135deg, #E8E0F0 0%, #F2F2F7 50%, #E0E8F0 100%)")
         color("#000000")
     }
 
@@ -1259,7 +1257,6 @@ public let linksPageStylesheet: Stylesheet = Stylesheet {
     // MARK: - Apple Liquid Glass Dark Theme (Links)
 
     CSSSelector("body.glass-dark") {
-        background("linear-gradient(135deg, #0a0a0f 0%, #000000 50%, #0d0d1a 100%)")
         color("#FFFFFF")
     }
 
@@ -1361,7 +1358,6 @@ public let linksPageStylesheet: Stylesheet = Stylesheet {
     // MARK: - Apple Liquid Glass Light Theme (Links)
 
     CSSSelector("body.glass-light") {
-        background("linear-gradient(135deg, #E8E0F0 0%, #F2F2F7 50%, #E0E8F0 100%)")
         color("#000000")
     }
 

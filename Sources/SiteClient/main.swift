@@ -201,6 +201,10 @@ func applyTheme(_ theme: String) {
   stateTheme = theme
   isDark = theme.contains("dark")
 
+  // Set html background for overscroll coverage
+  let htmlBg = isDark ? "#0a0a0f" : "#f5f0ff"
+  _ = doc.documentElement.style.setProperty("background-color", htmlBg)
+
   let iconBottom = doc.getElementById("theme-icon-bottom")
   if !iconBottom.isUndefined { iconBottom.textContent = .string(THEME_ICONS[theme] ?? "light_mode") }
   let iconTop = doc.getElementById("theme-icon")
@@ -830,7 +834,8 @@ func initWebGL() {
   if canvas.isUndefined { return }
   _ = canvas.setAttribute("id", "lg-canvas")
   let bgColor = isDark ? "#0a0a0f" : "#f5f0ff"
-  canvas.style.cssText = .string("position:fixed;top:-100px;left:-100px;width:calc(100vw + 200px);height:calc(100vh + 200px);pointer-events:none;z-index:9998;display:block;background-color:\(bgColor);")
+  canvas.style.cssText = .string("position:fixed;top:-100px;left:-100px;width:calc(100vw + 200px);height:calc(100vh + 200px);pointer-events:none;z-index:-1;display:block;background-color:\(bgColor);")
+  _ = doc.documentElement.style.setProperty("background-color", bgColor)
   let body: JSValue = docObj.body
   _ = body.insertBefore(canvas, body.firstChild)
   glCtx = canvas.getContext("webgl2")
@@ -951,6 +956,7 @@ func renderFrame() {
   // Update canvas background to match theme
   let bgColor = isDark ? "#0a0a0f" : "#f5f0ff"
   if !lgCanvas.isUndefined { lgCanvas.style.backgroundColor = .string(bgColor) }
+  _ = doc.documentElement.style.setProperty("background-color", bgColor)
 
   // Set uniforms
   if let u = uniformLocs["uResolution"] { _ = glCtx.uniform2f(u, ww * dpr, wh * dpr) }
