@@ -73,40 +73,22 @@ jobs:
       - name: Build SiteClient WASM
         run: swift build --swift-sdk swift-6.3.2-RELEASE_wasm --target SiteClient -c release
 
-      - name: Manual WASM link
+      - name: Check WASM output
         run: |
           BIN_DIR=$(swift build --swift-sdk swift-6.3.2-RELEASE_wasm -c release --show-bin-path 2>/dev/null)
-          WASM_LD=$(which wasm-ld 2>/dev/null || find /home/runner/.local/share/swiftly -name wasm-ld -type f 2>/dev/null | head -1)
-          SDK_DIR=$(find ~/.config/swiftpm/swift-sdks -maxdepth 3 -name "WASI.sdk" -type d 2>/dev/null | head -1)
-          TOOLCHAIN=$(dirname $(dirname "$WASM_LD"))
-          echo "=== wasm-ld: $WASM_LD ==="
           echo "=== bin dir: $BIN_DIR ==="
-          echo "=== SDK: $SDK_DIR ==="
-          mkdir -p /tmp/wasm
-          OBJS=$(find "$BIN_DIR" -name "*.o" -type f 2>/dev/null | tr '\n' ' ')
-          echo "=== Objects: $OBJS ==="
-          LIBS=$(find "$TOOLCHAIN/usr/lib/swift_static/wasi" -name "*.a" -type f 2>/dev/null | tr '\n' ' ')
-          echo "=== Swift libs: $LIBS ==="
-          "$WASM_LD" \
-            --no-entry \
-            --export=main \
-            --export-if-defined=_start \
-            --allow-undefined \
-            --strip-all \
-            -L"$SDK_DIR/lib/wasi" \
-            -L"$SDK_DIR/share/wasi-sysroot/lib/wasm32-wasi" \
-            -lc \
-            --whole-archive \
-            $LIBS \
-            --no-whole-archive \
-            $OBJS \
-            -o /tmp/wasm/SiteClient.wasm 2>&1
-          echo "=== WASM output ==="
-          ls -lh /tmp/wasm/SiteClient.wasm 2>/dev/null || echo "LINK FAILED"
-          if [ -n "$WASM_LD" ]; then
-            echo "=== Swift static libs ==="
-            TOOLCHAIN=$(dirname $(dirname "$WASM_LD"))
-            find "$TOOLCHAIN" -path "*/swift_static/wasi/*.a" 2>/dev/null | head -20
+          echo "=== Build products ==="
+          ls -lh "$BIN_DIR/" 2>/dev/null
+          # Check if SwiftPM produced a .wasm directly
+          WASM_FILE=$(find "$BIN_DIR" -name "*.wasm" -type f 2>/dev/null | head -1)
+          if [ -n "$WASM_FILE" ]; then
+            echo "=== WASM found: $WASM_FILE ==="
+            mkdir -p /tmp/wasm
+            cp "$WASM_FILE" /tmp/wasm/SiteClient.wasm
+          else
+            echo "=== No WASM produced by SwiftPM on this architecture ==="
+            echo "=== Object files found: ==="
+            find "$BIN_DIR" -name "*.o" -type f 2>/dev/null | wc -l
           fi
 
       - uses: actions/upload-artifact@v4
