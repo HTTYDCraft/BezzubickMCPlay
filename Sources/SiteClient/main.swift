@@ -659,6 +659,7 @@ let PI = 3.14159265359
 var bgTexture: JSValue = .undefined
 var texWidth = 512.0
 var texHeight = 512.0
+var textureClosures: [JSClosure] = []
 
 let VERTEX_SHADER = """
 #version 300 es
@@ -834,27 +835,54 @@ func compileShader(_ src: String, _ type: Int32) -> JSValue? {
   return s
 }
 
+func createProgram(_ vs: JSValue, _ fs: JSValue) -> JSValue? {
+  let p = glCtx.createProgram()
+  if p.isUndefined { return nil }
+  _ = glCtx.attachShader(p, vs)
+  _ = glCtx.attachShader(p, fs)
+  _ = glCtx.linkProgram(p)
+  guard glCtx.getProgramParameter(p, glCtx.LINK_STATUS).boolean ?? false else { return nil }
+  return p
+}
+
+func resizeCanvas() {
+  let dpr = win.devicePixelRatio.number ?? 1.0
+  let ww = win.innerWidth.number ?? 1
+  let wh = win.innerHeight.number ?? 1
+  lgCanvas.style.width = .string("\(ww)px")
+  lgCanvas.style.height = .string("\(wh)px")
+  lgCanvas.width = .number(ww * dpr)
+  lgCanvas.height = .number(wh * dpr)
+  _ = glCtx.viewport(0, 0, ww * dpr, wh * dpr)
+}
+
+func createGradientCanvas() -> JSValue {
+  let c = JSObject.global.document.createElement("canvas")
+  _ = c.setAttribute("width", "512")
+  _ = c.setAttribute("height", "512")
+  let ctx = c.getContext("2d")
+  let g = ctx.createLinearGradient(0, 0, 512, 512)
+  _ = g.addColorStop(0, "#ff9a9e")
+  _ = g.addColorStop(1, "#fad0c4")
+  ctx.fillStyle = g
+  _ = ctx.fillRect(0, 0, 512, 512)
+  return c
+}
+
 func initWebGL() {
   let docObj = JSObject.global.document
   lgCanvas = docObj.createElement("canvas")
   let canvas = lgCanvas
   if canvas.isUndefined { return }
-  _ = canvas.setAttribute("id", "lg-canvas")
   canvas.style.cssText = .string("position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:-1;display:block;")
   let body: JSValue = docObj.body
   _ = body.insertBefore(canvas, body.firstChild)
   glCtx = canvas.getContext("webgl2")
   if glCtx.isUndefined || glCtx.isNull { return }
 
-  let prog = glCtx.createProgram()
-  if prog.isUndefined { return }
-
   guard let vs = compileShader(VERTEX_SHADER, Int32(glCtx.VERTEX_SHADER.number ?? 0x8B31)),
         let fs = compileShader(FRAGMENT_SHADER, Int32(glCtx.FRAGMENT_SHADER.number ?? 0x8B30)) else { return }
-  _ = glCtx.attachShader(prog, vs)
-  _ = glCtx.attachShader(prog, fs)
-  _ = glCtx.linkProgram(prog)
-  guard glCtx.getProgramParameter(prog, glCtx.LINK_STATUS).boolean ?? false else { return }
+  guard let prog = createProgram(vs, fs) else { return }
   shaderProg = prog
   _ = glCtx.useProgram(prog)
   for name in ["uMVMatrix", "uPMatrix", "uTextureMatrix", "uTexture", "uMaskTexture",
@@ -873,94 +901,84 @@ func initWebGL() {
   if let u = uniformLocs["uTexture"] { _ = glCtx.uniform1i(u, 0) }
   if let u = uniformLocs["uMaskTexture"] { _ = glCtx.uniform1i(u, 1) }
 
-  // Geometry: vec3 pos + vec2 uv = 5 floats per vertex
-  let buf = glCtx.createBuffer()
-  if buf.isUndefined { return }
-  _ = glCtx.bindBuffer(glCtx.ARRAY_BUFFER, buf)
+  setupGeometry()
+  setupTextures()
+  resizeCanvas()
+}
+
+func setupGeometry() {
   let vertData: [Double] = [-1,-1,0, 0,0,  1,-1,0, 1,0,  -1,1,0, 0,1,  1,1,0, 1,1]
+  let buf = glCtx.createBuffer()
+  _ = glCtx.bindBuffer(glCtx.ARRAY_BUFFER, buf)
   _ = glCtx.bufferData(glCtx.ARRAY_BUFFER, vertData.jsValue, glCtx.STATIC_DRAW)
 
-  let posL = glCtx.getAttribLocation(prog, "aVertexPosition").number ?? 0
-  let uvL = glCtx.getAttribLocation(prog, "aTextureCoord").number ?? 0
+  let posL = glCtx.getAttribLocation(shaderProg, "aVertexPosition").number ?? 0
+  let uvL = glCtx.getAttribLocation(shaderProg, "aTextureCoord").number ?? 0
   _ = glCtx.enableVertexAttribArray(posL)
-  _ = glCtx.vertexAttribPointer(posL, 3, glCtx.FLOAT, false, 20, 0)
+  _ = glCtx.vertexAttribPointer(posL, 3, glCtx.FLOAT, false, 5 * 4, 0)
   _ = glCtx.enableVertexAttribArray(uvL)
-  _ = glCtx.vertexAttribPointer(uvL, 2, glCtx.FLOAT, false, 20, 12)
+  _ = glCtx.vertexAttribPointer(uvL, 2, glCtx.FLOAT, false, 5 * 4, 3 * 4)
+}
 
-  // Create mask texture (white = fully opaque)
-  let maskCanvas = docObj.createElement("canvas")
-  _ = maskCanvas.setAttribute("width", "512")
-  _ = maskCanvas.setAttribute("height", "512")
-  let maskCtx = maskCanvas.getContext("2d")
-  maskCtx.fillStyle = .string("#ffffff")
-  _ = maskCtx.fillRect(0, 0, 512, 512)
-  _ = glCtx.activeTexture(glCtx.TEXTURE1)
-  let maskTex = glCtx.createTexture()
-  _ = glCtx.bindTexture(glCtx.TEXTURE_2D, maskTex)
+func createTexture(_ unit: Int32, _ source: JSValue) {
+  _ = glCtx.activeTexture(glCtx.TEXTURE0 + unit)
+  let t = glCtx.createTexture()
+  _ = glCtx.bindTexture(glCtx.TEXTURE_2D, t)
   _ = glCtx.pixelStorei(glCtx.UNPACK_FLIP_Y_WEBGL, 1)
-  _ = glCtx.texImage2D(glCtx.TEXTURE_2D, 0, glCtx.RGBA, glCtx.RGBA, glCtx.UNSIGNED_BYTE, maskCanvas)
   _ = glCtx.texParameteri(glCtx.TEXTURE_2D, glCtx.TEXTURE_MIN_FILTER, glCtx.LINEAR)
   _ = glCtx.texParameteri(glCtx.TEXTURE_2D, glCtx.TEXTURE_MAG_FILTER, glCtx.LINEAR)
   _ = glCtx.texParameteri(glCtx.TEXTURE_2D, glCtx.TEXTURE_WRAP_S, glCtx.CLAMP_TO_EDGE)
   _ = glCtx.texParameteri(glCtx.TEXTURE_2D, glCtx.TEXTURE_WRAP_T, glCtx.CLAMP_TO_EDGE)
+  _ = glCtx.texImage2D(glCtx.TEXTURE_2D, 0, glCtx.RGBA, glCtx.RGBA, glCtx.UNSIGNED_BYTE, source)
+}
 
-  // Create initial background texture (procedural — looks good with glass refraction)
-  let bgCanvas = docObj.createElement("canvas")
-  _ = bgCanvas.setAttribute("width", "512")
-  _ = bgCanvas.setAttribute("height", "512")
-  let bgCtx = bgCanvas.getContext("2d")
-  // Dark base
-  bgCtx.fillStyle = .string("#0d0d1a")
-  _ = bgCtx.fillRect(0, 0, 512, 512)
-  // Large colorful blobs for refraction features
-  let colors = ["#6b2fa0", "#2563eb", "#0891b2", "#7c3aed", "#db2777"]
-  for i in 0..<5 {
-    let cx = 512.0 * (0.15 + 0.7 * Double(i) / 4.0 + 0.05 * ((JSObject.global.Math.random()).number ?? 0))
-    let cy = 200.0 + 200.0 * ((JSObject.global.Math.random()).number ?? 0)
-    let r = 80.0 + 120.0 * ((JSObject.global.Math.random()).number ?? 0)
-    let rad = bgCtx.createRadialGradient(cx, cy, 0, cx, cy, r)
-    _ = rad.addColorStop(0, colors[i])
-    _ = rad.addColorStop(1, "transparent")
-    bgCtx.fillStyle = rad
-    _ = bgCtx.fillRect(Int(cx - r), Int(cy - r), Int(2 * r), Int(2 * r))
-  }
-  // Scattered bright dots for starfield effect
-  for _ in 0..<200 {
-    let x = 512.0 * ((JSObject.global.Math.random()).number ?? 0)
-    let y = 512.0 * ((JSObject.global.Math.random()).number ?? 0)
-    let s = 1.0 + 2.0 * ((JSObject.global.Math.random()).number ?? 0)
-    let a = 0.3 + 0.7 * ((JSObject.global.Math.random()).number ?? 0)
-    bgCtx.fillStyle = .string("rgba(255,255,255,\(a))")
-    _ = bgCtx.fillRect(Int(x), Int(y), Int(s), Int(s))
-  }
-  _ = glCtx.activeTexture(glCtx.TEXTURE0)
-  let texture = glCtx.createTexture()
-  bgTexture = texture
-  _ = glCtx.bindTexture(glCtx.TEXTURE_2D, texture)
-  _ = glCtx.pixelStorei(glCtx.UNPACK_FLIP_Y_WEBGL, 1)
-  _ = glCtx.texImage2D(glCtx.TEXTURE_2D, 0, glCtx.RGBA, glCtx.RGBA, glCtx.UNSIGNED_BYTE, bgCanvas)
-  _ = glCtx.texParameteri(glCtx.TEXTURE_2D, glCtx.TEXTURE_MIN_FILTER, glCtx.LINEAR)
-  _ = glCtx.texParameteri(glCtx.TEXTURE_2D, glCtx.TEXTURE_MAG_FILTER, glCtx.LINEAR)
-  _ = glCtx.texParameteri(glCtx.TEXTURE_2D, glCtx.TEXTURE_WRAP_S, glCtx.CLAMP_TO_EDGE)
-  _ = glCtx.texParameteri(glCtx.TEXTURE_2D, glCtx.TEXTURE_WRAP_T, glCtx.CLAMP_TO_EDGE)
+func createMaskCanvas() -> JSValue {
+  let c = JSObject.global.document.createElement("canvas")
+  _ = c.setAttribute("width", "512")
+  _ = c.setAttribute("height", "512")
+  let ctx = c.getContext("2d")
+  ctx.fillStyle = .string("#ffffff")
+  _ = ctx.fillRect(0, 0, 512, 512)
+  return c
+}
 
-  texWidth = 512
-  texHeight = 512
+func setupTextures() {
+  // Create mask texture (unit 1)
+  let maskCanvas = createMaskCanvas()
+  createTexture(1, maskCanvas)
+
+  // Try to load default background image (Unsplash), fallback to gradient
+  let img = JSObject.global.document.createElement("img")
+  img.crossOrigin = .string("anonymous")
+  let loadHandler = JSClosure { _ in
+    createTexture(0, img)
+    texWidth = (img.width.number ?? 512).toDouble()
+    texHeight = (img.height.number ?? 512).toDouble()
+    textureClosures.removeAll()
+    return .undefined
+  }
+  let errorHandler = JSClosure { _ in
+    console.warn("Failed to load default background image, falling back to gradient")
+    let grad = createGradientCanvas()
+    createTexture(0, grad)
+    texWidth = 512
+    texHeight = 512
+    textureClosures.removeAll()
+    return .undefined
+  }
+  textureClosures = [loadHandler, errorHandler]
+  img.onload = .object(loadHandler)
+  img.onerror = .object(errorHandler)
+  img.src = .string("https://plus.unsplash.com/premium_photo-1677094766116-aa0f8742d36b?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")
+}
+
+func createUniform1f(_ name: String, _ val: Float) {
+  if let u = uniformLocs[name] { _ = glCtx.uniform1f(u, val) }
 }
 
 func renderFrame() {
   if glCtx.isUndefined || shaderProg.isUndefined { return }
-  let dpr = win.devicePixelRatio.number ?? 1.0
-  let ww = win.innerWidth.number ?? 1
-  let wh = win.innerHeight.number ?? 1
 
-  if !lgCanvas.isUndefined {
-    lgCanvas.width = .number(ww * dpr)
-    lgCanvas.height = .number(wh * dpr)
-  }
-
-  _ = glCtx.viewport(0, 0, ww * dpr, wh * dpr)
-  _ = glCtx.clearColor(0, 0, 0, 0)
   _ = glCtx.clear(glCtx.COLOR_BUFFER_BIT)
 
   // Smooth mouse
@@ -968,22 +986,25 @@ func renderFrame() {
   smoothMouseY += (targetMouseY - smoothMouseY) * SMOOTHING
 
   // Set uniforms
-  if let u = uniformLocs["uResolution"] { _ = glCtx.uniform2f(u, ww * dpr, wh * dpr) }
-  if let u = uniformLocs["uTextureResolution"] { _ = glCtx.uniform2f(u, texWidth, texHeight) }
-  if let u = uniformLocs["uMousePos"] { _ = glCtx.uniform2f(u, smoothMouseX, smoothMouseY) }
-  if let u = uniformLocs["uTMousePos"] { _ = glCtx.uniform2f(u, targetMouseX, targetMouseY) }
-  if let u = uniformLocs["uRadius"] { _ = glCtx.uniform1f(u, 0.3) }
-  if let u = uniformLocs["uDistort"] { _ = glCtx.uniform1f(u, 2.3) }
-  if let u = uniformLocs["uDispersion"] { _ = glCtx.uniform1f(u, 0.7) }
-  if let u = uniformLocs["uRotSpeed"] { _ = glCtx.uniform1f(u, 1.0) }
-  if let u = uniformLocs["uShadowIntensity"] { _ = glCtx.uniform1f(u, 0.3) }
-  if let u = uniformLocs["uShadowOffsetX"] { _ = glCtx.uniform1f(u, 0.01) }
-  if let u = uniformLocs["uShadowOffsetY"] { _ = glCtx.uniform1f(u, 0.08) }
-  if let u = uniformLocs["uShadowBlur"] { _ = glCtx.uniform1f(u, 0.4) }
-  if let u = uniformLocs["uHighlightIntensity"] { _ = glCtx.uniform1f(u, 0.4) }
-  if let u = uniformLocs["uHighlightSize"] { _ = glCtx.uniform1f(u, 1.25) }
-  if let u = uniformLocs["uHighlightOffsetX"] { _ = glCtx.uniform1f(u, 0.01) }
-  if let u = uniformLocs["uHighlightOffsetY"] { _ = glCtx.uniform1f(u, 0.03) }
+  let cw = lgCanvas.width.number ?? 1
+  let ch = lgCanvas.height.number ?? 1
+  if let u = uniformLocs["uResolution"] { _ = glCtx.uniform2f(u, Float(cw), Float(ch)) }
+  if let u = uniformLocs["uTextureResolution"] { _ = glCtx.uniform2f(u, Float(texWidth), Float(texHeight)) }
+  if let u = uniformLocs["uMousePos"] { _ = glCtx.uniform2f(u, Float(smoothMouseX), Float(smoothMouseY)) }
+  if let u = uniformLocs["uTMousePos"] { _ = glCtx.uniform2f(u, Float(targetMouseX), Float(targetMouseY)) }
+
+  createUniform1f("uRadius", 0.3)
+  createUniform1f("uDistort", 2.3)
+  createUniform1f("uDispersion", 0.7)
+  createUniform1f("uRotSpeed", 1.0)
+  createUniform1f("uShadowIntensity", 0.3)
+  createUniform1f("uShadowOffsetX", 0.01)
+  createUniform1f("uShadowOffsetY", 0.08)
+  createUniform1f("uShadowBlur", 0.4)
+  createUniform1f("uHighlightIntensity", 0.4)
+  createUniform1f("uHighlightSize", 1.25)
+  createUniform1f("uHighlightOffsetX", 0.01)
+  createUniform1f("uHighlightOffsetY", 0.03)
 
   _ = glCtx.drawArrays(glCtx.TRIANGLE_STRIP, 0, 4)
 }
@@ -1035,6 +1056,9 @@ func setupMouseTracking() {
   smoothMouseY = targetMouseY
   _ = win.addEventListener("mousemove", fn)
   _ = win.addEventListener("touchmove", fn)
+
+  let resizeFn = JSClosure { _ in resizeCanvas(); return .undefined }
+  _ = win.addEventListener("resize", resizeFn)
 }
 
 func observeGlassState() {
