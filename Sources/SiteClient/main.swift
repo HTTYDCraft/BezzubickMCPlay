@@ -946,7 +946,6 @@ func loadBackgroundImage() {
     return .undefined
   }
   let onerror = JSClosure { _ in
-    _ = JSObject.global.console.warn!("[LiquidGlass] Failed to load background image, using gradient")
     closureStore["bgOnload"] = nil
     closureStore["bgOnerror"] = nil
     return .undefined
