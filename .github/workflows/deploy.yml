@@ -70,18 +70,29 @@ jobs:
             "https://download.swift.org/swift-6.3.2-release/wasm-sdk/swift-6.3.2-RELEASE/swift-6.3.2-RELEASE_wasm.artifactbundle.tar.gz" \
             --checksum a61f0584c93283589f8b2f42db05c1f9a182b506c2957271402992655591dd7c
 
-      - name: Build SiteClient WASM (verbose)
+      - name: Build SiteClient WASM
+        run: swift build --swift-sdk swift-6.3.2-RELEASE_wasm --target SiteClient -c release
+
+      - name: Manual WASM link
         run: |
-          echo "=== SDK list ==="
-          swift sdk list 2>/dev/null || true
-          echo "=== SDK config ==="
-          find ~/.swiftpm -name "*.json" -path "*wasm*" 2>/dev/null | head -5
-          echo "=== Verbose build ==="
-          swift build --swift-sdk swift-6.3.2-RELEASE_wasm --target SiteClient -c release -v 2>&1 | tee /tmp/build.log
-          echo "=== Linker invocation ==="
-          grep -i "wasm-ld\|link.*wasm\|\.wasm" /tmp/build.log || echo "No linker invocation found"
-          echo "=== .wasm or binary output files ==="
-          find .build -type f \( -name "*.wasm" -o -name "SiteClient" \) 2>/dev/null | head -10 || true
+          BIN_DIR=$(swift build --swift-sdk swift-6.3.2-RELEASE_wasm -c release --show-bin-path 2>/dev/null)
+          WASM_LD=$(which wasm-ld 2>/dev/null || find /home/runner/.local/share/swiftly -name wasm-ld 2>/dev/null | head -1)
+          echo "=== wasm-ld: $WASM_LD ==="
+          echo "=== bin dir: $BIN_DIR ==="
+          echo "=== All object files ==="
+          find "$BIN_DIR" -name "*.o" -type f 2>/dev/null
+          echo "=== SDK sysroot ==="
+          SDK_DIR=$(find ~/.config/swiftpm/swift-sdks -maxdepth 3 -name "WASI.sdk" -type d 2>/dev/null | head -1 || \
+                    find ~/Library/org.swift.swiftpm/swift-sdks -maxdepth 3 -name "WASI.sdk" -type d 2>/dev/null | head -1)
+          echo "SDK_DIR=$SDK_DIR"
+          if [ -n "$SDK_DIR" ]; then
+            ls -la "$SDK_DIR/lib/" 2>/dev/null | head -20
+          fi
+          if [ -n "$WASM_LD" ]; then
+            echo "=== Swift static libs ==="
+            TOOLCHAIN=$(dirname $(dirname "$WASM_LD"))
+            find "$TOOLCHAIN" -path "*/swift_static/wasi/*.a" 2>/dev/null | head -20
+          fi
 
       - uses: actions/upload-artifact@v4
         with:
