@@ -958,8 +958,7 @@ func setupTextures() {
     return .undefined
   }
   let errorHandler = JSClosure { _ in
-    let jsConsole = JSObject.global.console
-    _ = jsConsole.warn!("Failed to load default background image, falling back to gradient")
+    print("Failed to load default background image, falling back to gradient")
     let grad = createGradientCanvas()
     createTexture(0, grad)
     texWidth = 512
