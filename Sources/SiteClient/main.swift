@@ -946,7 +946,7 @@ func loadBackgroundImage() {
     return .undefined
   }
   let onerror = JSClosure { _ in
-    console.warn("[LiquidGlass] Failed to load background image, using gradient")
+    _ = JSObject.global.console.warn!("[LiquidGlass] Failed to load background image, using gradient")
     closureStore["bgOnload"] = nil
     closureStore["bgOnerror"] = nil
     return .undefined
@@ -954,8 +954,8 @@ func loadBackgroundImage() {
 
   closureStore["bgOnload"] = onload
   closureStore["bgOnerror"] = onerror
-  img.onload = onload
-  img.onerror = onerror
+  img.onload = onload.jsValue
+  img.onerror = onerror.jsValue
   img.src = .string("https://plus.unsplash.com/premium_photo-1677094766116-aa0f8742d36b?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")
 }
 
