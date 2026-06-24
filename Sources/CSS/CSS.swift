@@ -48,20 +48,18 @@ public struct CSSBlockBuilder {
 // MARK: - Stylesheet
 
 public struct Stylesheet {
-    public let rules: [CSSSelector]
-    public let rawBlocks: [String]
+    public let items: [StylesheetItem]
 
     public init(@StylesheetBuilder _ content: () -> [StylesheetItem]) {
-        let items = content()
-        self.rules = items.compactMap { $0 as? CSSSelector }
-        self.rawBlocks = items.compactMap { ($0 as? RawCSS)?.raw }
+        self.items = content()
     }
 
     public func render() -> String {
-        var out: [String] = []
-        out.append(contentsOf: rawBlocks)
-        out.append(contentsOf: rules.map(\.css))
-        return out.joined(separator: "\n")
+        items.map { item -> String in
+            if let sel = item as? CSSSelector { return sel.css }
+            if let raw = item as? RawCSS { return raw.raw }
+            return ""
+        }.joined(separator: "\n")
     }
 }
 
