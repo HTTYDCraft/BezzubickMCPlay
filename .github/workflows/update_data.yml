@@ -5,46 +5,23 @@ on:
   schedule:
     - cron: '*/5 * * * *'
 
-permissions:
-  contents: write
-
 concurrency:
-  group: update-social-data
+  group: gh-pages-deploy
   cancel-in-progress: false
 
 jobs:
   update-data:
-    runs-on: macos-15
-    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Force Modern Xcode and Swift
+      - uses: vapor/swiftly-action@v0.2
+
+      - name: Install Swift 6.3.2
         run: |
-          ls -d /Applications/Xcode*.app
-          if [ -d "/Applications/Xcode_26.3.app" ]; then
-            sudo xcode-select -s /Applications/Xcode_26.3.app/Contents/Developer
-          elif [ -d "/Applications/Xcode_26.2.app" ]; then
-            sudo xcode-select -s /Applications/Xcode_26.2.app/Contents/Developer
-          elif [ -d "/Applications/Xcode_26.1.app" ]; then
-            sudo xcode-select -s /Applications/Xcode_26.1.app/Contents/Developer
-          elif [ -d "/Applications/Xcode_26.0.app" ]; then
-            sudo xcode-select -s /Applications/Xcode_26.0.app/Contents/Developer
-          elif [ -d "/Applications/Xcode_16.4.app" ]; then
-            sudo xcode-select -s /Applications/Xcode_16.4.app/Contents/Developer
-          elif [ -d "/Applications/Xcode_16.3.app" ]; then
-            sudo xcode-select -s /Applications/Xcode_16.3.app/Contents/Developer
-          else
-            best=$(ls -d /Applications/Xcode*.app 2>/dev/null | sort -V | tail -1)
-            if [ -n "$best" ]; then
-              sudo xcode-select -s "$best/Contents/Developer"
-            fi
-          fi
-          swift --version
-
-      - name: Resolve dependencies
-        run: swift package resolve
+          swiftly install 6.3.2
+          swiftly use 6.3.2
 
       - name: Run UpdateData
         env:
@@ -74,3 +51,15 @@ jobs:
           git add data.json streams_history.json
           git diff --staged --quiet || git commit -m "Auto-update data.json + streams_history.json"
           git push
+
+      - name: Deploy updated data files to GitHub Pages
+        run: |
+          mkdir -p /tmp/data-deploy
+          cp data.json /tmp/data-deploy/
+          cp streams_history.json /tmp/data-deploy/
+
+      - uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: /tmp/data-deploy
+          keep_files: true

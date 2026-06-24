@@ -3,12 +3,14 @@ name: Deploy Site + WASM
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - 'data.json'
+      - 'streams_history.json'
   workflow_dispatch:
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+concurrency:
+  group: gh-pages-deploy
+  cancel-in-progress: false
 
 jobs:
   build-site:
@@ -45,8 +47,8 @@ jobs:
       - name: Copy resource files
         run: |
           cp -r Resources/assets Output/assets 2>/dev/null || true
-          cp data.json Output/data.json 2>/dev/null || true
-          cp streams_history.json Output/streams_history.json 2>/dev/null || true
+          cp data.json Output/data.json
+          cp streams_history.json Output/streams_history.json
 
       - uses: actions/upload-artifact@v4
         with:
@@ -60,17 +62,15 @@ jobs:
 
       - uses: vapor/swiftly-action@v0.2
 
-      - name: Install system dependencies and Swift 6.3.2
+      - name: Install Swift 6.3.2
         run: |
-          sudo apt-get update
-          sudo apt-get install -y libcurl4-openssl-dev
           swiftly install 6.3.2
           swiftly use 6.3.2
 
       - name: Install Swift SDK for WASM
         run: |
           swift sdk install \
-            "https://download.swift.org/swift-6.3.2-release/wasm-sdk/swift-6.3.2-RELEASE/swift-6.3.2-RELEASE_wasm.artifactbundle.tar.gz" \
+            "https://download.swift.org/swift-6.3.2-release/wasm-sdk/swift-6.3.2-RELEASE_wasm.artifactbundle.tar.gz" \
             --checksum a61f0584c93283589f8b2f42db05c1f9a182b506c2957271402992655591dd7c
 
       - name: Build SiteClient WASM
@@ -93,12 +93,9 @@ jobs:
           path: /tmp/wasm/SiteClient.wasm
           if-no-files-found: ignore
 
-  deploy:
+  merge-deploy:
     needs: [build-site, build-wasm]
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -121,9 +118,7 @@ jobs:
             echo "No WASM, deploying site only"
           fi
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: peaceiris/actions-gh-pages@v4
         with:
-          path: ./Output
-
-      - id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./Output
