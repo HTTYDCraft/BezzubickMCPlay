@@ -284,9 +284,9 @@ var streamEvents: [String: (yt: Bool, tw: Bool, ytUrl: String, twUrl: String)] =
 let DateObj = JSObject.global.Date.object!
 
 func setupCalendar() {
-  let now = DateObj.new()
-  calYear = Int(now.getFullYear!().number ?? 0)
-  calMonth = Int(now.getMonth!().number ?? 0)
+  let now = DateObj.new!()
+  calYear = Int(now.getFullYear().number ?? 0)
+  calMonth = Int(now.getMonth().number ?? 0)
 
   let prev = doc.getElementById("cal-prev")
   if !prev.isUndefined {
@@ -319,22 +319,22 @@ func renderCal() {
   let head = doc.getElementById("cal-weekdays")
   if !head.isUndefined { head.innerHTML = .string(wdays.map { "<div>\($0)</div>" }.joined(separator: "")) }
 
-  let firstDow = DateObj.new(calYear, calMonth, 1)
-  let startDow = ((Int(firstDow.getDay!().number ?? 0)) + 6) % 7
-  let daysInMonth = Int(DateObj.new(calYear, calMonth + 1, 0).getDate!().number ?? 30)
+  let firstDow = DateObj.new!(calYear, calMonth, 1)
+  let startDow = ((Int(firstDow.getDay().number ?? 0)) + 6) % 7
+  let daysInMonth = Int(DateObj.new!(calYear, calMonth + 1, 0).getDate().number ?? 30)
 
-  let today = DateObj.new()
-  _ = today.setHours!(0, 0, 0, 0)
-  let todayTime = today.getTime!().number ?? 0
+  let today = DateObj.new!()
+  _ = today.setHours(0, 0, 0, 0)
+  let todayTime = today.getTime().number ?? 0
 
   var html = ""
   for _ in 0..<startDow { html += "<div></div>" }
   for d in 1...daysInMonth {
-    let dt = DateObj.new(calYear, calMonth, d)
-    let dtTime = dt.getTime!().number ?? 0
+    let dt = DateObj.new!(calYear, calMonth, d)
+    let dtTime = dt.getTime().number ?? 0
     let isToday = dtTime == todayTime
     let isPast = dtTime < todayTime
-    let dow = ((Int(dt.getDay!().number ?? 0)) + 6) % 7
+    let dow = ((Int(dt.getDay().number ?? 0)) + 6) % 7
     var cls: [String] = ["cell"]
     if dow == 4 { cls.append("fri") }
     if isToday { cls.append("today") }
@@ -362,7 +362,7 @@ func renderCal() {
 let fetchFn = JSObject.global.fetch.object!
 
 func jsFetch(_ url: String) async -> JSValue? {
-  guard let respObj = fetchFn(url).object,
+  guard let respObj = fetchFn!(url).object,
         let promise = JSPromise(respObj) else { return nil }
   return try? await promise.value
 }
@@ -374,7 +374,7 @@ func jsJSON(_ resp: JSValue) async -> JSValue? {
 }
 
 func fetchData() async {
-  let ts = Int(DateObj.new().getTime!().number ?? 0)
+  let ts = Int(DateObj.new!().getTime().number ?? 0)
 
   guard let resp = await jsFetch("/data.json?t=\(ts)"),
         resp.ok.boolean ?? false,
@@ -415,7 +415,7 @@ func fetchData() async {
     renderLinksPage(json: json)
   }
 
-  let ts2 = Int(DateObj.new().getTime!().number ?? 0)
+  let ts2 = Int(DateObj.new!().getTime().number ?? 0)
   guard let resp2 = await jsFetch("/streams_history.json?t=\(ts2)"),
         resp2.ok.boolean ?? false,
         let hist = await jsJSON(resp2) else { return }
@@ -611,13 +611,13 @@ func setupDevView() {
       if !content.isUndefined { content.textContent = .string("{}") }
       let upd = docObj.getElementById("dev-last-updated")
       if !upd.isUndefined {
-        let now = DateObj.new()
-        let y = Int(now.getFullYear!().number ?? 0)
-        let m = Int(now.getMonth!().number ?? 0) + 1
-        let d = Int(now.getDate!().number ?? 0)
-        let hh = Int(now.getHours!().number ?? 0)
-        let mm = Int(now.getMinutes!().number ?? 0)
-        let ss = Int(now.getSeconds!().number ?? 0)
+        let now = DateObj.new!()
+        let y = Int(now.getFullYear().number ?? 0)
+        let m = Int(now.getMonth().number ?? 0) + 1
+        let d = Int(now.getDate().number ?? 0)
+        let hh = Int(now.getHours().number ?? 0)
+        let mm = Int(now.getMinutes().number ?? 0)
+        let ss = Int(now.getSeconds().number ?? 0)
         upd.textContent = .string("\(y)-\(zeroPad(m, 2))-\(zeroPad(d, 2))T\(zeroPad(hh, 2)):\(zeroPad(mm, 2)):\(zeroPad(ss, 2))")
       }
     }
@@ -866,11 +866,11 @@ func observeGlassState() {
     if isGlass { startRendering() } else { stopRendering() }
     return .undefined
   }
-  let observer = ObsCtor.new(cb)
+  let observer = ObsCtor.new!(cb)
   let config = JSObject()
   config["attributes"] = .boolean(true)
   config["attributeFilter"] = ["class"].jsValue
-  _ = observer.observe!(body, .object(config))
+  _ = observer.observe(body, .object(config))
   let isGlass = (body.classList.contains("glass-dark").boolean ?? false) || (body.classList.contains("glass-light").boolean ?? false)
   if isGlass { startRendering() }
 }
