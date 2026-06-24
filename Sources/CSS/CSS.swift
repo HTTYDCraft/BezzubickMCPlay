@@ -88,7 +88,7 @@ public func media(_ query: String, @StylesheetBuilder _ content: () -> [Styleshe
         if let raw = item as? RawCSS { return raw.raw }
         return ""
     }.joined(separator: " ")
-    return RawCSS("@media(\(query)){\(inner)}")
+    return RawCSS("@media (\(query)) {\(inner)}")
 }
 
 public func nested(_ parent: String, @StylesheetBuilder _ content: () -> [StylesheetItem]) -> RawCSS {

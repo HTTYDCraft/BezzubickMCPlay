@@ -61,19 +61,14 @@ links:
     showCount: true
     platform: "vk_personal"
 
-# Кнопки поддержки (главная страница)
+# Кнопки на главной странице (шапка)
 heroButtons:
   - label: "Подписаться на YouTube"
     url: "https://www.youtube.com/channel/UCm6mheCT60mZ5qlxG5r2GeA?sub_confirmation=1"
     icon: "subscriptions"
     style: "support"
 
-  - label: "Telegram"
-    url: "https://t.me/bezzubickmcplay"
-    icon: "send"
-    style: "support"
-
-  - label: "Поддержать"
-    url: "https://www.donationalerts.com/r/bezzubickmcplay"
-    icon: "favorite"
+  - label: "Мои соцсети"
+    url: "/links/"
+    icon: "link"
     style: "support"

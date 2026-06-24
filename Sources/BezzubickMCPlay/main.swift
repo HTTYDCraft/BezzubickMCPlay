@@ -149,7 +149,14 @@ func parseLinks() -> ([LinkItem], [HeroBtn]) {
     for line in raw.components(separatedBy: "\n") {
         let t = line.trimmingCharacters(in: .whitespaces)
         if t == "links:" { section = "links"; continue }
-        if t == "heroButtons:" { section = "hero"; continue }
+        if t == "heroButtons:" {
+            if section == "links" && !cur.isEmpty, let l = cur["label"] {
+                links.append(LinkItem(label: l, url: cur["url"] ?? "", icon: cur["icon"] ?? "link",
+                                      platform: cur["platform"] ?? "", order: true, showCount: cur["showCount"] == "true", count: 0))
+                cur = [:]
+            }
+            section = "hero"; continue
+        }
         if section == "links" && t.hasPrefix("- ") {
             if !cur.isEmpty, let l = cur["label"] {
                 links.append(LinkItem(label: l, url: cur["url"] ?? "", icon: cur["icon"] ?? "link",
@@ -165,7 +172,11 @@ func parseLinks() -> ([LinkItem], [HeroBtn]) {
         }
         if t.contains(":") {
             let p = t.split(separator: ":", maxSplits: 1).map { $0.trimmingCharacters(in: .whitespaces) }
-            if p.count == 2 { cur[p[0]] = p[1].trimmingCharacters(in: CharacterSet(charactersIn: "\"")) }
+            if p.count == 2 {
+                var key = p[0]
+                if key.hasPrefix("- ") { key = String(key.dropFirst(2)) }
+                cur[key] = p[1].trimmingCharacters(in: CharacterSet(charactersIn: "\""))
+            }
         }
     }
     if !cur.isEmpty, let l = cur["label"] {
@@ -251,9 +262,6 @@ setTxt('legend-missed',s.legendMissed);
 setTxt('twitch-text',s.twitchAlso);setTxt('twitch-cta',s.twitchCta);
 setTxt('go-links-text',s.navCta);
 setTxt('go-links-btn-text-2',s.navCta);
-var ytBtn=document.getElementById('cta-ytsub');if(ytBtn)ytBtn.style.display='';
-var tgBtn=document.getElementById('cta-telegram');if(tgBtn)tgBtn.style.display='';
-var spBtn=document.getElementById('cta-support');if(spBtn)spBtn.style.display='';
 updateLangContent();
 }
 function setTxt(id,val){var e=document.getElementById(id);if(e&&val)e.textContent=val;}
@@ -506,7 +514,8 @@ struct BezzubickHTMLFactory: HTMLFactory {
         }
 
         let heroBtns: [Node<HTML.BodyContext>] = heroes.map { btn in
-            .a(.id("cta-\(btn.label.hashValue)"), .href(btn.url),
+            let href = btn.url.hasPrefix("/") ? "\(baseURL)\(btn.url)" : btn.url
+            return .a(.id("cta-\(btn.label.hashValue)"), .href(href),
                .class("rounded-full px-6 py-3 font-medium m3-shadow-md \(btn.style == "support" ? "support-button" : "primary-button")"),
                .span(.class("material-symbols-outlined"), .text(btn.icon)),
                .span(.text(btn.label)))
