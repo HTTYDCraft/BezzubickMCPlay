@@ -867,19 +867,20 @@ func initWebGL() {
     _ = grad.addColorStop(0, "#0a0a0f")
     _ = grad.addColorStop(1, "#0d0d1a")
   } else {
-    _ = grad.addColorStop(0, "#ffffff")
-    _ = grad.addColorStop(1, "#f0f0f5")
+    _ = grad.addColorStop(0, "#e8e0f0")
+    _ = grad.addColorStop(1, "#f5f0ff")
   }
   texCtx.fillStyle = grad
   _ = texCtx.fillRect(0, 0, 512, 512)
   // Add noise for detail so refraction is visible
-  let math = JSObject.global.Math
-  for _ in 0..<3000 {
-    let x = (math.random!().number ?? 0) * 512
-    let y = (math.random!().number ?? 0) * 512
-    let a = (math.random!().number ?? 0) * 0.06
-    texCtx.fillStyle = .string("rgba(255,255,255,\(a))")
-    _ = texCtx.fillRect(x, y, 2, 2)
+  for _ in 0..<5000 {
+    let x = (JSObject.global.Math.random()).number ?? 0
+    let y = (JSObject.global.Math.random()).number ?? 0
+    let r = (JSObject.global.Math.random()).number ?? 0
+    let a = isDark ? (r * 0.06) : (r * 0.15 + 0.05)
+    let c = isDark ? "255,255,255" : "100,80,160"
+    texCtx.fillStyle = .string("rgba(\(c),\(a))")
+    _ = texCtx.fillRect(x * 512, y * 512, 2, 2)
   }
   let texture = glCtx.createTexture()
   _ = glCtx.activeTexture(glCtx.TEXTURE0)
@@ -890,8 +891,6 @@ func initWebGL() {
   _ = glCtx.texParameteri(glCtx.TEXTURE_2D, glCtx.TEXTURE_WRAP_S, glCtx.CLAMP_TO_EDGE)
   _ = glCtx.texParameteri(glCtx.TEXTURE_2D, glCtx.TEXTURE_WRAP_T, glCtx.CLAMP_TO_EDGE)
   if let u = uniformLocs["uTexture"] { _ = glCtx.uniform1i(u, 0) }
-
-  startTime = DateObj.new().getTime!().number ?? 0
 }
 
 func renderFrame() {

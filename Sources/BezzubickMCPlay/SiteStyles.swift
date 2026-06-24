@@ -493,6 +493,7 @@ public let siteStylesheet: Stylesheet = Stylesheet {
     }
 
     CSSSelector(".card") {
+        borderRadius("16px")
         transition("transform .2s ease, box-shadow .2s ease")
         prop("-webkit-tap-highlight-color", "rgba(187,134,252,.25)")
         prop("will-change", "transform")
