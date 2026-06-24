@@ -1008,7 +1008,7 @@ public let siteStylesheet: Stylesheet = Stylesheet {
 
     // MARK: - Media Queries
 
-    media("min-width: 992px") {
+    media("min-width: 768px") {
         CSSSelector("#timeline") {
             maxWidth("980px")
             margin("8px auto 0")

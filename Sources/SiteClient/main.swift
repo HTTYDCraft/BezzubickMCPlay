@@ -648,7 +648,6 @@ var targetMouseX = 0.5
 var targetMouseY = 0.5
 let SMOOTHING = 0.05
 let PI = 3.14159265359
-var startTime = 0.0
 
 let VERTEX_SHADER = """
 #version 300 es
@@ -667,6 +666,7 @@ let FRAGMENT_SHADER = """
 precision highp float;
 in vec2 vUV;
 out vec4 fragColor;
+uniform sampler2D uTexture;
 uniform vec2 uResolution;
 uniform vec2 uMousePos;
 uniform vec2 uTMousePos;
@@ -682,12 +682,23 @@ uniform float uHighlightIntensity;
 uniform float uHighlightSize;
 uniform float uHighlightOffsetX;
 uniform float uHighlightOffsetY;
-uniform float uDark;
-uniform float uTime;
 const float PI = 3.14159265359;
 mat2 rot(float a) {
     float c = cos(a), s = sin(a);
     return mat2(c, -s, s, c);
+}
+vec2 getAspectCorrectedUV(vec2 uv, out bool isOutOfBounds) {
+    float textureAspect = 1.0;
+    float screenAspect = uResolution.x / uResolution.y;
+    vec2 scale = vec2(1.0);
+    if (textureAspect > screenAspect) {
+        scale.y = textureAspect / screenAspect;
+    } else {
+        scale.x = screenAspect / textureAspect;
+    }
+    vec2 correctedUV = (uv - 0.5) * scale + 0.5;
+    isOutOfBounds = correctedUV.x < 0.0 || correctedUV.x > 1.0 || correctedUV.y < 0.0 || correctedUV.y > 1.0;
+    return correctedUV;
 }
 float sdCircle(vec2 uv, float r) {
     return length(uv) - r;
@@ -732,12 +743,7 @@ float getHighlight(vec2 uv, vec2 lightPos) {
     float attenuation = 1.0 - smoothstep(0.0, 1.0, distanceFromLight);
     return highlight * uHighlightIntensity * attenuation;
 }
-vec3 bgGradient(vec2 uv) {
-    vec3 a = mix(vec3(0.02,0.02,0.06), vec3(0.88,0.86,0.95), uDark);
-    vec3 b = mix(vec3(0.06,0.03,0.12), vec3(0.95,0.90,0.92), uDark);
-    return mix(a, b, uv.y*0.5+0.5+sin(uv.x*2.0+uTime)*0.1);
-}
-vec3 refrakt(float sd, vec2 st, vec3 bg, vec2 originalUV) {
+vec4 refrakt(float sd, vec2 st, vec4 bg, vec2 originalUV) {
     vec2 offset = mix(vec2(0), normalize(st) / max(abs(sd), 0.001), length(st));
     float disp = uDispersion * 0.01;
     vec2 redOffset = offset * disp * 1.2;
@@ -746,19 +752,24 @@ vec3 refrakt(float sd, vec2 st, vec3 bg, vec2 originalUV) {
     vec2 redUV = originalUV + redOffset;
     vec2 greenUV = originalUV + greenOffset;
     vec2 blueUV = originalUV + blueOffset;
-    float r = bgGradient(redUV).r;
-    float g = bgGradient(greenUV).g;
-    float b = bgGradient(blueUV).b;
-    float shadow = getShadow(originalUV, uMousePos);
-    r = mix(r, 0.0, shadow);
-    g = mix(g, 0.0, shadow);
-    b = mix(b, 0.0, shadow);
+    bool isOutOfBoundsR, isOutOfBoundsG, isOutOfBoundsB;
+    vec2 aspectCorrectedRedUV = getAspectCorrectedUV(redUV, isOutOfBoundsR);
+    vec2 aspectCorrectedGreenUV = getAspectCorrectedUV(greenUV, isOutOfBoundsG);
+    vec2 aspectCorrectedBlueUV = getAspectCorrectedUV(blueUV, isOutOfBoundsB);
+    float r, g, b;
+    if (isOutOfBoundsR) { r = 0.8; } else { r = texture(uTexture, aspectCorrectedRedUV).r; }
+    if (isOutOfBoundsG) { g = 0.8; } else { g = texture(uTexture, aspectCorrectedGreenUV).g; }
+    if (isOutOfBoundsB) { b = 0.8; } else { b = texture(uTexture, aspectCorrectedBlueUV).b; }
+    vec2 avgUV = originalUV + offset * disp;
+    float shadow = getShadow(avgUV, uMousePos);
+    vec4 refractedColor = vec4(r, g, b, 1.0);
+    refractedColor.rgb = mix(refractedColor.rgb, vec3(0.0), shadow);
     float op = smoothstep(0.0, 0.0025, -sd);
-    return mix(bg, vec3(r, g, b), op);
+    return mix(bg, refractedColor, op);
 }
-vec3 getEffect(vec2 st, vec3 bg, vec2 originalUV) {
+vec4 getEffect(vec2 st, vec4 bg, vec2 originalUV) {
     float eps = 0.0005;
-    vec3 sum = vec3(0.0);
+    vec4 sum = vec4(0.0);
     sum += refrakt(getDist(st), st, bg, originalUV);
     sum += refrakt(getDist(st + vec2(eps, 0)), st + vec2(eps, 0), bg, originalUV);
     sum += refrakt(getDist(st - vec2(eps, 0)), st - vec2(eps, 0), bg, originalUV);
@@ -768,22 +779,27 @@ vec3 getEffect(vec2 st, vec3 bg, vec2 originalUV) {
 }
 void main() {
     vec2 uv = vUV;
-    vec3 bg = bgGradient(uv);
-    float shadow = getShadow(uv, uMousePos);
-    bg = mix(bg, vec3(0.0), shadow);
+    bool isOutOfBounds;
+    vec2 aspectCorrectedUV = getAspectCorrectedUV(uv, isOutOfBounds);
+    vec4 bg;
+    if (isOutOfBounds) {
+        bg = vec4(0.8, 0.8, 0.8, 1.0);
+    } else {
+        bg = texture(uTexture, aspectCorrectedUV);
+    }
     vec2 st = uv - uMousePos;
     st *= vec2(uResolution.x / uResolution.y, 1.0);
     st *= 1.0 / (0.4920 + 0.2);
     st = rot(-uRotSpeed * 2.0 * PI) * st;
-    vec3 color = getEffect(st, bg, uv);
+    vec4 color = getEffect(st, bg, uv);
     float highlight = getHighlight(uv, uMousePos);
     float exposure = 1.0 + highlight * 2.5;
-    vec3 exposedColor = 1.0 - exp(-color * exposure);
-    vec3 brightenedColor = color * (1.0 + highlight * 1.8);
-    color = mix(exposedColor, brightenedColor, 0.3);
+    vec3 exposedColor = 1.0 - exp(-color.rgb * exposure);
+    vec3 brightenedColor = color.rgb * (1.0 + highlight * 1.8);
+    color.rgb = mix(exposedColor, brightenedColor, 0.3);
     vec3 warmTint = vec3(1.02, 1.01, 0.98);
-    color *= mix(vec3(1.0), warmTint, highlight * 0.3);
-    fragColor = vec4(color, 1.0);
+    color.rgb *= mix(vec3(1.0), warmTint, highlight * 0.3);
+    fragColor = color;
 }
 """
 
@@ -803,7 +819,8 @@ func initWebGL() {
   let canvas = lgCanvas
   if canvas.isUndefined { return }
   _ = canvas.setAttribute("id", "lg-canvas")
-  canvas.style.cssText = .string("position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:9998;display:block;")
+  let bgColor = isDark ? "#0a0a0f" : "#ffffff"
+  canvas.style.cssText = .string("position:fixed;top:-100px;left:-100px;width:calc(100vw + 200px);height:calc(100vh + 200px);pointer-events:none;z-index:9998;display:block;background-color:\(bgColor);")
   let body: JSValue = docObj.body
   _ = body.insertBefore(canvas, body.firstChild)
   glCtx = canvas.getContext("webgl2")
@@ -822,9 +839,10 @@ func initWebGL() {
   _ = glCtx.useProgram(prog)
   for name in ["uResolution", "uMousePos", "uTMousePos", "uRadius", "uDistort", "uDispersion", "uRotSpeed",
                "uShadowIntensity", "uShadowOffsetX", "uShadowOffsetY", "uShadowBlur",
-               "uHighlightIntensity", "uHighlightSize", "uHighlightOffsetX", "uHighlightOffsetY", "uDark", "uTime"] {
+               "uHighlightIntensity", "uHighlightSize", "uHighlightOffsetX", "uHighlightOffsetY"] {
     uniformLocs[name] = glCtx.getUniformLocation(prog, name)
   }
+  uniformLocs["uTexture"] = glCtx.getUniformLocation(prog, "uTexture")
 
   let buf = glCtx.createBuffer()
   if buf.isUndefined { return }
@@ -838,6 +856,40 @@ func initWebGL() {
   _ = glCtx.vertexAttribPointer(posL, 2, glCtx.FLOAT, false, 16, 0)
   _ = glCtx.enableVertexAttribArray(uvL)
   _ = glCtx.vertexAttribPointer(uvL, 2, glCtx.FLOAT, false, 16, 8)
+
+  // Create background texture from canvas
+  let texCanvas = docObj.createElement("canvas")
+  _ = texCanvas.setAttribute("width", "512")
+  _ = texCanvas.setAttribute("height", "512")
+  let texCtx = texCanvas.getContext("2d")
+  let grad = texCtx.createLinearGradient(0, 0, 512, 512)
+  if isDark {
+    _ = grad.addColorStop(0, "#0a0a0f")
+    _ = grad.addColorStop(1, "#0d0d1a")
+  } else {
+    _ = grad.addColorStop(0, "#ffffff")
+    _ = grad.addColorStop(1, "#f0f0f5")
+  }
+  texCtx.fillStyle = grad
+  _ = texCtx.fillRect(0, 0, 512, 512)
+  // Add noise for detail so refraction is visible
+  let math = JSObject.global.Math
+  for _ in 0..<3000 {
+    let x = (math.random!().number ?? 0) * 512
+    let y = (math.random!().number ?? 0) * 512
+    let a = (math.random!().number ?? 0) * 0.06
+    texCtx.fillStyle = .string("rgba(255,255,255,\(a))")
+    _ = texCtx.fillRect(x, y, 2, 2)
+  }
+  let texture = glCtx.createTexture()
+  _ = glCtx.activeTexture(glCtx.TEXTURE0)
+  _ = glCtx.bindTexture(glCtx.TEXTURE_2D, texture)
+  _ = glCtx.texImage2D(glCtx.TEXTURE_2D, 0, glCtx.RGBA, glCtx.RGBA, glCtx.UNSIGNED_BYTE, texCanvas)
+  _ = glCtx.texParameteri(glCtx.TEXTURE_2D, glCtx.TEXTURE_MIN_FILTER, glCtx.LINEAR)
+  _ = glCtx.texParameteri(glCtx.TEXTURE_2D, glCtx.TEXTURE_MAG_FILTER, glCtx.LINEAR)
+  _ = glCtx.texParameteri(glCtx.TEXTURE_2D, glCtx.TEXTURE_WRAP_S, glCtx.CLAMP_TO_EDGE)
+  _ = glCtx.texParameteri(glCtx.TEXTURE_2D, glCtx.TEXTURE_WRAP_T, glCtx.CLAMP_TO_EDGE)
+  if let u = uniformLocs["uTexture"] { _ = glCtx.uniform1i(u, 0) }
 
   startTime = DateObj.new().getTime!().number ?? 0
 }
@@ -863,9 +915,9 @@ func renderFrame() {
   smoothMouseX += (targetMouseX - smoothMouseX) * SMOOTHING
   smoothMouseY += (targetMouseY - smoothMouseY) * SMOOTHING
 
-  // Time for rotation animation
-  let now = DateObj.new().getTime!().number ?? 0
-  let elapsed = (now - startTime) / 1000.0
+  // Update canvas background to match theme
+  let bgColor = isDark ? "#0a0a0f" : "#ffffff"
+  if !lgCanvas.isUndefined { lgCanvas.style.backgroundColor = .string(bgColor) }
 
   // Set uniforms matching reference parameter defaults
   if let u = uniformLocs["uResolution"] { _ = glCtx.uniform2f(u, ww * dpr, wh * dpr) }
@@ -883,8 +935,6 @@ func renderFrame() {
   if let u = uniformLocs["uHighlightSize"] { _ = glCtx.uniform1f(u, 1.25) }
   if let u = uniformLocs["uHighlightOffsetX"] { _ = glCtx.uniform1f(u, 0.01) }
   if let u = uniformLocs["uHighlightOffsetY"] { _ = glCtx.uniform1f(u, 0.03) }
-  if let u = uniformLocs["uDark"] { _ = glCtx.uniform1f(u, isDark ? 1.0 : 0.0) }
-  if let u = uniformLocs["uTime"] { _ = glCtx.uniform1f(u, elapsed) }
 
   _ = glCtx.drawArrays(glCtx.TRIANGLE_STRIP, 0, 4)
 }

@@ -429,7 +429,9 @@ let linksCSS = linksPageStylesheet.render()
 
 let linksJS = """
 import * as skinview3d from 'https://cdn.jsdelivr.net/npm/skinview3d@3.4.1/+esm';
+import { instantiate } from 'https://cdn.jsdelivr.net/npm/javascriptkit@0.53.0/dist/javascriptkit.js';
 
+var params = new URLSearchParams(location.search);
 var BASE='\(baseURL)';
 var appConfig={dataUrl:BASE+'/data.json',showLiveStreamSection:true,showProfileSection:true,showMinecraftSkinSection:true,showLinksSection:true,showYouTubeVideosSection:true,showSupportButton:true,developmentMode:true,showDevToggle:true,showLanguageToggle:true,showThemeToggle:true,supportUrl:'https://www.donationalerts.com/r/bezzubickmcplay'};
 var profileConfig={name_key:'profileName',description_key:'profileDescription',avatar:BASE+'/assets/avatar.png',minecraftSkinUrl:BASE+'/assets/skin.png'};
@@ -450,7 +452,7 @@ ru:{recentVideosTitle:'\\u041f\\u043e\\u0441\\u043b\\u0435\\u0434\\u043d\\u0438\
 var DOM={};var state={theme:params.get('debugTheme')||params.get('theme')||localStorage.getItem('theme')||((navigator.userAgent.includes('Chrome')&&!navigator.userAgent.includes('Edg')&&(navigator.userAgent.includes('Android')||navigator.userAgent.includes('Windows')))?'dark':'glass-dark'),lang:params.get('lang')||localStorage.getItem('lang')||(navigator.language.startsWith('ru')?'ru':'en'),data:{followerCounts:{},youtubeVideos:[],liveStream:{type:'none'}},skinViewerInstance:null,skinControlsEl:null,currentAnimKey:'idle'};
 
 function setVisibility(el,visible){if(!el)return;el.classList.toggle('hidden',!visible);}
-function applyTheme(theme){document.body.classList.remove('dark-theme','light-theme','glass-dark','glass-light');var cls=theme==='dark'?'dark-theme':theme==='light'?'light-theme':theme==='glass-dark'?'glass-dark':'glass-light';document.body.classList.add(cls);localStorage.setItem('theme',theme);if(DOM.themeIcon)DOM.themeIcon.textContent=theme==='dark'?'light_mode':theme==='light'?'dark_dark':theme==='glass-dark'?'light_mode':'dark_dark';}
+function applyTheme(theme){document.body.classList.remove('dark-theme','light-theme','glass-dark','glass-light');var cls=theme==='dark'?'dark-theme':theme==='light'?'light-theme':theme==='glass-dark'?'glass-dark':'glass-light';document.body.classList.add(cls);localStorage.setItem('theme',theme);if(DOM.themeIcon)DOM.themeIcon.textContent=theme==='dark'?'light_mode':theme==='light'?'dark_mode':theme==='glass-dark'?'light_mode':'dark_mode';}
 function formatCount(num){if(num==null||isNaN(num))return strings[state.lang].loading;if(num>=1e6)return(num/1e6).toFixed(1).replace(/\\.0$/,'')+'M';if(num>=1e3)return(num/1e3).toFixed(1).replace(/\\.0$/,'')+'K';return String(num);}
 async function fetchAppData(){var url=(appConfig.dataUrl||BASE+'/data.json')+'?t='+Date.now();try{var res=await fetch(url,{cache:'no-store'});if(!res.ok)throw new Error('HTTP '+res.status);return await res.json();}catch(e){console.warn('[Data Fetch] Fallback -> /data.json',e);try{var res2=await fetch(BASE+'/data.json?t='+Date.now(),{cache:'no-store'});if(res2.ok)return await res2.json();}catch(x){}return{followerCounts:{},youtubeVideos:[],liveStream:{type:'none'},debugInfo:{fetch_error:String(e)}};}}
 function updateGridLiveState(){var has=appConfig.showLiveStreamSection&&state.data.liveStream&&state.data.liveStream.type!=='none';if(!DOM.contentGrid)return;DOM.contentGrid.classList.toggle('grid-has-live',has);DOM.contentGrid.classList.toggle('grid-no-live',!has);}
@@ -481,6 +483,9 @@ if(DOM.themeToggle)DOM.themeToggle.addEventListener('click',function(){var order
 if(DOM.languageToggle)DOM.languageToggle.addEventListener('click',function(){state.lang=state.lang==='en'?'ru':'en';localStorage.setItem('lang',state.lang);updateLanguage();});
 if(DOM.downloadSkinButton)DOM.downloadSkinButton.addEventListener('click',downloadMinecraftSkin);
 });
+const wasmResp = await fetch(BASE+'/scripts/SiteClient.wasm');
+const { instance: wasmInst } = await instantiate(wasmResp, {});
+wasmInst.exports.main();
 """
 
 // MARK: - Theme
@@ -746,16 +751,7 @@ struct BezzubickHTMLFactory: HTMLFactory {
                             .button(.id("modal-close"), .class("primary-button px-6 py-3 rounded-full font-medium"))))),
                 .element(named: "script", nodes: [
                     .attribute(named: "type", value: "module"),
-                    .raw(linksJS)]),
-                .element(named: "script", nodes: [
-                    .attribute(named: "type", value: "module"),
-                    .raw("""
-                    import { instantiate } from 'https://cdn.jsdelivr.net/npm/javascriptkit@0.53.0/dist/javascriptkit.js';
-                    const resp = await fetch(BASE+'/scripts/SiteClient.wasm');
-                    const { instance } = await instantiate(resp, {});
-                    instance.exports.main();
-                    """)
-                ])
+                    .raw(linksJS)])
             )
         )
     }
