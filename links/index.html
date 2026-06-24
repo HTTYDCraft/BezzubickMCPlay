@@ -150,5 +150,7 @@ if(DOM.languageToggle)DOM.languageToggle.addEventListener('click',function(){sta
 if(DOM.downloadSkinButton)DOM.downloadSkinButton.addEventListener('click',downloadMinecraftSkin);
 });
 const wasmResp = await fetch(BASE+'/scripts/SiteClient.wasm');
-const { instance: wasmInst } = await instantiate(wasmResp, {});
-wasmInst.exports.main();</script></body></html>
+try {
+  const { instance: wasmInst } = await instantiate(wasmResp, {});
+  try { wasmInst.exports.main(); } catch(e) { console.warn('[WASM] main error',e); }
+} catch(e) { console.warn('[WASM] init error (Liquid Glass unavailable)',e); }</script></body></html>
