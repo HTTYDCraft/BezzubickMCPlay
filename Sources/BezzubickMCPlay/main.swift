@@ -456,7 +456,7 @@ if(DOM.downloadSkinButton)DOM.downloadSkinButton.addEventListener('click',downlo
 
 extension Theme where Site == BezzubickSite {
     static var custom: Theme {
-        Theme(htmlFactory: BezzubickHTMLFactory(), resourcePaths: ["Resources/"])
+        Theme(htmlFactory: BezzubickHTMLFactory(), resourcePaths: [])
     }
 }
 

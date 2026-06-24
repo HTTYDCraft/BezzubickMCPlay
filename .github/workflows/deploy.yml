@@ -42,8 +42,9 @@ jobs:
       - name: Build & generate site
         run: swift run BezzubickMCPlay
 
-      - name: Copy data files
+      - name: Copy resource files
         run: |
+          cp -r Resources/assets Output/assets 2>/dev/null || true
           cp data.json Output/data.json 2>/dev/null || true
           cp streams_history.json Output/streams_history.json 2>/dev/null || true
 
