@@ -70,29 +70,18 @@ jobs:
             "https://download.swift.org/swift-6.3.2-release/wasm-sdk/swift-6.3.2-RELEASE/swift-6.3.2-RELEASE_wasm.artifactbundle.tar.gz" \
             --checksum a61f0584c93283589f8b2f42db05c1f9a182b506c2957271402992655591dd7c
 
-      - name: Build SiteClient WASM
-        run: swift build --swift-sdk swift-6.3.2-RELEASE_wasm --target SiteClient -c release
-
-      - name: Install WASM linker
+      - name: Build SiteClient WASM (verbose)
         run: |
-          sudo apt-get install -y lld-18 2>/dev/null || sudo apt-get install -y lld 2>/dev/null || true
-          which wasm-ld 2>/dev/null || echo "wasm-ld not found after install"
-          SWIFT_TOOLCHAIN=$(dirname $(dirname $(which swift)))
-          find "$SWIFT_TOOLCHAIN" -name "wasm-ld" 2>/dev/null || echo "no wasm-ld in toolchain"
-
-      - name: Collect WASM binary
-        run: |
-          BIN_DIR=$(swift build --swift-sdk swift-6.3.2-RELEASE_wasm -c release --show-bin-path 2>/dev/null)
-          echo "=== $BIN_DIR ==="
-          find "$BIN_DIR" -type f 2>/dev/null | head -5
-          WASM_PATH=$(find "$BIN_DIR" -name "*.wasm" -type f 2>/dev/null | head -1)
-          if [ -n "$WASM_PATH" ]; then
-            mkdir -p /tmp/wasm
-            cp "$WASM_PATH" /tmp/wasm/SiteClient.wasm
-            echo "WASM: $WASM_PATH ($(du -h /tmp/wasm/SiteClient.wasm | cut -f1))"
-          else
-            echo "WASM not found, skipping"
-          fi
+          echo "=== SDK list ==="
+          swift sdk list 2>/dev/null || true
+          echo "=== SDK config ==="
+          find ~/.swiftpm -name "*.json" -path "*wasm*" 2>/dev/null | head -5
+          echo "=== Verbose build ==="
+          swift build --swift-sdk swift-6.3.2-RELEASE_wasm --target SiteClient -c release -v 2>&1 | tee /tmp/build.log
+          echo "=== Linker invocation ==="
+          grep -i "wasm-ld\|link.*wasm\|\.wasm" /tmp/build.log || echo "No linker invocation found"
+          echo "=== .wasm or binary output files ==="
+          find .build -type f \( -name "*.wasm" -o -name "SiteClient" \) 2>/dev/null | head -10 || true
 
       - uses: actions/upload-artifact@v4
         with:
