@@ -1,3 +1,6 @@
+<!-- lang:ru -->
+### Мои люди и что важно
+<!-- lang:en -->
 ### My people and what matters
 
 <!-- lang:ru -->

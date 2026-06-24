@@ -1,3 +1,6 @@
+<!-- lang:ru -->
+## Привет, я **Bezzubick MCPlay**, или просто Безз
+<!-- lang:en -->
 ## Hey, I'm **Bezzubick MCPlay**, or just Bezz
 
 <!-- lang:ru -->

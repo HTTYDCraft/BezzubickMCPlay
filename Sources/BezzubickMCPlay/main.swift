@@ -2,6 +2,8 @@ import Publish
 import Plot
 import Foundation
 
+let baseURL = "/BezzubickMCPlay"
+
 // MARK: - Site
 
 struct BezzubickSite: Website {
@@ -86,22 +88,31 @@ func readBilingualTimelineMarkdown(_ path: String) -> (titleRu: String, titleEn:
 // MARK: - Simple Markdown → HTML
 
 func md2html(_ md: String) -> String {
-    var html = md
-    html = html.replacingOccurrences(of: "^#### (.+)$", with: "<h4>$1</h4>", options: .regularExpression)
-    html = html.replacingOccurrences(of: "^### (.+)$", with: "<h3>$1</h3>", options: .regularExpression)
-    html = html.replacingOccurrences(of: "^## (.+)$", with: "<h2>$1</h2>", options: .regularExpression)
-    html = html.replacingOccurrences(of: "^# (.+)$", with: "<h1>$1</h1>", options: .regularExpression)
-    html = html.replacingOccurrences(of: "\\*\\*(.+?)\\*\\*", with: "<strong>$1</strong>", options: .regularExpression)
-    html = html.replacingOccurrences(of: "^- (.+)$", with: "<li>$1</li>", options: .regularExpression)
-    html = html.replacingOccurrences(of: "((?:<li>.*?</li>\n?)+)", with: "<ul>$1</ul>", options: .regularExpression)
-    let lines = html.components(separatedBy: "\n")
+    let lines = md.components(separatedBy: "\n")
     var result: [String] = []
+    var inList = false
     for line in lines {
         let t = line.trimmingCharacters(in: .whitespaces)
-        if t.isEmpty { result.append("") }
-        else if t.hasPrefix("<h") || t.hasPrefix("<ul") || t.hasPrefix("<li") || t.hasPrefix("</ul>") || t.hasPrefix("</li>") { result.append(t) }
-        else { result.append("<p>\(t)</p>") }
+        if t.isEmpty {
+            if inList { result.append("</ul>"); inList = false }
+            result.append(""); continue
+        }
+        let inline: (String) -> String = { s in
+            s.replacingOccurrences(of: "\\*\\*(.+?)\\*\\*", with: "<strong>$1</strong>", options: .regularExpression)
+        }
+        if t.hasPrefix("#### ") { result.append("<h4>\(inline(String(t.dropFirst(5))))</h4>"); continue }
+        if t.hasPrefix("### ") { result.append("<h3>\(inline(String(t.dropFirst(4))))</h3>"); continue }
+        if t.hasPrefix("## ") { result.append("<h2>\(inline(String(t.dropFirst(3))))</h2>"); continue }
+        if t.hasPrefix("# ") { result.append("<h1>\(inline(String(t.dropFirst(2))))</h1>"); continue }
+        if t.hasPrefix("- ") {
+            if !inList { result.append("<ul>"); inList = true }
+            result.append("<li>\(inline(String(t.dropFirst(2))))</li>")
+            continue
+        }
+        if inList { result.append("</ul>"); inList = false }
+        result.append("<p>\(inline(t))</p>")
     }
+    if inList { result.append("</ul>") }
     return result.joined(separator: "\n")
 }
 
@@ -173,6 +184,7 @@ func parseLinks() -> ([LinkItem], [HeroBtn]) {
 let siteJS = """
 (function(){
 'use strict';
+var BASE='\(baseURL)';
 var C={dark:{bg:'#000',onBg:'#FFF',surfaceLow:'#1F1F1F',surface:'#2D2D2D',primary:'#BB86FC',onPrimary:'#000',primaryContainer:'#4A148C',outline:'#8C8C8C'},
 light:{bg:'#FFF',onBg:'#000',surfaceLow:'#F0F0F0',surface:'#E0E0E0',primary:'#6200EE',onPrimary:'#FFF',primaryContainer:'#BB86FC',outline:'#BDBDBD'}};
 var S={theme:localStorage.getItem('theme')||'dark',lang:localStorage.getItem('lang')||(navigator.language.startsWith('ru')?'ru':'en')};
@@ -304,7 +316,7 @@ var MONTHS={ru:['Январь','Февраль','Март','Апрель','Ма�
 var WDAYS={ru:['Пн','Вт','Ср','Чт','Пт','Сб','Вс'],en:['Mon','Tue','Wed','Thu','Fri','Sat','Sun']};
 
 function setupVideos(){
-fetch('./data.json?t='+Date.now()).then(function(r){return r.json();}).then(function(data){
+fetch(BASE+'/data.json?t='+Date.now()).then(function(r){return r.json();}).then(function(data){
 var vids=data.youtubeVideos||[];
 var el=document.getElementById('carousel');
 if(!el||!vids.length)return;
@@ -324,7 +336,7 @@ if(ft)ft.textContent=(STR[S.lang]||STR.ru).followers+fmtCount(total);
 }
 
 function setupSkin(){
-fetch('./streams_history.json?t='+Date.now()).then(function(r){return r.json();}).then(function(data){
+fetch(BASE+'/streams_history.json?t='+Date.now()).then(function(r){return r.json();}).then(function(data){
 if(!data.events||!data.events.length)return;
 var byDate={};
 data.events.forEach(function(e){
@@ -400,8 +412,9 @@ let linksCSS = linksPageStylesheet.render()
 let linksJS = """
 import * as skinview3d from 'https://cdn.jsdelivr.net/npm/skinview3d@3.4.1/+esm';
 
-var appConfig={dataUrl:'/data.json',showLiveStreamSection:true,showProfileSection:true,showMinecraftSkinSection:true,showLinksSection:true,showYouTubeVideosSection:true,showSupportButton:true,developmentMode:true,showDevToggle:true,showLanguageToggle:true,showThemeToggle:true,supportUrl:'https://www.donationalerts.com/r/bezzubickmcplay'};
-var profileConfig={name_key:'profileName',description_key:'profileDescription',avatar:'/assets/avatar.png',minecraftSkinUrl:'/assets/skin.png'};
+var BASE='\(baseURL)';
+var appConfig={dataUrl:BASE+'/data.json',showLiveStreamSection:true,showProfileSection:true,showMinecraftSkinSection:true,showLinksSection:true,showYouTubeVideosSection:true,showSupportButton:true,developmentMode:true,showDevToggle:true,showLanguageToggle:true,showThemeToggle:true,supportUrl:'https://www.donationalerts.com/r/bezzubickmcplay'};
+var profileConfig={name_key:'profileName',description_key:'profileDescription',avatar:BASE+'/assets/avatar.png',minecraftSkinUrl:BASE+'/assets/skin.png'};
 var linksConfig=[
 {label_key:'youtubeChannelLabel',url:'https://www.youtube.com/channel/UCm6mheCT60mZ5qlxG5r2GeA',icon:'play_arrow',order:1,isSocial:true,showSubscriberCount:true,platformId:'youtube',subscribeUrl:'https://www.youtube.com/channel/UCm6mheCT60mZ5qlxG5r2GeA?sub_confirmation=1',active:true},
 {label_key:'telegramChannelLabel',url:'https://t.me/bezzubickmcplay',icon:'send',order:2,isSocial:true,showSubscriberCount:true,platformId:'telegram',active:true},
@@ -421,7 +434,7 @@ var DOM={};var state={theme:localStorage.getItem('theme')||'dark',lang:localStor
 function setVisibility(el,visible){if(!el)return;el.classList.toggle('hidden',!visible);}
 function applyTheme(theme){document.body.classList.remove('dark-theme','light-theme','glass-dark','glass-light');var cls=theme==='dark'?'dark-theme':theme==='light'?'light-theme':theme==='glass-dark'?'glass-dark':'glass-light';document.body.classList.add(cls);localStorage.setItem('theme',theme);if(DOM.themeIcon)DOM.themeIcon.textContent=theme==='dark'?'light_mode':theme==='light'?'dark_dark':theme==='glass-dark'?'light_mode':'dark_dark';}
 function formatCount(num){if(num==null||isNaN(num))return strings[state.lang].loading;if(num>=1e6)return(num/1e6).toFixed(1).replace(/\\.0$/,'')+'M';if(num>=1e3)return(num/1e3).toFixed(1).replace(/\\.0$/,'')+'K';return String(num);}
-async function fetchAppData(){var url=(appConfig.dataUrl||'/data.json')+'?t='+Date.now();try{var res=await fetch(url,{cache:'no-store'});if(!res.ok)throw new Error('HTTP '+res.status);return await res.json();}catch(e){console.warn('[Data Fetch] Fallback -> /data.json',e);try{var res2=await fetch('/data.json?t='+Date.now(),{cache:'no-store'});if(res2.ok)return await res2.json();}catch(x){}return{followerCounts:{},youtubeVideos:[],liveStream:{type:'none'},debugInfo:{fetch_error:String(e)}};}}
+async function fetchAppData(){var url=(appConfig.dataUrl||BASE+'/data.json')+'?t='+Date.now();try{var res=await fetch(url,{cache:'no-store'});if(!res.ok)throw new Error('HTTP '+res.status);return await res.json();}catch(e){console.warn('[Data Fetch] Fallback -> /data.json',e);try{var res2=await fetch(BASE+'/data.json?t='+Date.now(),{cache:'no-store'});if(res2.ok)return await res2.json();}catch(x){}return{followerCounts:{},youtubeVideos:[],liveStream:{type:'none'},debugInfo:{fetch_error:String(e)}};}}
 function updateGridLiveState(){var has=appConfig.showLiveStreamSection&&state.data.liveStream&&state.data.liveStream.type!=='none';if(!DOM.contentGrid)return;DOM.contentGrid.classList.toggle('grid-has-live',has);DOM.contentGrid.classList.toggle('grid-no-live',!has);}
 function updateLanguage(){var t=strings[state.lang];if(DOM.recentVideosTitle)DOM.recentVideosTitle.textContent=t.recentVideosTitle;if(DOM.minecraftTitle)DOM.minecraftTitle.textContent=t.minecraftTitle;if(DOM.downloadSkinText)DOM.downloadSkinText.textContent=t.downloadSkin;if(DOM.supportButtonText)DOM.supportButtonText.textContent=t.supportButton;if(DOM.offlineMessage)DOM.offlineMessage.textContent=t.offlineMessage;if(DOM.twitchLinkText)DOM.twitchLinkText.textContent=t.watchOnTwitch;if(DOM.twitchMessage)DOM.twitchMessage.textContent=t.twitchStreamAlsoLive;if(DOM.modalTitle)DOM.modalTitle.textContent=t.modalTitle;if(DOM.modalDescription)DOM.modalDescription.textContent=t.modalDescription;if(DOM.modalCloseBtn)DOM.modalCloseBtn.textContent=t.gotItButton;if(DOM.devTitle)DOM.devTitle.textContent=t.devPageTitle;if(DOM.devLastUpdatedLabel)DOM.devLastUpdatedLabel.textContent=t.devLastUpdatedLabel;if(DOM.devDataJsonContentLabel)DOM.devDataJsonContentLabel.textContent=t.devDataJsonContentLabel;if(DOM.devDebugInfoContentLabel)DOM.devDebugInfoContentLabel.textContent=t.devDebugInfoContentLabel;if(DOM.backToMainText)DOM.backToMainText.textContent=t.backToMainText;if(DOM.profileName)DOM.profileName.textContent=t[profileConfig.name_key];if(DOM.profileDescription)DOM.profileDescription.textContent=t[profileConfig.description_key];if(DOM.avatar)DOM.avatar.alt=t.avatarAlt;renderLinksSection(linksConfig);calculateAndDisplayTotalFollowers();}
 function renderProfileSection(){setVisibility(DOM.profileSection,appConfig.showProfileSection);if(appConfig.showProfileSection&&DOM.avatar)DOM.avatar.src=profileConfig.avatar;}
@@ -503,7 +516,7 @@ struct BezzubickHTMLFactory: HTMLFactory {
                     .div(.id("offline-warning"), .class("hidden fixed top-0 left-0 w-full p-3 text-center font-medium z-50 offline-warning rounded-b-lg shadow-lg"),
                          .span(.text("Вы не в сети. Данные могут быть устаревшими."))),
                     .section(.class("hero card m3-shadow-md p-6"),
-                        .img(.src("/assets/avatar.png"), .alt("Avatar"), .class("avatar m3-shadow-md")),
+                        .img(.src("\(baseURL)/assets/avatar.png"), .alt("Avatar"), .class("avatar m3-shadow-md")),
                         .h1(.text("Bezzubick MCPlay")),
                         .p(.id("hero-tagline")),
                         .div(.id("totals"), .class("followers"), .text("Всего подписчиков: —")),
@@ -531,7 +544,7 @@ struct BezzubickHTMLFactory: HTMLFactory {
                         .section(.class("card m3-shadow-md p-6"), .id("links-cta"),
                             .h2(.id("nav-title"), .class("text-xl font-bold mb-2"), .text("Навигация")),
                             .p(.id("nav-desc"), .class("text-gray-400 mb-4"), .text("Перейдите на страницу со всеми моими ссылками, соцсетями, скином и dev‑инфо.")),
-                            .a(.id("go-links-btn-2"), .href("/links/"), .class("rounded-full px-6 py-3 font-medium m3-shadow-md primary-button"),
+                            .a(.id("go-links-btn-2"), .href("\(baseURL)/links/"), .class("rounded-full px-6 py-3 font-medium m3-shadow-md primary-button"),
                                .span(.class("material-symbols-outlined"), .text("link")),
                                .span(.text("Перейти к ссылкам")))
                         ),
@@ -573,7 +586,7 @@ struct BezzubickHTMLFactory: HTMLFactory {
                             .div(.id("skin-viewer"), .class("skin-viewer")),
                             .div(.id("skin-controls"), .class("skin-controls")),
                             .div(.class("flex justify-center mt-2"),
-                                 .a(.id("download-skin"), .href("/assets/skin.png"),
+                                 .a(.id("download-skin"), .href("\(baseURL)/assets/skin.png"),
                                     .class("primary-button rounded-full px-6 py-3 font-medium m3-shadow-md"),
                                     .attribute(named: "download", value: "minecraft_skin.png"),
                                     .attribute(named: "rel", value: "noopener"),
@@ -599,7 +612,7 @@ struct BezzubickHTMLFactory: HTMLFactory {
                     .attribute(named: "type", value: "module"),
                     .raw("""
                     import { instantiate } from 'https://cdn.jsdelivr.net/npm/javascriptkit@0.53.0/dist/javascriptkit.js';
-                    const resp = await fetch('/scripts/SiteClient.wasm');
+                    const resp = await fetch(BASE+'/scripts/SiteClient.wasm');
                     const { instance } = await instantiate(resp, {});
                     instance.exports.main();
                     """)
@@ -623,7 +636,7 @@ struct BezzubickHTMLFactory: HTMLFactory {
             .head(
                 .meta(.charset(.utf8)),
                 .meta(.name("viewport"), .content("width=device-width, initial-scale=1")),
-                .link(.rel(.icon), .href("https://httydcraft.github.io/BezzubickMCPlay/assets/avatar.png"), .type("image/png")),
+                .link(.rel(.icon), .href("https://httydcraft.github.io\(baseURL)/assets/avatar.png"), .type("image/png")),
                 .title("BezzubickMCPlay | Links"),
                 .meta(.name("description"), .content("BezzubickMCPlay: Minecraft adventures, streams, latest videos, social links, and my skin.")),
                 .link(.href("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0"), .rel(.stylesheet)),
@@ -637,7 +650,7 @@ struct BezzubickHTMLFactory: HTMLFactory {
                         .span(.id("offline-message"))),
                     .div(.id("main-view"),
                         .section(.id("profile-section"), .class("text-center mb-8 hidden"),
-                            .img(.id("avatar"), .class("w-28 h-28 rounded-full mx-auto mb-4 border-4 border-purple-500 object-cover m3-shadow-md"), .src("/assets/avatar.png"), .alt("Avatar")),
+                            .img(.id("avatar"), .class("w-28 h-28 rounded-full mx-auto mb-4 border-4 border-purple-500 object-cover m3-shadow-md"), .src("\(baseURL)/assets/avatar.png"), .alt("Avatar")),
                             .h1(.id("profile-name"), .class("text-4xl font-bold mb-2")),
                             .p(.id("profile-description"), .class("text-lg text-gray-400 mb-4")),
                             .div(.id("total-followers"), .class("text-xl font-medium text-purple-400"))),
@@ -716,7 +729,7 @@ struct BezzubickHTMLFactory: HTMLFactory {
                     .attribute(named: "type", value: "module"),
                     .raw("""
                     import { instantiate } from 'https://cdn.jsdelivr.net/npm/javascriptkit@0.53.0/dist/javascriptkit.js';
-                    const resp = await fetch('/scripts/SiteClient.wasm');
+                    const resp = await fetch(BASE+'/scripts/SiteClient.wasm');
                     const { instance } = await instantiate(resp, {});
                     instance.exports.main();
                     """)

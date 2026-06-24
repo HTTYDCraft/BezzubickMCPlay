@@ -376,7 +376,7 @@ func jsJSON(_ resp: JSValue) async -> JSValue? {
 func fetchData() async {
   let ts = Int(DateObj.new().getTime!().number ?? 0)
 
-  guard let resp = await jsFetch("/data.json?t=\(ts)"),
+  guard let resp = await jsFetch("/BezzubickMCPlay/data.json?t=\(ts)"),
         resp.ok.boolean ?? false,
         let json = await jsJSON(resp) else { return }
 
@@ -416,7 +416,7 @@ func fetchData() async {
   }
 
   let ts2 = Int(DateObj.new().getTime!().number ?? 0)
-  guard let resp2 = await jsFetch("/streams_history.json?t=\(ts2)"),
+  guard let resp2 = await jsFetch("/BezzubickMCPlay/streams_history.json?t=\(ts2)"),
         resp2.ok.boolean ?? false,
         let hist = await jsJSON(resp2) else { return }
 
