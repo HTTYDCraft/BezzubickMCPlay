@@ -14,32 +14,21 @@ concurrency:
 
 jobs:
   build-site:
-    runs-on: macos-15
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Force Modern Xcode and Swift
+      - name: Install system dependencies
         run: |
-          ls -d /Applications/Xcode*.app
-          if [ -d "/Applications/Xcode_26.3.app" ]; then
-            sudo xcode-select -s /Applications/Xcode_26.3.app/Contents/Developer
-          elif [ -d "/Applications/Xcode_26.2.app" ]; then
-            sudo xcode-select -s /Applications/Xcode_26.2.app/Contents/Developer
-          elif [ -d "/Applications/Xcode_26.1.app" ]; then
-            sudo xcode-select -s /Applications/Xcode_26.1.app/Contents/Developer
-          elif [ -d "/Applications/Xcode_26.0.app" ]; then
-            sudo xcode-select -s /Applications/Xcode_26.0.app/Contents/Developer
-          elif [ -d "/Applications/Xcode_16.4.app" ]; then
-            sudo xcode-select -s /Applications/Xcode_16.4.app/Contents/Developer
-          elif [ -d "/Applications/Xcode_16.3.app" ]; then
-            sudo xcode-select -s /Applications/Xcode_16.3.app/Contents/Developer
-          else
-            best=$(ls -d /Applications/Xcode*.app 2>/dev/null | sort -V | tail -1)
-            if [ -n "$best" ]; then
-              sudo xcode-select -s "$best/Contents/Developer"
-            fi
-          fi
-          swift --version
+          sudo apt-get update
+          sudo apt-get install -y libcurl4-openssl-dev
+
+      - uses: vapor/swiftly-action@v0.2
+
+      - name: Install Swift 6.3.2
+        run: |
+          swiftly install 6.3.2
+          swiftly use 6.3.2
 
       - name: Build & generate site
         run: swift run BezzubickMCPlay
