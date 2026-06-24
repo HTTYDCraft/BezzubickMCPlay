@@ -75,13 +75,21 @@ jobs:
 
       - name: Collect WASM binary
         run: |
-          echo "=== Build artifacts ==="
-          find .build -type f -name "*.wasm" 2>/dev/null || echo "No .wasm files found"
-          echo "=== Swift build output path ==="
-          swift build --swift-sdk swift-6.3.2-RELEASE_wasm -c release --show-bin-path 2>/dev/null || true
-          echo "=== Search all .build ==="
-          find .build -name "SiteClient*" -type f 2>/dev/null | head -20 || true
-          WASM_PATH=$(find .build -name "SiteClient.wasm" -type f 2>/dev/null | head -1)
+          BIN_DIR=$(swift build --swift-sdk swift-6.3.2-RELEASE_wasm -c release --show-bin-path 2>/dev/null)
+          echo "=== Bin dir: $BIN_DIR ==="
+          ls -la "$BIN_DIR/" 2>/dev/null || echo "No bin dir"
+          ls -la "$BIN_DIR/SiteClient.build/" 2>/dev/null || echo "No .build dir"
+          echo "=== Find executable or wasm files ==="
+          find "$BIN_DIR" -type f 2>/dev/null | head -30
+          WASM_PATH=$(find "$BIN_DIR" -name "*.wasm" -type f 2>/dev/null | head -1)
+          if [ -z "$WASM_PATH" ]; then
+            WASM_PATH=$(find "$BIN_DIR" -type f -exec file {} \; 2>/dev/null | grep -i wasm | head -1 | cut -d: -f1)
+          fi
+          if [ -z "$WASM_PATH" ]; then
+            echo "No .wasm found, trying wider search"
+            find .build -type f \( -name "*.wasm" -o -name "SiteClient" -o -name "SiteClient.wasm" \) 2>/dev/null | head -10
+            WASM_PATH=$(find .build -name "*.wasm" -type f 2>/dev/null | head -1)
+          fi
           if [ -n "$WASM_PATH" ]; then
             mkdir -p /tmp/wasm
             cp "$WASM_PATH" /tmp/wasm/SiteClient.wasm
