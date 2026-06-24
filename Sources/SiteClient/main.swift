@@ -867,7 +867,7 @@ func observeGlassState() {
   let config = JSObject()
   config["attributes"] = .boolean(true)
   config["attributeFilter"] = ["class"].jsValue
-  _ = observer.observe(body, config)
+  _ = observer.observe!(body, config)
   let isGlass = (body.classList.contains("glass-dark").boolean ?? false) || (body.classList.contains("glass-light").boolean ?? false)
   if isGlass { startRendering() }
 }
