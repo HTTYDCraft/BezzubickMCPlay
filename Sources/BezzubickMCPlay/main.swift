@@ -638,8 +638,12 @@ struct BezzubickHTMLFactory: HTMLFactory {
                     .raw("""
                     var BASE='\(baseURL)';
                     var skinview3d=window.skinview3d||null;
+                    var skinState={currentAnimKey:'stop'};
                     function disposeSkinViewer(){if(window.__homeSkinInstance){window.__homeSkinInstance.dispose();window.__homeSkinInstance=null;}}
                     function homeSkinFallback(c){if(!c)return;disposeSkinViewer();c.innerHTML='<img src=\"'+BASE+'/assets/skin.png\" alt=\"Minecraft skin\" class=\"w-full h-full object-contain\" />';}
+                    function homeSetSkinAnimation(key){var v=window.__homeSkinInstance;if(!v)return;var anim=null;try{if(key==='idle'&&skinview3d&&skinview3d.IdleAnimation)anim=new skinview3d.IdleAnimation();else if(key==='walk'&&skinview3d&&skinview3d.WalkingAnimation)anim=new skinview3d.WalkingAnimation();else if(key==='run'&&skinview3d&&skinview3d.RunningAnimation)anim=new skinview3d.RunningAnimation();else if(key==='rotate'&&skinview3d&&skinview3d.RotatingAnimation)anim=new skinview3d.RotatingAnimation();else if(key==='stop')anim=null;v.animation=anim;skinState.currentAnimKey=key;homeUpdateActiveButtons()}catch(e){console.warn('[HomeSkin] anim',key,e);}}
+                    function homeUpdateActiveButtons(){var el=document.getElementById('skin-controls');if(!el)return;el.querySelectorAll('.mini-button').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-anim')===skinState.currentAnimKey);});}
+                    function homeBuildSkinControls(){if(!skinview3d)return;var el=document.getElementById('skin-controls');if(!el)return;el.innerHTML='';var opts=[{key:'idle',icon:'accessibility',av:!!skinview3d.IdleAnimation},{key:'walk',icon:'directions_walk',av:!!skinview3d.WalkingAnimation},{key:'run',icon:'directions_run',av:!!skinview3d.RunningAnimation},{key:'rotate',icon:'autorenew',av:!!skinview3d.RotatingAnimation},{key:'stop',icon:'stop_circle',av:true}];opts.forEach(function(o){if(!o.av)return;var b=document.createElement('button');b.type='button';b.className='mini-button';b.setAttribute('data-anim',o.key);b.innerHTML='<span class="material-symbols-outlined mini-icon" aria-hidden="true">'+o.icon+'</span>';b.addEventListener('click',function(){homeSetSkinAnimation(o.key);});el.appendChild(b);});homeUpdateActiveButtons();}
                     document.addEventListener('DOMContentLoaded',async function(){
                       var c=document.getElementById('skin-viewer');if(!c)return;
                       if(!skinview3d){homeSkinFallback(c);return;}
@@ -651,9 +655,10 @@ struct BezzubickHTMLFactory: HTMLFactory {
                         disposeSkinViewer();
                         var v=new skinview3d.SkinViewer({canvas:cv,width:w,height:h});
                         await v.loadSkin(BASE+'/assets/skin.png');
-                        try{if(skinview3d.IdleAnimation)v.animation=new skinview3d.IdleAnimation()}catch(e){}
+                        try{if(skinview3d.IdleAnimation){v.animation=new skinview3d.IdleAnimation();skinState.currentAnimKey='idle';}else if(skinview3d.WalkingAnimation){v.animation=new skinview3d.WalkingAnimation();skinState.currentAnimKey='walk';}}catch(e){}
                         try{var o=skinview3d.createOrbitControls(v);if(o){o.enablePan=false;o.enableZoom=true;if(o.target)o.target.set(0,17,0);o.update()}}catch(e){}
                         window.__homeSkinInstance=v;
+                        homeBuildSkinControls();
                         new ResizeObserver(function(){if(!window.__homeSkinInstance)return;var nw=Math.max(1,c.offsetWidth||320);var nh=Math.max(1,c.offsetHeight||400);window.__homeSkinInstance.setSize(nw,nh)}).observe(c);
                       }catch(e){console.error('[HomeSkin]',e);homeSkinFallback(c)}
                     });
