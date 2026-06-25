@@ -202,9 +202,9 @@ public let siteStylesheet: Stylesheet = Stylesheet {
     }
 
     CSSSelector("body.glass-dark .card:hover") {
-        backgroundColor("rgba(255,255,255,0.08)")
-        borderColor("rgba(255,255,255,0.20)")
-        boxShadow("inset 0 1px 0 0 rgba(255,255,255,0.15), 0 0 30px rgba(255,255,255,0.04), 0 8px 32px rgba(0,0,0,0.6)")
+        backgroundColor("rgba(255,255,255,0.07)")
+        borderColor("rgba(255,255,255,0.15)")
+        boxShadow("inset 0 1px 0 0 rgba(255,255,255,0.1), 0 0 30px rgba(187,134,252,0.12), 0 8px 32px rgba(0,0,0,0.6)")
         transform("translateY(-3px)")
     }
 
@@ -222,33 +222,31 @@ public let siteStylesheet: Stylesheet = Stylesheet {
     }
 
     CSSSelector("body.glass-dark .primary-button") {
-        background("linear-gradient(135deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04))")
+        background("linear-gradient(135deg, rgba(187,134,252,0.4), rgba(187,134,252,0.2))")
         backdropFilter("blur(12px)")
         prop("-webkit-backdrop-filter", "blur(12px)")
-        border("1px solid rgba(255,255,255,0.12)")
+        border("1px solid rgba(187,134,252,0.3)")
         color("#FFFFFF")
         borderRadius("16px")
     }
 
     CSSSelector("body.glass-dark .primary-button:hover") {
-        background("linear-gradient(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.08))")
-        borderColor("rgba(255,255,255,0.25)")
-        boxShadow("0 0 20px rgba(255,255,255,0.05)")
+        background("linear-gradient(135deg, rgba(187,134,252,0.6), rgba(187,134,252,0.3))")
+        borderColor("rgba(187,134,252,0.5)")
+        boxShadow("0 0 20px rgba(187,134,252,0.2)")
     }
 
     CSSSelector("body.glass-dark .support-button") {
-        background("linear-gradient(135deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04))")
+        background("linear-gradient(135deg, rgba(76,175,80,0.4), rgba(76,175,80,0.2))")
         backdropFilter("blur(12px)")
         prop("-webkit-backdrop-filter", "blur(12px)")
-        border("1px solid rgba(255,255,255,0.12)")
+        border("1px solid rgba(76,175,80,0.3)")
         color("#FFFFFF")
         borderRadius("16px")
     }
 
     CSSSelector("body.glass-dark .support-button:hover") {
-        background("linear-gradient(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.08))")
-        borderColor("rgba(255,255,255,0.25)")
-        boxShadow("0 0 20px rgba(255,255,255,0.05)")
+        background("linear-gradient(135deg, rgba(76,175,80,0.6), rgba(76,175,80,0.3))")
     }
 
     CSSSelector("body.glass-dark .modal-content, body.glass-dark .dev-page-content") {
@@ -269,8 +267,8 @@ public let siteStylesheet: Stylesheet = Stylesheet {
     }
 
     CSSSelector("body.glass-dark .mini-button.active") {
-        backgroundColor("rgba(255,255,255,0.18)")
-        borderColor("rgba(255,255,255,0.30)")
+        backgroundColor("rgba(187,134,252,0.3)")
+        borderColor("rgba(187,134,252,0.5)")
         color("#FFFFFF")
     }
 
@@ -348,85 +346,82 @@ public let siteStylesheet: Stylesheet = Stylesheet {
     }
 
     CSSSelector("body.glass-light .card") {
-        backgroundColor("rgba(255,255,255,0.08)")
-        backdropFilter("blur(24px)")
-        prop("-webkit-backdrop-filter", "blur(24px)")
-        border("1px solid rgba(255,255,255,0.15)")
+        backgroundColor("rgba(255,255,255,0.65)")
+        backdropFilter("blur(20px)")
+        prop("-webkit-backdrop-filter", "blur(20px)")
+        border("1px solid rgba(255,255,255,0.5)")
         borderRadius("20px")
-        boxShadow("inset 0 1px 0 0 rgba(255,255,255,0.12), 0 8px 32px rgba(0,0,0,0.08)")
+        boxShadow("inset 0 1px 0 0 rgba(255,255,255,0.6), 0 8px 32px rgba(0,0,0,0.06)")
     }
 
     CSSSelector("body.glass-light .card:hover") {
-        backgroundColor("rgba(255,255,255,0.12)")
-        borderColor("rgba(255,255,255,0.25)")
-        boxShadow("inset 0 1px 0 0 rgba(255,255,255,0.2), 0 0 30px rgba(255,255,255,0.05), 0 8px 32px rgba(0,0,0,0.1)")
+        backgroundColor("rgba(255,255,255,0.8)")
+        borderColor("rgba(255,255,255,0.8)")
+        boxShadow("inset 0 1px 0 0 rgba(255,255,255,0.8), 0 0 30px rgba(98,0,238,0.06), 0 8px 32px rgba(0,0,0,0.08)")
         transform("translateY(-3px)")
     }
 
     CSSSelector("body.glass-light .control-button") {
-        backgroundColor("rgba(255,255,255,0.08)")
+        backgroundColor("rgba(255,255,255,0.6)")
         backdropFilter("blur(12px)")
         prop("-webkit-backdrop-filter", "blur(12px)")
-        border("1px solid rgba(255,255,255,0.15)")
+        border("1px solid rgba(255,255,255,0.4)")
         color("#000000")
         borderRadius("16px")
     }
 
     CSSSelector("body.glass-light .control-button:hover") {
-        backgroundColor("rgba(255,255,255,0.16)")
+        backgroundColor("rgba(255,255,255,0.8)")
     }
 
     CSSSelector("body.glass-light .primary-button") {
-        background("linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.06))")
+        background("linear-gradient(135deg, rgba(98,0,238,0.8), rgba(98,0,238,0.6))")
         backdropFilter("blur(12px)")
         prop("-webkit-backdrop-filter", "blur(12px)")
-        border("1px solid rgba(255,255,255,0.15)")
-        color("#000000")
+        border("1px solid rgba(98,0,238,0.3)")
+        color("#FFFFFF")
         borderRadius("16px")
     }
 
     CSSSelector("body.glass-light .primary-button:hover") {
-        background("linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1))")
-        borderColor("rgba(255,255,255,0.3)")
-        boxShadow("0 0 20px rgba(255,255,255,0.05)")
+        background("linear-gradient(135deg, rgba(98,0,238,0.9), rgba(98,0,238,0.7))")
+        boxShadow("0 0 20px rgba(98,0,238,0.15)")
     }
 
     CSSSelector("body.glass-light .support-button") {
-        background("linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.06))")
+        background("linear-gradient(135deg, rgba(102,187,106,0.8), rgba(102,187,106,0.6))")
         backdropFilter("blur(12px)")
         prop("-webkit-backdrop-filter", "blur(12px)")
-        border("1px solid rgba(255,255,255,0.15)")
-        color("#000000")
+        border("1px solid rgba(102,187,106,0.3)")
+        color("#FFFFFF")
         borderRadius("16px")
     }
 
     CSSSelector("body.glass-light .support-button:hover") {
-        background("linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1))")
-        borderColor("rgba(255,255,255,0.3)")
-        boxShadow("0 0 20px rgba(255,255,255,0.05)")
+        background("linear-gradient(135deg, rgba(102,187,106,0.9), rgba(102,187,106,0.7))")
     }
 
     CSSSelector("body.glass-light .modal-content, body.glass-light .dev-page-content") {
-        backgroundColor("rgba(255,255,255,0.08)")
-        backdropFilter("blur(24px)")
-        prop("-webkit-backdrop-filter", "blur(24px)")
-        border("1px solid rgba(255,255,255,0.15)")
+        backgroundColor("rgba(255,255,255,0.75)")
+        backdropFilter("blur(20px)")
+        prop("-webkit-backdrop-filter", "blur(20px)")
+        border("1px solid rgba(255,255,255,0.5)")
         borderRadius("28px")
-        boxShadow("inset 0 1px 0 0 rgba(255,255,255,0.12), 0 16px 48px rgba(0,0,0,0.1)")
+        boxShadow("inset 0 1px 0 0 rgba(255,255,255,0.6), 0 16px 48px rgba(0,0,0,0.1)")
     }
 
     CSSSelector("body.glass-light .mini-button") {
-        backgroundColor("rgba(255,255,255,0.08)")
+        backgroundColor("rgba(255,255,255,0.6)")
         backdropFilter("blur(8px)")
         prop("-webkit-backdrop-filter", "blur(8px)")
-        border("1px solid rgba(255,255,255,0.15)")
+        border("1px solid rgba(0,0,0,0.08)")
         color("#000000")
     }
 
     CSSSelector("body.glass-light .mini-button.active") {
-        backgroundColor("rgba(255,255,255,0.22)")
-        borderColor("rgba(255,255,255,0.4)")
-        color("#000000")
+        backgroundColor("rgba(98,0,238,0.8)")
+        borderColor("transparent")
+        color("#FFFFFF")
     }
 
     CSSSelector("body.glass-light .youtube-video-container") {
@@ -1275,9 +1270,9 @@ public let linksPageStylesheet: Stylesheet = Stylesheet {
     }
 
     CSSSelector("body.glass-dark .card:hover") {
-        backgroundColor("rgba(255,255,255,0.08)")
-        borderColor("rgba(255,255,255,0.20)")
-        boxShadow("inset 0 1px 0 0 rgba(255,255,255,0.15), 0 0 30px rgba(255,255,255,0.04), 0 8px 32px rgba(0,0,0,0.6)")
+        backgroundColor("rgba(255,255,255,0.07)")
+        borderColor("rgba(255,255,255,0.15)")
+        boxShadow("inset 0 1px 0 0 rgba(255,255,255,0.1), 0 0 30px rgba(187,134,252,0.12), 0 8px 32px rgba(0,0,0,0.6)")
         transform("translateY(-3px)")
     }
 
@@ -1295,33 +1290,31 @@ public let linksPageStylesheet: Stylesheet = Stylesheet {
     }
 
     CSSSelector("body.glass-dark .primary-button") {
-        background("linear-gradient(135deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04))")
+        background("linear-gradient(135deg, rgba(187,134,252,0.4), rgba(187,134,252,0.2))")
         backdropFilter("blur(12px)")
         prop("-webkit-backdrop-filter", "blur(12px)")
-        border("1px solid rgba(255,255,255,0.12)")
+        border("1px solid rgba(187,134,252,0.3)")
         color("#FFFFFF")
         borderRadius("16px")
     }
 
     CSSSelector("body.glass-dark .primary-button:hover") {
-        background("linear-gradient(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.08))")
-        borderColor("rgba(255,255,255,0.25)")
-        boxShadow("0 0 20px rgba(255,255,255,0.05)")
+        background("linear-gradient(135deg, rgba(187,134,252,0.6), rgba(187,134,252,0.3))")
+        borderColor("rgba(187,134,252,0.5)")
+        boxShadow("0 0 20px rgba(187,134,252,0.2)")
     }
 
     CSSSelector("body.glass-dark .support-button") {
-        background("linear-gradient(135deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04))")
+        background("linear-gradient(135deg, rgba(76,175,80,0.4), rgba(76,175,80,0.2))")
         backdropFilter("blur(12px)")
         prop("-webkit-backdrop-filter", "blur(12px)")
-        border("1px solid rgba(255,255,255,0.12)")
+        border("1px solid rgba(76,175,80,0.3)")
         color("#FFFFFF")
         borderRadius("16px")
     }
 
     CSSSelector("body.glass-dark .support-button:hover") {
-        background("linear-gradient(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.08))")
-        borderColor("rgba(255,255,255,0.25)")
-        boxShadow("0 0 20px rgba(255,255,255,0.05)")
+        background("linear-gradient(135deg, rgba(76,175,80,0.6), rgba(76,175,80,0.3))")
     }
 
     CSSSelector("body.glass-dark .modal-content, body.glass-dark .dev-page-content") {
@@ -1342,8 +1335,8 @@ public let linksPageStylesheet: Stylesheet = Stylesheet {
     }
 
     CSSSelector("body.glass-dark .mini-button.active") {
-        backgroundColor("rgba(255,255,255,0.18)")
-        borderColor("rgba(255,255,255,0.30)")
+        backgroundColor("rgba(187,134,252,0.3)")
+        borderColor("rgba(187,134,252,0.5)")
         color("#FFFFFF")
     }
 
