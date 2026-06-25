@@ -606,7 +606,8 @@ struct BezzubickHTMLFactory: HTMLFactory {
                         ),
                         .section(.id("skin"), .class("card m3-shadow-md p-6"),
                             .h2(.id("skin-title"), .class("text-xl font-bold text-center mb-4"), .text("Мой скин Minecraft")),
-                            .div(.id("skin-viewer"), .class("skin-viewer")),
+                            .div(.id("skin-viewer"), .class("skin-viewer"),
+                                .element(named: "canvas", nodes: [.id("skin-canvas")])),
                             .div(.id("skin-controls"), .class("skin-controls")),
                             .div(.class("flex justify-center mt-2"),
                                  .a(.id("download-skin"), .href("\(baseURL)/assets/skin.png"),
@@ -637,12 +638,27 @@ struct BezzubickHTMLFactory: HTMLFactory {
                     .raw("""
                     var BASE='\(baseURL)';
                     var skinview3d=window.skinview3d||null;
+                    function disposeSkinViewer(){if(window.__homeSkinInstance){window.__homeSkinInstance.dispose();window.__homeSkinInstance=null;}}
+                    function homeSkinFallback(c){if(!c)return;disposeSkinViewer();c.innerHTML='<img src=\"'+BASE+'/assets/skin.png\" alt=\"Minecraft skin\" class=\"w-full h-full object-contain\" />';}
                     document.addEventListener('DOMContentLoaded',async function(){
-                      var c=document.getElementById('skin-viewer');if(!c)return;if(!skinview3d){c.innerHTML='<img src=\"'+BASE+'/assets/skin.png\" alt=\"Minecraft skin\" class=\"w-full h-full object-contain\" />';return;}
-                      var cv=c.querySelector('canvas');if(!cv){cv=document.createElement('canvas');cv.id='skin-canvas';c.appendChild(cv)}cv.width=c.offsetWidth||320;cv.height=c.offsetHeight||400;try{var v=new skinview3d.SkinViewer({canvas:cv,width:cv.width,height:cv.height});await v.loadSkin(BASE+'/assets/skin.png');try{if(skinview3d.IdleAnimation)v.animation=new skinview3d.IdleAnimation()}catch(e){}try{var o=skinview3d.createOrbitControls(v);if(o){o.enablePan=false;o.enableZoom=true;if(o.target)o.target.set(0,17,0);o.update()}}catch(e){}new ResizeObserver(function(){v.setSize(Math.max(1,c.offsetWidth||320),Math.max(1,c.offsetHeight||400))}).observe(c)}catch(e){console.error('[HomeSkin]',e);c.innerHTML='<img src=\"'+BASE+'/assets/skin.png\" alt=\"Minecraft skin\" class=\"w-full h-full object-contain\" />'}});
-                      document.getElementById('download-skin')?.addEventListener('click',function(ev){ev.preventDefault();var u=new URL(BASE+'/assets/skin.png',location.href).toString();fetch(u,{cache:'no-store'}).then(function(r){if(!r.ok)throw Error();return r.blob()}).then(function(b){var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='minecraft_skin.png';document.body.appendChild(a);a.click();a.remove()}).catch(function(){window.open(u,'_blank')})});
-                       (async function(){try{var resp=await fetch(BASE+'/scripts/SiteClient.wasm');if(!resp.ok)throw new Error('HTTP '+resp.status);var bytes=await resp.arrayBuffer();var instance=await WebAssembly.instantiate(bytes,{});try{instance.instance.exports.main()}catch(e){console.warn('[WASM] main error',e)}}catch(e){console.warn('[WASM] init error (Liquid Glass unavailable)',e)}})();
+                      var c=document.getElementById('skin-viewer');if(!c)return;
+                      if(!skinview3d){homeSkinFallback(c);return;}
+                      await new Promise(function(r){requestAnimationFrame(function(){requestAnimationFrame(r);});});
+                      var cv=document.getElementById('skin-canvas');if(!cv){cv=document.createElement('canvas');cv.id='skin-canvas';c.appendChild(cv)}
+                      var w=Math.max(1,c.offsetWidth||320);var h=Math.max(1,c.offsetHeight||400);
+                      cv.width=w;cv.height=h;
+                      try{
+                        disposeSkinViewer();
+                        var v=new skinview3d.SkinViewer({canvas:cv,width:w,height:h});
+                        await v.loadSkin(BASE+'/assets/skin.png');
+                        try{if(skinview3d.IdleAnimation)v.animation=new skinview3d.IdleAnimation()}catch(e){}
+                        try{var o=skinview3d.createOrbitControls(v);if(o){o.enablePan=false;o.enableZoom=true;if(o.target)o.target.set(0,17,0);o.update()}}catch(e){}
+                        window.__homeSkinInstance=v;
+                        new ResizeObserver(function(){if(!window.__homeSkinInstance)return;var nw=Math.max(1,c.offsetWidth||320);var nh=Math.max(1,c.offsetHeight||400);window.__homeSkinInstance.setSize(nw,nh)}).observe(c);
+                      }catch(e){console.error('[HomeSkin]',e);homeSkinFallback(c)}
                     });
+                    document.getElementById('download-skin')?.addEventListener('click',function(ev){ev.preventDefault();var u=new URL(BASE+'/assets/skin.png',location.href).toString();fetch(u,{cache:'no-store'}).then(function(r){if(!r.ok)throw Error();return r.blob()}).then(function(b){var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='minecraft_skin.png';document.body.appendChild(a);a.click();a.remove()}).catch(function(){window.open(u,'_blank')})});
+                    (async function(){try{var resp=await fetch(BASE+'/scripts/SiteClient.wasm');if(!resp.ok)throw new Error('HTTP '+resp.status);var bytes=await resp.arrayBuffer();var instance=await WebAssembly.instantiate(bytes,{});try{instance.instance.exports.main()}catch(e){console.warn('[WASM] main error',e)}}catch(e){console.warn('[WASM] init error (Liquid Glass unavailable)',e)}})();
                     """)
                 ])
             )
