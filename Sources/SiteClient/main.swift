@@ -994,14 +994,14 @@ func renderFrame() {
   if let u = uniformLocs["uTMousePos"] { _ = glCtx.uniform2f(u, Float(targetMouseX), Float(targetMouseY)) }
 
   createUniform1f("uRadius", 0.3)
-  createUniform1f("uDistort", 2.3)
-  createUniform1f("uDispersion", 0.7)
+  createUniform1f("uDistort", 3.5)
+  createUniform1f("uDispersion", 1.0)
   createUniform1f("uRotSpeed", 1.0)
-  createUniform1f("uShadowIntensity", 0.3)
+  createUniform1f("uShadowIntensity", 0.5)
   createUniform1f("uShadowOffsetX", 0.01)
   createUniform1f("uShadowOffsetY", 0.08)
   createUniform1f("uShadowBlur", 0.4)
-  createUniform1f("uHighlightIntensity", 0.4)
+  createUniform1f("uHighlightIntensity", 0.6)
   createUniform1f("uHighlightSize", 1.25)
   createUniform1f("uHighlightOffsetX", 0.01)
   createUniform1f("uHighlightOffsetY", 0.03)
