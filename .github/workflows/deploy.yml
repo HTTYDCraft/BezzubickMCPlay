@@ -39,8 +39,6 @@ jobs:
       - name: Copy resource files
         run: |
           cp -r Resources/assets Output/assets 2>/dev/null || true
-          cp data.json Output/data.json
-          cp streams_history.json Output/streams_history.json
 
       - uses: actions/upload-artifact@v4
         with:
