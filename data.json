@@ -13,11 +13,16 @@
     "x" : 2,
     "youtube" : 219000
   },
-  "lastUpdated" : "2026-06-30T11:35:57Z",
+  "lastUpdated" : "2026-06-30T13:27:55Z",
   "liveStream" : {
     "type" : "none"
   },
   "youtubeVideos" : [
+    {
+      "id" : "zjN2Qa3OrZ0",
+      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/zjN2Qa3OrZ0\/maxresdefault.jpg",
+      "title" : "ХУДШАЯ КАРТА В СТИЛЕ АУДИОКНИГИ В МАЙНКРАФТ| Minecraft"
+    },
     {
       "id" : "-h1vEb02DFc",
       "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/-h1vEb02DFc\/maxresdefault.jpg",
@@ -112,11 +117,6 @@
       "id" : "iDyafiaFNuA",
       "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/iDyafiaFNuA\/maxresdefault.jpg",
       "title" : "🔴 ЗАБРОШЕННЫЙ ОСТРОВ В ПЯТНИЦУ 13! The Forest  [Cтрим] | Minecraft"
-    },
-    {
-      "id" : "iN2mhlLvZ8I",
-      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/iN2mhlLvZ8I\/maxresdefault.jpg",
-      "title" : "🔴 СБОРКА ХОРРОР В МАЙНКРАФТ! Теперь точно страшно.. [Стрим] | Minecraft"
     }
   ]
 }
