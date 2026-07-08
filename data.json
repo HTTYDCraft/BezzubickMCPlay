@@ -1,122 +1,122 @@
 {
-  "followerCounts": {
-    "youtube": 220000,
-    "telegram": 41,
-    "instagram": 0,
-    "x": 2,
-    "twitch": 8,
-    "tiktok": 0,
-    "vk_group": 245,
-    "vk_personal": 892
+  "debugInfo" : {
+    "instagram_setup_warning" : "Missing Instagram credentials",
+    "tiktok_setup_warning" : "Missing TikTok credentials"
   },
-  "youtubeVideos": [
+  "followerCounts" : {
+    "instagram" : 0,
+    "telegram" : 42,
+    "tiktok" : 0,
+    "twitch" : 8,
+    "vk_group" : 244,
+    "vk_personal" : 892,
+    "x" : 2,
+    "youtube" : 219000
+  },
+  "lastUpdated" : "2026-07-08T15:23:39Z",
+  "liveStream" : {
+    "type" : "none"
+  },
+  "youtubeVideos" : [
     {
-      "id": "-h1vEb02DFc",
-      "title": "ФАРМЛЮ БУЛЫЖНИК 6 ЧАСОВ В МАЙНКРАФТ | Minecraft",
-      "thumbnailUrl": "https://i.ytimg.com/vi/-h1vEb02DFc/maxresdefault.jpg"
+      "id" : "zjN2Qa3OrZ0",
+      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/zjN2Qa3OrZ0\/maxresdefault.jpg",
+      "title" : "ХУДШАЯ КАРТА В СТИЛЕ АУДИОКНИГИ В МАЙНКРАФТ| Minecraft"
     },
     {
-      "id": "SjE_VQtDSdg",
-      "title": "БОЛЬШИЕ ШАРЫ #Shorts",
-      "thumbnailUrl": "https://i.ytimg.com/vi/SjE_VQtDSdg/maxresdefault.jpg"
+      "id" : "-h1vEb02DFc",
+      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/-h1vEb02DFc\/maxresdefault.jpg",
+      "title" : "ФАРМЛЮ БУЛЫЖНИК 6 ЧАСОВ В МАЙНКРАФТ | Minecraft"
     },
     {
-      "id": "3OioOVz4PJc",
-      "title": "НА ЮТУБЕ НЕЧЕГО СМОТРЕТЬ - И В ЭТОМ ВИНОВАТ ТЫ!",
-      "thumbnailUrl": "https://i.ytimg.com/vi/3OioOVz4PJc/maxresdefault.jpg"
+      "id" : "SjE_VQtDSdg",
+      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/SjE_VQtDSdg\/maxresdefault.jpg",
+      "title" : "БОЛЬШИЕ ШАРЫ #Shorts"
     },
     {
-      "id": "j09aadNVXIc",
-      "title": "😱 МЫ СТАЛИ ТЕСТИРОВЩИКАМИ КАРТ В МАЙНКРАФТ! [Перепутье всех карт - Feodaller] | Minecraft",
-      "thumbnailUrl": "https://i.ytimg.com/vi/j09aadNVXIc/maxresdefault.jpg"
+      "id" : "3OioOVz4PJc",
+      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/3OioOVz4PJc\/maxresdefault.jpg",
+      "title" : "НА ЮТУБЕ НЕЧЕГО СМОТРЕТЬ - И В ЭТОМ ВИНОВАТ ТЫ!"
     },
     {
-      "id": "bffxaEeMhl0",
-      "title": "🔴 ПОСЛЕДНИЙ ВЕСЕННИЙ. Каникулы? [Cтрим] | Minecraft",
-      "thumbnailUrl": "https://i.ytimg.com/vi/bffxaEeMhl0/maxresdefault.jpg"
+      "id" : "j09aadNVXIc",
+      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/j09aadNVXIc\/maxresdefault.jpg",
+      "title" : "😱 МЫ СТАЛИ ТЕСТИРОВЩИКАМИ КАРТ В МАЙНКРАФТ! [Перепутье всех карт - Feodaller] | Minecraft"
     },
     {
-      "id": "Tq9kv8BhWgA",
-      "title": "🔴 Вечерний стрим (для тутлеса утренний)  [Cтрим] | Mindustry",
-      "thumbnailUrl": "https://i.ytimg.com/vi/Tq9kv8BhWgA/maxresdefault.jpg"
+      "id" : "bffxaEeMhl0",
+      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/bffxaEeMhl0\/maxresdefault.jpg",
+      "title" : "🔴 ПОСЛЕДНИЙ ВЕСЕННИЙ. Каникулы? [Cтрим] | Minecraft"
     },
     {
-      "id": "D_7T2w6mUFE",
-      "title": "🔴 Стрим на хейве, всме дарова  [Cтрим] | Minecraft",
-      "thumbnailUrl": "https://i.ytimg.com/vi/D_7T2w6mUFE/maxresdefault.jpg"
+      "id" : "Tq9kv8BhWgA",
+      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/Tq9kv8BhWgA\/maxresdefault.jpg",
+      "title" : "🔴 Вечерний стрим (для тутлеса утренний)  [Cтрим] | Mindustry"
     },
     {
-      "id": "wyzGY8LmYCA",
-      "title": "🔴 РЕПОООООООПОПО | R.E.P.O",
-      "thumbnailUrl": "https://i.ytimg.com/vi/wyzGY8LmYCA/maxresdefault.jpg"
+      "id" : "D_7T2w6mUFE",
+      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/D_7T2w6mUFE\/maxresdefault.jpg",
+      "title" : "🔴 Стрим на хейве, всме дарова  [Cтрим] | Minecraft"
     },
     {
-      "id": "G-Oy-FuqBTY",
-      "title": "🔴 ПРОСТО СТРИМ | Minecraft",
-      "thumbnailUrl": "https://i.ytimg.com/vi/G-Oy-FuqBTY/maxresdefault.jpg"
+      "id" : "wyzGY8LmYCA",
+      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/wyzGY8LmYCA\/maxresdefault.jpg",
+      "title" : "🔴 РЕПОООООООПОПО | R.E.P.O"
     },
     {
-      "id": "F-Cdh4SM0fE",
-      "title": "просто играем в майнкрафт. без больших букв",
-      "thumbnailUrl": "https://i.ytimg.com/vi/F-Cdh4SM0fE/maxresdefault.jpg"
+      "id" : "G-Oy-FuqBTY",
+      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/G-Oy-FuqBTY\/maxresdefault.jpg",
+      "title" : "🔴 ПРОСТО СТРИМ | Minecraft"
     },
     {
-      "id": "w_UzSa8eLfU",
-      "title": "😉 Не кликай на звук! - Когда лень идти в шахту [Reverse Edition] #Shorts #майнкрафт #bezzubickmcplay",
-      "thumbnailUrl": "https://i.ytimg.com/vi/w_UzSa8eLfU/maxresdefault.jpg"
+      "id" : "F-Cdh4SM0fE",
+      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/F-Cdh4SM0fE\/maxresdefault.jpg",
+      "title" : "просто играем в майнкрафт. без больших букв"
     },
     {
-      "id": "JnxUmWGeg4c",
-      "title": "😉 Не кликай на звук! - Когда лень идти в шахту [Reverse Edition] #Shorts #майнкрафт #bezzubickmcplay",
-      "thumbnailUrl": "https://i.ytimg.com/vi/JnxUmWGeg4c/maxresdefault.jpg"
+      "id" : "w_UzSa8eLfU",
+      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/w_UzSa8eLfU\/maxresdefault.jpg",
+      "title" : "😉 Не кликай на звук! - Когда лень идти в шахту [Reverse Edition] #Shorts #майнкрафт #bezzubickmcplay"
     },
     {
-      "id": "Q3I1DcFGvS4",
-      "title": "Не жмякай на звук ❌  #minecraft #shorts #майнкрафт",
-      "thumbnailUrl": "https://i.ytimg.com/vi/Q3I1DcFGvS4/maxresdefault.jpg"
+      "id" : "JnxUmWGeg4c",
+      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/JnxUmWGeg4c\/maxresdefault.jpg",
+      "title" : "😉 Не кликай на звук! - Когда лень идти в шахту [Reverse Edition] #Shorts #майнкрафт #bezzubickmcplay"
     },
     {
-      "id": "Jp977ZMd_bE",
-      "title": "👀 POV: твой друг #Shorts #майнкрафт #bezzubickmcplay",
-      "thumbnailUrl": "https://i.ytimg.com/vi/Jp977ZMd_bE/maxresdefault.jpg"
+      "id" : "Q3I1DcFGvS4",
+      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/Q3I1DcFGvS4\/maxresdefault.jpg",
+      "title" : "Не жмякай на звук ❌  #minecraft #shorts #майнкрафт"
     },
     {
-      "id": "7jY46bOpPI4",
-      "title": "😉 Когда лень идти в шахту... #Shorts #майнкрафт #bezzubickmcplay",
-      "thumbnailUrl": "https://i.ytimg.com/vi/7jY46bOpPI4/maxresdefault.jpg"
+      "id" : "Jp977ZMd_bE",
+      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/Jp977ZMd_bE\/maxresdefault.jpg",
+      "title" : "👀 POV: твой друг #Shorts #майнкрафт #bezzubickmcplay"
     },
     {
-      "id": "gM1bTYzhNAE",
-      "title": "😉 Когда лень идти в шахту... #Shorts #майнкрафт #bezzubickmcplay",
-      "thumbnailUrl": "https://i.ytimg.com/vi/gM1bTYzhNAE/maxresdefault.jpg"
+      "id" : "7jY46bOpPI4",
+      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/7jY46bOpPI4\/maxresdefault.jpg",
+      "title" : "😉 Когда лень идти в шахту... #Shorts #майнкрафт #bezzubickmcplay"
     },
     {
-      "id": "u8rnQnqFYDU",
-      "title": "😱 Майнкрафт, но Я Закончил ДЕТЕКТИВНУЮ ИСТОРИЮ [Детектив: Смайл] | Глава 4 | Minecraft",
-      "thumbnailUrl": "https://i.ytimg.com/vi/u8rnQnqFYDU/maxresdefault.jpg"
+      "id" : "gM1bTYzhNAE",
+      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/gM1bTYzhNAE\/maxresdefault.jpg",
+      "title" : "😉 Когда лень идти в шахту... #Shorts #майнкрафт #bezzubickmcplay"
     },
     {
-      "id": "oCnCHw9bki8",
-      "title": "Конец 2025... Что дальше?✨",
-      "thumbnailUrl": "https://i.ytimg.com/vi/oCnCHw9bki8/maxresdefault.jpg"
+      "id" : "u8rnQnqFYDU",
+      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/u8rnQnqFYDU\/maxresdefault.jpg",
+      "title" : "😱 Майнкрафт, но Я Закончил ДЕТЕКТИВНУЮ ИСТОРИЮ [Детектив: Смайл] | Глава 4 | Minecraft"
     },
     {
-      "id": "iDyafiaFNuA",
-      "title": "🔴 ЗАБРОШЕННЫЙ ОСТРОВ В ПЯТНИЦУ 13! The Forest  [Cтрим] | Minecraft",
-      "thumbnailUrl": "https://i.ytimg.com/vi/iDyafiaFNuA/maxresdefault.jpg"
+      "id" : "oCnCHw9bki8",
+      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/oCnCHw9bki8\/maxresdefault.jpg",
+      "title" : "Конец 2025... Что дальше?✨"
     },
     {
-      "id": "iN2mhlLvZ8I",
-      "title": "🔴 СБОРКА ХОРРОР В МАЙНКРАФТ! Теперь точно страшно.. [Стрим] | Minecraft",
-      "thumbnailUrl": "https://i.ytimg.com/vi/iN2mhlLvZ8I/maxresdefault.jpg"
+      "id" : "iDyafiaFNuA",
+      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/iDyafiaFNuA\/maxresdefault.jpg",
+      "title" : "🔴 ЗАБРОШЕННЫЙ ОСТРОВ В ПЯТНИЦУ 13! The Forest  [Cтрим] | Minecraft"
     }
-  ],
-  "liveStream": {
-    "type": "none"
-  },
-  "lastUpdated": "2026-06-20T01:31:49.557310",
-  "debugInfo": {
-    "instagram_setup_warning": "Missing Instagram credentials",
-    "tiktok_setup_warning": "Missing TikTok credentials"
-  }
+  ]
 }
