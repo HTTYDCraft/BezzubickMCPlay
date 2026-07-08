@@ -47,19 +47,6 @@ links:
     showCount: false
     platform: "x"
 
-  - label: "Группа VK"
-    url: "https://vk.com/bezzubickmcplay"
-    icon: "group"
-    order: 7
-    showCount: true
-    platform: "vk_group"
-
-  - label: "Личная страница VK"
-    url: "https://vk.com/bezzubickmcplay_official"
-    icon: "person"
-    order: 8
-    showCount: true
-    platform: "vk_personal"
 
 # Кнопки на главной странице (шапка)
 heroButtons:
