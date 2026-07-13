@@ -13,17 +13,19 @@
     "x" : 2,
     "youtube" : 219000
   },
-  "lastUpdated" : "2026-07-13T17:29:25Z",
+  "lastUpdated" : "2026-07-13T18:56:33Z",
   "liveStream" : {
-    "id" : "IUFOjbNJAxc",
-    "title" : "🔴 СТРИМ С ДЕВУШКОЙ! Общаемся с подписчиками [Cтрим] | Minecraft",
-    "type" : "youtube",
-    "youtubeChannelId" : "UCm6mheCT60mZ5qlxG5r2GeA"
+    "type" : "none"
   },
   "youtubeVideos" : [
     {
+      "id" : "xOp5YK7Jh6c",
+      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/xOp5YK7Jh6c\/maxresdefault.jpg",
+      "title" : "🔴 Create Aeronautics на стриме [Cтрим] | Minecraft"
+    },
+    {
       "id" : "IUFOjbNJAxc",
-      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/IUFOjbNJAxc\/maxresdefault_live.jpg",
+      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/IUFOjbNJAxc\/maxresdefault.jpg",
       "title" : "🔴 СТРИМ С ДЕВУШКОЙ! Общаемся с подписчиками [Cтрим] | Minecraft"
     },
     {
@@ -115,11 +117,6 @@
       "id" : "u8rnQnqFYDU",
       "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/u8rnQnqFYDU\/maxresdefault.jpg",
       "title" : "😱 Майнкрафт, но Я Закончил ДЕТЕКТИВНУЮ ИСТОРИЮ [Детектив: Смайл] | Глава 4 | Minecraft"
-    },
-    {
-      "id" : "oCnCHw9bki8",
-      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/oCnCHw9bki8\/maxresdefault.jpg",
-      "title" : "Конец 2025... Что дальше?✨"
     }
   ]
 }
