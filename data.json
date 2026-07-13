@@ -13,11 +13,19 @@
     "x" : 2,
     "youtube" : 219000
   },
-  "lastUpdated" : "2026-07-13T12:33:12Z",
+  "lastUpdated" : "2026-07-13T15:27:04Z",
   "liveStream" : {
-    "type" : "none"
+    "id" : "IUFOjbNJAxc",
+    "title" : "🔴 СТРИМ С ДЕВУШКОЙ! Общаемся с подписчиками [Cтрим] | Minecraft",
+    "type" : "youtube",
+    "youtubeChannelId" : "UCm6mheCT60mZ5qlxG5r2GeA"
   },
   "youtubeVideos" : [
+    {
+      "id" : "IUFOjbNJAxc",
+      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/IUFOjbNJAxc\/maxresdefault_live.jpg",
+      "title" : "🔴 СТРИМ С ДЕВУШКОЙ! Общаемся с подписчиками [Cтрим] | Minecraft"
+    },
     {
       "id" : "zjN2Qa3OrZ0",
       "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/zjN2Qa3OrZ0\/maxresdefault.jpg",
@@ -112,11 +120,6 @@
       "id" : "oCnCHw9bki8",
       "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/oCnCHw9bki8\/maxresdefault.jpg",
       "title" : "Конец 2025... Что дальше?✨"
-    },
-    {
-      "id" : "iDyafiaFNuA",
-      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/iDyafiaFNuA\/maxresdefault.jpg",
-      "title" : "🔴 ЗАБРОШЕННЫЙ ОСТРОВ В ПЯТНИЦУ 13! The Forest  [Cтрим] | Minecraft"
     }
   ]
 }
