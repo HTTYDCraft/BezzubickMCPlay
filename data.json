@@ -13,11 +13,16 @@
     "x" : 2,
     "youtube" : 219000
   },
-  "lastUpdated" : "2026-07-15T11:55:16Z",
+  "lastUpdated" : "2026-07-15T13:16:21Z",
   "liveStream" : {
     "type" : "none"
   },
   "youtubeVideos" : [
+    {
+      "id" : "Y6OTWJI-FYU",
+      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/Y6OTWJI-FYU\/maxresdefault.jpg",
+      "title" : "БЕЗЗ СНОВА ИГРАЕТ В БЕДВАРС | Minecraft"
+    },
     {
       "id" : "xOp5YK7Jh6c",
       "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/xOp5YK7Jh6c\/maxresdefault.jpg",
@@ -112,11 +117,6 @@
       "id" : "gM1bTYzhNAE",
       "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/gM1bTYzhNAE\/maxresdefault.jpg",
       "title" : "😉 Когда лень идти в шахту... #Shorts #майнкрафт #bezzubickmcplay"
-    },
-    {
-      "id" : "u8rnQnqFYDU",
-      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/u8rnQnqFYDU\/maxresdefault.jpg",
-      "title" : "😱 Майнкрафт, но Я Закончил ДЕТЕКТИВНУЮ ИСТОРИЮ [Детектив: Смайл] | Глава 4 | Minecraft"
     }
   ]
 }
