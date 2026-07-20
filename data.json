@@ -13,17 +13,14 @@
     "x" : 2,
     "youtube" : 219000
   },
-  "lastUpdated" : "2026-07-20T21:15:11Z",
+  "lastUpdated" : "2026-07-20T22:14:47Z",
   "liveStream" : {
-    "id" : "CbA1pEWdJJw",
-    "title" : "🔴 СТРИМ С ДЕВУШКОЙ! (и гусем) Общаемся с подписчиками [Cтрим] | Minecraft",
-    "type" : "youtube",
-    "youtubeChannelId" : "UCm6mheCT60mZ5qlxG5r2GeA"
+    "type" : "none"
   },
   "youtubeVideos" : [
     {
       "id" : "CbA1pEWdJJw",
-      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/CbA1pEWdJJw\/maxresdefault_live.jpg",
+      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/CbA1pEWdJJw\/maxresdefault.jpg",
       "title" : "🔴 СТРИМ С ДЕВУШКОЙ! (и гусем) Общаемся с подписчиками [Cтрим] | Minecraft"
     },
     {
