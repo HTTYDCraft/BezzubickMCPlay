@@ -13,11 +13,19 @@
     "x" : 2,
     "youtube" : 219000
   },
-  "lastUpdated" : "2026-07-20T16:10:08Z",
+  "lastUpdated" : "2026-07-20T18:17:56Z",
   "liveStream" : {
-    "type" : "none"
+    "id" : "CbA1pEWdJJw",
+    "title" : "🔴 СТРИМ С ДЕВУШКОЙ! (и гусем) Общаемся с подписчиками [Cтрим] | Minecraft",
+    "type" : "youtube",
+    "youtubeChannelId" : "UCm6mheCT60mZ5qlxG5r2GeA"
   },
   "youtubeVideos" : [
+    {
+      "id" : "CbA1pEWdJJw",
+      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/CbA1pEWdJJw\/maxresdefault_live.jpg",
+      "title" : "🔴 СТРИМ С ДЕВУШКОЙ! (и гусем) Общаемся с подписчиками [Cтрим] | Minecraft"
+    },
     {
       "id" : "Y6OTWJI-FYU",
       "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/Y6OTWJI-FYU\/maxresdefault.jpg",
@@ -111,11 +119,6 @@
     {
       "id" : "7jY46bOpPI4",
       "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/7jY46bOpPI4\/maxresdefault.jpg",
-      "title" : "😉 Когда лень идти в шахту... #Shorts #майнкрафт #bezzubickmcplay"
-    },
-    {
-      "id" : "gM1bTYzhNAE",
-      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/gM1bTYzhNAE\/maxresdefault.jpg",
       "title" : "😉 Когда лень идти в шахту... #Shorts #майнкрафт #bezzubickmcplay"
     }
   ]
