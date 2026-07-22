@@ -13,11 +13,19 @@
     "x" : 2,
     "youtube" : 219000
   },
-  "lastUpdated" : "2026-07-22T20:00:39Z",
+  "lastUpdated" : "2026-07-22T21:16:22Z",
   "liveStream" : {
-    "type" : "none"
+    "id" : "x8lyN32GOlQ",
+    "title" : "🔴 СТРИМ В ЧУЛКАХ С ДЕВУШКОЙ ИГРАЕМ В ТВИСТЕР (и гусем)! Общаемся с подписчиками [Cтрим] | Minecraft",
+    "type" : "youtube",
+    "youtubeChannelId" : "UCm6mheCT60mZ5qlxG5r2GeA"
   },
   "youtubeVideos" : [
+    {
+      "id" : "x8lyN32GOlQ",
+      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/x8lyN32GOlQ\/maxresdefault_live.jpg",
+      "title" : "🔴 СТРИМ В ЧУЛКАХ С ДЕВУШКОЙ ИГРАЕМ В ТВИСТЕР (и гусем)! Общаемся с подписчиками [Cтрим] | Minecraft"
+    },
     {
       "id" : "CbA1pEWdJJw",
       "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/CbA1pEWdJJw\/maxresdefault.jpg",
@@ -112,11 +120,6 @@
       "id" : "Jp977ZMd_bE",
       "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/Jp977ZMd_bE\/maxresdefault.jpg",
       "title" : "👀 POV: твой друг #Shorts #майнкрафт #bezzubickmcplay"
-    },
-    {
-      "id" : "7jY46bOpPI4",
-      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/7jY46bOpPI4\/maxresdefault.jpg",
-      "title" : "😉 Когда лень идти в шахту... #Shorts #майнкрафт #bezzubickmcplay"
     }
   ]
 }
