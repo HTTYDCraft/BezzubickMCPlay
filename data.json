@@ -8,12 +8,12 @@
     "telegram" : 41,
     "tiktok" : 0,
     "twitch" : 8,
-    "vk_group" : 245,
+    "vk_group" : 246,
     "vk_personal" : 893,
     "x" : 2,
     "youtube" : 219000
   },
-  "lastUpdated" : "2026-07-23T12:51:49Z",
+  "lastUpdated" : "2026-07-23T14:56:23Z",
   "liveStream" : {
     "type" : "none"
   },
