@@ -13,11 +13,19 @@
     "x" : 2,
     "youtube" : 219000
   },
-  "lastUpdated" : "2026-07-23T18:54:29Z",
+  "lastUpdated" : "2026-07-23T20:07:34Z",
   "liveStream" : {
-    "type" : "none"
+    "id" : "ilzRVUzrm2Q",
+    "title" : "🔴 СТРИМ В ЧУЛКАХ С ДЕВУШКОЙ (и котиком)! Общаемся с подписчиками [Cтрим] | Minecraft",
+    "type" : "youtube",
+    "youtubeChannelId" : "UCm6mheCT60mZ5qlxG5r2GeA"
   },
   "youtubeVideos" : [
+    {
+      "id" : "ilzRVUzrm2Q",
+      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/ilzRVUzrm2Q\/maxresdefault_live.jpg",
+      "title" : "🔴 СТРИМ В ЧУЛКАХ С ДЕВУШКОЙ (и котиком)! Общаемся с подписчиками [Cтрим] | Minecraft"
+    },
     {
       "id" : "x8lyN32GOlQ",
       "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/x8lyN32GOlQ\/maxresdefault.jpg",
@@ -112,11 +120,6 @@
       "id" : "Q3I1DcFGvS4",
       "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/Q3I1DcFGvS4\/maxresdefault.jpg",
       "title" : "Не жмякай на звук ❌  #minecraft #shorts #майнкрафт"
-    },
-    {
-      "id" : "Jp977ZMd_bE",
-      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/Jp977ZMd_bE\/maxresdefault.jpg",
-      "title" : "👀 POV: твой друг #Shorts #майнкрафт #bezzubickmcplay"
     }
   ]
 }
