@@ -5,19 +5,54 @@
   },
   "followerCounts" : {
     "instagram" : 0,
-    "telegram" : 42,
+    "telegram" : 41,
     "tiktok" : 0,
     "twitch" : 8,
-    "vk_group" : 245,
-    "vk_personal" : 892,
+    "vk_group" : 246,
+    "vk_personal" : 893,
     "x" : 2,
-    "youtube" : 220000
+    "youtube" : 219000
   },
-  "lastUpdated" : "2026-06-25T18:23:48Z",
+  "lastUpdated" : "2026-07-26T23:41:48Z",
   "liveStream" : {
     "type" : "none"
   },
   "youtubeVideos" : [
+    {
+      "id" : "ilzRVUzrm2Q",
+      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/ilzRVUzrm2Q\/maxresdefault.jpg",
+      "title" : "🔴 СТРИМ В ЧУЛКАХ С ДЕВУШКОЙ (и котиком)! Общаемся с подписчиками [Cтрим] | Minecraft"
+    },
+    {
+      "id" : "x8lyN32GOlQ",
+      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/x8lyN32GOlQ\/maxresdefault.jpg",
+      "title" : "🔴 СТРИМ В ЧУЛКАХ С ДЕВУШКОЙ ИГРАЕМ В ТВИСТЕР (и гусем)! Общаемся с подписчиками [Cтрим] | Minecraft"
+    },
+    {
+      "id" : "CbA1pEWdJJw",
+      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/CbA1pEWdJJw\/maxresdefault.jpg",
+      "title" : "🔴 СТРИМ С ДЕВУШКОЙ! (и гусем) Общаемся с подписчиками [Cтрим] | Minecraft"
+    },
+    {
+      "id" : "Y6OTWJI-FYU",
+      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/Y6OTWJI-FYU\/maxresdefault.jpg",
+      "title" : "БЕЗЗ СНОВА ИГРАЕТ В БЕДВАРС | Minecraft"
+    },
+    {
+      "id" : "xOp5YK7Jh6c",
+      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/xOp5YK7Jh6c\/maxresdefault.jpg",
+      "title" : "🔴 Create Aeronautics на стриме [Cтрим] | Minecraft"
+    },
+    {
+      "id" : "IUFOjbNJAxc",
+      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/IUFOjbNJAxc\/maxresdefault.jpg",
+      "title" : "🔴 СТРИМ С ДЕВУШКОЙ! Общаемся с подписчиками [Cтрим] | Minecraft"
+    },
+    {
+      "id" : "zjN2Qa3OrZ0",
+      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/zjN2Qa3OrZ0\/maxresdefault.jpg",
+      "title" : "ХУДШАЯ КАРТА В СТИЛЕ АУДИОКНИГИ В МАЙНКРАФТ| Minecraft"
+    },
     {
       "id" : "-h1vEb02DFc",
       "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/-h1vEb02DFc\/maxresdefault.jpg",
@@ -82,41 +117,6 @@
       "id" : "Q3I1DcFGvS4",
       "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/Q3I1DcFGvS4\/maxresdefault.jpg",
       "title" : "Не жмякай на звук ❌  #minecraft #shorts #майнкрафт"
-    },
-    {
-      "id" : "Jp977ZMd_bE",
-      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/Jp977ZMd_bE\/maxresdefault.jpg",
-      "title" : "👀 POV: твой друг #Shorts #майнкрафт #bezzubickmcplay"
-    },
-    {
-      "id" : "7jY46bOpPI4",
-      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/7jY46bOpPI4\/maxresdefault.jpg",
-      "title" : "😉 Когда лень идти в шахту... #Shorts #майнкрафт #bezzubickmcplay"
-    },
-    {
-      "id" : "gM1bTYzhNAE",
-      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/gM1bTYzhNAE\/maxresdefault.jpg",
-      "title" : "😉 Когда лень идти в шахту... #Shorts #майнкрафт #bezzubickmcplay"
-    },
-    {
-      "id" : "u8rnQnqFYDU",
-      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/u8rnQnqFYDU\/maxresdefault.jpg",
-      "title" : "😱 Майнкрафт, но Я Закончил ДЕТЕКТИВНУЮ ИСТОРИЮ [Детектив: Смайл] | Глава 4 | Minecraft"
-    },
-    {
-      "id" : "oCnCHw9bki8",
-      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/oCnCHw9bki8\/maxresdefault.jpg",
-      "title" : "Конец 2025... Что дальше?✨"
-    },
-    {
-      "id" : "iDyafiaFNuA",
-      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/iDyafiaFNuA\/maxresdefault.jpg",
-      "title" : "🔴 ЗАБРОШЕННЫЙ ОСТРОВ В ПЯТНИЦУ 13! The Forest  [Cтрим] | Minecraft"
-    },
-    {
-      "id" : "iN2mhlLvZ8I",
-      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/iN2mhlLvZ8I\/maxresdefault.jpg",
-      "title" : "🔴 СБОРКА ХОРРОР В МАЙНКРАФТ! Теперь точно страшно.. [Стрим] | Minecraft"
     }
   ]
 }
