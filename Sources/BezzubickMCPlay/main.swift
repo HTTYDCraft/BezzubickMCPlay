@@ -98,7 +98,12 @@ func md2html(_ md: String) -> String {
             result.append(""); continue
         }
         let inline: (String) -> String = { s in
-            s.replacingOccurrences(of: "\\*\\*(.+?)\\*\\*", with: "<strong>$1</strong>", options: .regularExpression)
+            var out = s
+            out = out.replacingOccurrences(of: "\\[([^\\]]+)\\]\\(([^)]+)\\)", with: "<a href=\"$2\" target=\"_blank\" rel=\"noopener\">$1</a>", options: .regularExpression)
+            out = out.replacingOccurrences(of: "\\*\\*(.+?)\\*\\*", with: "<strong>$1</strong>", options: .regularExpression)
+            out = out.replacingOccurrences(of: "(?<![\\w*])\\*([^*]+)\\*(?![\\w*])", with: "<em>$1</em>", options: .regularExpression)
+            out = out.replacingOccurrences(of: "`([^`]+)`", with: "<code>$1</code>", options: .regularExpression)
+            return out
         }
         if t.hasPrefix("#### ") { result.append("<h4>\(inline(String(t.dropFirst(5))))</h4>"); continue }
         if t.hasPrefix("### ") { result.append("<h3>\(inline(String(t.dropFirst(4))))</h3>"); continue }
@@ -137,7 +142,7 @@ func readTimeline() -> [TimelineEntry] {
 
 // MARK: - Links config reader (simple YAML)
 
-struct LinkItem { let label, url, icon, platform: String; let order, showCount: Bool; let count: Int }
+struct LinkItem { let label, label_en, url, icon, platform: String; let order: Int; let showCount: Bool }
 struct HeroBtn { let label, url, icon, style: String }
 
 func parseLinks() -> ([LinkItem], [HeroBtn]) {
@@ -151,16 +156,16 @@ func parseLinks() -> ([LinkItem], [HeroBtn]) {
         if t == "links:" { section = "links"; continue }
         if t == "heroButtons:" {
             if section == "links" && !cur.isEmpty, let l = cur["label"] {
-                links.append(LinkItem(label: l, url: cur["url"] ?? "", icon: cur["icon"] ?? "link",
-                                      platform: cur["platform"] ?? "", order: true, showCount: cur["showCount"] == "true", count: 0))
+                links.append(LinkItem(label: l, label_en: cur["label_en"] ?? l, url: cur["url"] ?? "", icon: cur["icon"] ?? "link",
+                                      platform: cur["platform"] ?? "", order: Int(cur["order"] ?? "0") ?? 0, showCount: cur["showCount"] == "true"))
                 cur = [:]
             }
             section = "hero"; continue
         }
         if section == "links" && t.hasPrefix("- ") {
             if !cur.isEmpty, let l = cur["label"] {
-                links.append(LinkItem(label: l, url: cur["url"] ?? "", icon: cur["icon"] ?? "link",
-                                      platform: cur["platform"] ?? "", order: true, showCount: cur["showCount"] == "true", count: 0))
+                links.append(LinkItem(label: l, label_en: cur["label_en"] ?? l, url: cur["url"] ?? "", icon: cur["icon"] ?? "link",
+                                      platform: cur["platform"] ?? "", order: Int(cur["order"] ?? "0") ?? 0, showCount: cur["showCount"] == "true"))
             }
             cur = [:]
         }
@@ -175,19 +180,36 @@ func parseLinks() -> ([LinkItem], [HeroBtn]) {
             if p.count == 2 {
                 var key = p[0]
                 if key.hasPrefix("- ") { key = String(key.dropFirst(2)) }
-                cur[key] = p[1].trimmingCharacters(in: CharacterSet(charactersIn: "\""))
+                cur[key] = p[1].trimmingCharacters(in: CharacterSet(charactersIn: "\"<>"))
             }
         }
     }
     if !cur.isEmpty, let l = cur["label"] {
         if section == "links" {
-            links.append(LinkItem(label: l, url: cur["url"] ?? "", icon: cur["icon"] ?? "link",
-                                  platform: cur["platform"] ?? "", order: true, showCount: cur["showCount"] == "true", count: 0))
+            links.append(LinkItem(label: l, label_en: cur["label_en"] ?? l, url: cur["url"] ?? "", icon: cur["icon"] ?? "link",
+                                  platform: cur["platform"] ?? "", order: Int(cur["order"] ?? "0") ?? 0, showCount: cur["showCount"] == "true"))
         } else if section == "hero" {
             heroes.append(HeroBtn(label: l, url: cur["url"] ?? "", icon: cur["icon"] ?? "link", style: cur["style"] ?? "support"))
         }
     }
     return (links, heroes)
+}
+
+func generateLinksConfigJS(_ links: [LinkItem]) -> String {
+    let items = links.sorted { $0.order < $1.order }.map { link -> String in
+        let label = link.label.replacingOccurrences(of: "'", with: "\\'")
+        let labelEn = link.label_en.replacingOccurrences(of: "'", with: "\\'")
+        let url = link.url.replacingOccurrences(of: "'", with: "\\'")
+        let icon = link.icon
+        let subscribeUrl: String
+        if link.platform == "youtube" {
+            subscribeUrl = url + (url.contains("?") ? "&" : "?") + "sub_confirmation=1"
+        } else {
+            subscribeUrl = ""
+        }
+        return "{label:'\(label)',label_en:'\(labelEn)',url:'\(url)',icon:'\(icon)',order:\(link.order),isSocial:true,showSubscriberCount:\(link.showCount),platformId:'\(link.platform)',subscribeUrl:'\(subscribeUrl)',active:true}"
+    }
+    return "var linksConfig=[\n" + items.joined(separator: ",\n") + "\n];\n"
 }
 
 // MARK: - JavaScript (generated by Swift)
@@ -202,13 +224,9 @@ var params=new URLSearchParams(location.search);
 var urlLang=params.get('lang');
 var urlTheme=params.get('theme');
 var urlDebugTheme=params.get('debugTheme');
-var ua=navigator.userAgent;
-var isChrome=ua.includes('Chrome')&&!ua.includes('Edg');
-var isAndroid=ua.includes('Android');
-var isWindows=ua.includes('Windows');
-var preferMaterial=isChrome&&(isAndroid||isWindows);
+var prefersLight=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;
 var storedTheme=localStorage.getItem('theme');
-var S={theme:urlDebugTheme||urlTheme||storedTheme||(preferMaterial?'dark':'glass-dark'),lang:urlLang||localStorage.getItem('lang')||(navigator.language.startsWith('ru')?'ru':'en')};
+var S={theme:urlDebugTheme||urlTheme||storedTheme||(prefersLight?'light':'dark'),lang:urlLang||localStorage.getItem('lang')||(navigator.language.startsWith('ru')?'ru':'en')};
 
  function setTheme(t){S.theme=t;localStorage.setItem('theme',t);
  var cls=t==='dark'?'dark-theme':t==='light'?'light-theme':t==='glass-dark'?'glass-dark':'glass-light';
@@ -300,6 +318,7 @@ en:['January','February','March','April','May','June','July','August','September
 var WDAYS={ru:['\\u041f\\u043d','\\u0412\\u0442','\\u0421\\u0440','\\u0427\\u0442','\\u041f\\u0442','\\u0421\\u0431','\\u0412\\u0441'],
 en:['Mon','Tue','Wed','Thu','Fri','Sat','Sun']};
 var calState={year:new Date().getFullYear(),month:new Date().getMonth()};
+var HIST=null;
 
 function setupCalendar(){
 document.getElementById('cal-prev').onclick=function(){calState.month--;if(calState.month<0){calState.month=11;calState.year--;}renderCal();};
@@ -307,6 +326,7 @@ document.getElementById('cal-next').onclick=function(){calState.month++;if(calSt
 renderCal();
 }
 function renderCal(){
+if(HIST){renderCalWithEvents(HIST);return;}
 var m=MONTHS[S.lang]||MONTHS.ru,w=WDAYS[S.lang]||WDAYS.ru;
 document.getElementById('cal-label').textContent=m[calState.month]+' '+calState.year;
 var head=document.getElementById('cal-weekdays');
@@ -331,9 +351,6 @@ html+='<div class="'+cls.join(' ')+'"><div>'+d+'</div></div>';
 document.getElementById('cal-grid').innerHTML=html;
 }
 
-var MONTHS={ru:['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],en:['January','February','March','April','May','June','July','August','September','October','November','December']};
-var WDAYS={ru:['Пн','Вт','Ср','Чт','Пт','Сб','Вс'],en:['Mon','Tue','Wed','Thu','Fri','Sat','Sun']};
-
 function setupVideos(){
 fetch(BASE+'/data.json?t='+Date.now()).then(function(r){return r.json();}).then(function(data){
 var vids=data.youtubeVideos||[];
@@ -344,7 +361,7 @@ vids.forEach(function(v){
 var a=document.createElement('a');
 a.href='https://www.youtube.com/watch?v='+v.id;a.target='_blank';
 a.className='flex-shrink-0 w-64 rounded-2xl overflow-hidden m3-shadow-md card';
-a.innerHTML='<img src="'+v.thumbnailUrl+'" alt="'+v.title+'" class="w-full h-36 object-cover"><div class="p-3"><p class="text-sm font-medium leading-tight">'+v.title+'</p></div>';
+a.innerHTML='<img loading="lazy" decoding="async" src="'+v.thumbnailUrl+'" alt="'+v.title+'" class="w-full h-36 object-cover"><div class="p-3"><p class="text-sm font-medium leading-tight">'+v.title+'</p></div>';
 el.appendChild(a);
 });
 var total=0;var fc=data.followerCounts||{};
@@ -364,7 +381,7 @@ if(e.platform==='youtube')byDate[e.date].yt=true;
 if(e.platform==='twitch')byDate[e.date].tw=true;
 byDate[e.date].items.push(e);
 });
-renderCalWithEvents(byDate);
+HIST=byDate;renderCal();
 }).catch(function(){});
 }
 function renderCalWithEvents(byDate){
@@ -420,36 +437,30 @@ setupSkin();
 
 // MARK: - CSS (generated by Swift)
 
-let siteCSS = siteStylesheet.render()
+let siteCSS = siteStylesheet.render() + utilityCSS
 
 // MARK: - Links Page CSS
 
-let linksCSS = linksPageStylesheet.render()
+let linksCSS = linksPageStylesheet.render() + utilityCSS
 
 // MARK: - Links Page JS (ES module with inlined config + strings)
 
-let linksJS = """
+var linksJS: String {
+    let (links, _) = parseLinks()
+    let linksConfigJS = generateLinksConfigJS(links)
+    return """
 var BASE='\(baseURL)';
 var skinview3d=window.skinview3d||null;
 
 var params = new URLSearchParams(location.search);
 var appConfig={dataUrl:BASE+'/data.json',showLiveStreamSection:true,showProfileSection:true,showMinecraftSkinSection:true,showLinksSection:true,showYouTubeVideosSection:true,showSupportButton:true,developmentMode:true,showDevToggle:true,showLanguageToggle:true,showThemeToggle:true,supportUrl:'https://www.donationalerts.com/r/bezzubickmcplay'};
 var profileConfig={name_key:'profileName',description_key:'profileDescription',avatar:BASE+'/assets/avatar.png',minecraftSkinUrl:BASE+'/assets/skin.png'};
-var linksConfig=[
-{label_key:'youtubeChannelLabel',url:'https://www.youtube.com/channel/UCm6mheCT60mZ5qlxG5r2GeA',icon:'play_arrow',order:1,isSocial:true,showSubscriberCount:true,platformId:'youtube',subscribeUrl:'https://www.youtube.com/channel/UCm6mheCT60mZ5qlxG5r2GeA?sub_confirmation=1',active:true},
-{label_key:'telegramChannelLabel',url:'https://t.me/bezzubickmcplay',icon:'send',order:2,isSocial:true,showSubscriberCount:true,platformId:'telegram',active:true},
-{label_key:'twitchChannelLabel',url:'https://www.twitch.tv/bezzubickmcplay',icon:'live_tv',order:3,isSocial:true,showSubscriberCount:true,platformId:'twitch',active:true},
-{label_key:'tiktokProfileLabel',url:'https://www.tiktok.com/@bezzubickmcplay',icon:'music_note',order:4,isSocial:true,showSubscriberCount:false,platformId:'tiktok',active:true},
-{label_key:'instagramProfileLabel',url:'https://www.instagram.com/bezzubickmcplay/',icon:'photo_camera',order:5,isSocial:true,showSubscriberCount:false,platformId:'instagram',active:true},
-{label_key:'xTwitterProfileLabel',url:'https://x.com/bezzubickmcplay',icon:'public',order:6,isSocial:true,showSubscriberCount:false,platformId:'x',active:true},
-{label_key:'vkGroupLabel',url:'https://vk.com/bezzubickmcplay',icon:'group',order:7,isSocial:true,showSubscriberCount:true,platformId:'vk_group',active:true},
-{label_key:'vkPersonalPageLabel',url:'https://vk.com/bezzubickmcplay_official',icon:'person',order:8,isSocial:true,showSubscriberCount:true,platformId:'vk_personal',active:true}
-];
+\(linksConfigJS)
 
-var strings={en:{recentVideosTitle:'Recent Videos',modalTitle:'Welcome!',modalDescription:'Swipe right on a link card to subscribe, swipe left on YouTube links to open the latest video or a live stream.',gotItButton:'Got it!',themeLight:'Light Theme',themeDark:'Dark Theme',watchOnTwitch:'Watch on Twitch',totalFollowers:'Total Followers: ',minecraftTitle:'My Minecraft Skin',downloadSkin:'Download Skin',loading:'Loading...',supportButton:'Support Me',offlineMessage:'You are offline. Data might be outdated.',devPageTitle:'Developer Info',devLastUpdatedLabel:'Last Data Update:',devDataJsonContentLabel:'data.json Content:',devDebugInfoContentLabel:'API Debug Info:',backToMainText:'Back to Main Site',openLinkButton:'Open Link',closeButton:'Close',profileName:'BezzubickMCPlay',profileDescription:'Minecraft adventures | Streams | Creativity',avatarAlt:'BezzubickMCPlay profile avatar',twitchStreamAlsoLive:'Stream also live on Twitch!',youtubeChannelLabel:'YouTube Channel',telegramChannelLabel:'Telegram Channel',instagramProfileLabel:'Instagram Profile',xTwitterProfileLabel:'X (Twitter) Profile',twitchChannelLabel:'Twitch Channel',tiktokProfileLabel:'TikTok Profile',vkGroupLabel:'VK Group',vkPersonalPageLabel:'VK Personal Page'},
-ru:{recentVideosTitle:'\\u041f\\u043e\\u0441\\u043b\\u0435\\u0434\\u043d\\u0438\\u0435 \\u0432\\u0438\\u0434\\u0435\\u043e',modalTitle:'\\u0414\\u043e\\u0431\\u0440\\u043e \\u043f\\u043e\\u0436\\u0430\\u043b\\u043e\\u0432\\u0430\\u0442\\u044c!',modalDescription:'\\u041f\\u0440\\u043e\\u0432\\u0435\\u0434\\u0438\\u0442\\u0435 \\u0432\\u043f\\u0440\\u0430\\u0432\\u043e \\u043f\\u043e \\u043a\\u0430\\u0440\\u0442\\u043e\\u0447\\u043a\\u0435 \\u0441\\u0441\\u044b\\u043b\\u043a\\u0438, \\u0447\\u0442\\u043e\\u0431\\u044b \\u043f\\u043e\\u0434\\u043f\\u0438\\u0441\\u0430\\u0442\\u044c\\u0441\\u044f. \\u041f\\u0440\\u043e\\u0432\\u0435\\u0434\\u0438\\u0442\\u0435 \\u0432\\u043b\\u0435\\u0432\\u043e \\u043f\\u043e YouTube-\\u0441\\u0441\\u044b\\u043b\\u043a\\u0430\\u043c, \\u0447\\u0442\\u043e\\u0431\\u044b \\u043e\\u0442\\u043a\\u0440\\u044b\\u0442\\u044c \\u043f\\u043e\\u0441\\u043b\\u0435\\u0434\\u043d\\u0435\\u0435 \\u0432\\u0438\\u0434\\u0435\\u043e \\u0438\\u043b\\u0438 \\u043f\\u0440\\u044f\\u043c\\u043e\\u0439 \\u044d\\u0444\\u0438\\u0440.',gotItButton:'\\u041f\\u043e\\u043d\\u044f\\u0442\\u043d\\u043e!',themeLight:'\\u0421\\u0432\\u0435\\u0442\\u043b\\u0430\\u044f \\u0442\\u0435\\u043c\\u0430',themeDark:'\\u0422\\u0451\\u043c\\u043d\\u0430\\u044f \\u0442\\u0435\\u043c\\u0430',watchOnTwitch:'\\u0421\\u043c\\u043e\\u0442\\u0440\\u0435\\u0442\\u044c \\u043d\\u0430 Twitch',totalFollowers:'\\u0412\\u0441\\u0435\\u0433\\u043e \\u043f\\u043e\\u0434\\u043f\\u0438\\u0441\\u0447\\u0438\\u043a\\u043e\\u0432: ',minecraftTitle:'\\u041c\\u043e\\u0439 \\u0441\\u043a\\u0438\\u043d Minecraft',downloadSkin:'\\u0421\\u043a\\u0430\\u0447\\u0430\\u0442\\u044c \\u0441\\u043a\\u0438\\u043d',loading:'\\u0417\\u0430\\u0433\\u0440\\u0443\\u0437\\u043a\\u0430...',supportButton:'\\u041f\\u043e\\u0434\\u0434\\u0435\\u0440\\u0436\\u0430\\u0442\\u044c \\u043c\\u0435\\u043d\\u044f',offlineMessage:'\\u0412\\u044b \\u043d\\u0435 \\u0432 \\u0441\\u0435\\u0442\\u0438. \\u0414\\u0430\\u043d\\u043d\\u044b\\u0435 \\u043c\\u043e\\u0433\\u0443\\u0442 \\u0431\\u044b\\u0442\\u044c \\u0443\\u0441\\u0442\\u0430\\u0440\\u0435\\u0432\\u0448\\u0438\\u043c\\u0438.',devPageTitle:'\\u0418\\u043d\\u0444\\u043e\\u0440\\u043c\\u0430\\u0446\\u0438\\u044f \\u0434\\u043b\\u044f \\u0440\\u0430\\u0437\\u0440\\u0430\\u0431\\u043e\\u0442\\u0447\\u0438\\u043a\\u043e\\u0432',devLastUpdatedLabel:'\\u041f\\u043e\\u0441\\u043b\\u0435\\u0434\\u043d\\u0435\\u0435 \\u043e\\u0431\\u043d\\u043e\\u0432\\u043b\\u0435\\u043d\\u0438\\u0435 \\u0434\\u0430\\u043d\\u043d\\u044b\\u0445:',devDataJsonContentLabel:'\\u0421\\u043e\\u0434\\u0435\\u0440\\u0436\\u0438\\u043c\\u043e\\u0435 data.json:',devDebugInfoContentLabel:'\\u041e\\u0442\\u043b\\u0430\\u0434\\u043e\\u0447\\u043d\\u0430\\u044f \\u0438\\u043d\\u0444\\u043e\\u0440\\u043c\\u0430\\u0446\\u0438\\u044f API:',backToMainText:'\\u041d\\u0430\\u0437\\u0430\\u0434 \\u043a \\u0441\\u0430\\u0439\\u0442\\u0443',openLinkButton:'\\u041e\\u0442\\u043a\\u0440\\u044b\\u0442\\u044c \\u0441\\u0441\\u044b\\u043b\\u043a\\u0443',closeButton:'\\u0417\\u0430\\u043a\\u0440\\u044b\\u0442\\u044c',profileName:'BezzubickMCPlay',profileDescription:'\\u041f\\u0440\\u0438\\u043a\\u043b\\u044e\\u0447\\u0435\\u043d\\u0438\\u044f \\u0432 Minecraft | \\u0421\\u0442\\u0440\\u0438\\u043c\\u044b | \\u0422\\u0432\\u043e\\u0440\\u0447\\u0435\\u0441\\u0442\\u0432\\u043e',avatarAlt:'\\u0410\\u0432\\u0430\\u0442\\u0430\\u0440 \\u043f\\u0440\\u043e\\u0444\\u0438\\u043b\\u044f BezzubickMCPlay',twitchStreamAlsoLive:'\\u0421\\u0442\\u0440\\u0438\\u043c \\u0442\\u0430\\u043a\\u0436\\u0435 \\u0438\\u0434\\u0451\\u0442 \\u043d\\u0430 Twitch!',youtubeChannelLabel:'YouTube \\u041a\\u0430\\u043d\\u0430\\u043b',telegramChannelLabel:'Telegram \\u041a\\u0430\\u043d\\u0430\\u043b',instagramProfileLabel:'\\u041f\\u0440\\u043e\\u0444\\u0438\\u043b\\u044c Instagram',xTwitterProfileLabel:'\\u041f\\u0440\\u043e\\u0444\\u0438\\u043b\\u044c X (Twitter)',twitchChannelLabel:'Twitch \\u041a\\u0430\\u043d\\u0430\\u043b',tiktokProfileLabel:'\\u041f\\u0440\\u043e\\u0444\\u0438\\u043b\\u044c TikTok',vkGroupLabel:'\\u0413\\u0440\\u0443\\u043f\\u043f\\u0430 VK',vkPersonalPageLabel:'\\u041b\\u0438\\u0447\\u043d\\u0430\\u044f \\u0441\\u0442\\u0440\\u0430\\u043d\\u0438\\u0446\\u0430 VK'}};
+var strings={en:{recentVideosTitle:'Recent Videos',modalTitle:'Welcome!',modalDescription:'Swipe right on a link card to subscribe, swipe left on YouTube links to open the latest video or a live stream.',gotItButton:'Got it!',themeLight:'Light Theme',themeDark:'Dark Theme',watchOnTwitch:'Watch on Twitch',totalFollowers:'Total Followers: ',minecraftTitle:'My Minecraft Skin',downloadSkin:'Download Skin',loading:'Loading...',supportButton:'Support Me',offlineMessage:'You are offline. Data might be outdated.',devPageTitle:'Developer Info',devLastUpdatedLabel:'Last Data Update:',devDataJsonContentLabel:'data.json Content:',devDebugInfoContentLabel:'API Debug Info:',backToMainText:'Back to Main Site',openLinkButton:'Open Link',closeButton:'Close',profileName:'BezzubickMCPlay',profileDescription:'Minecraft adventures | Streams | Creativity',avatarAlt:'BezzubickMCPlay profile avatar',twitchStreamAlsoLive:'Stream also live on Twitch!',youtubeChannelLabel:'YouTube Channel',telegramChannelLabel:'Telegram Channel',instagramProfileLabel:'Instagram Profile',xTwitterProfileLabel:'X (Twitter) Profile',twitchChannelLabel:'Twitch Channel',tiktokProfileLabel:'TikTok Profile'},
+ru:{recentVideosTitle:'\\u041f\\u043e\\u0441\\u043b\\u0435\\u0434\\u043d\\u0438\\u0435 \\u0432\\u0438\\u0434\\u0435\\u043e',modalTitle:'\\u0414\\u043e\\u0431\\u0440\\u043e \\u043f\\u043e\\u0436\\u0430\\u043b\\u043e\\u0432\\u0430\\u0442\\u044c!',modalDescription:'\\u041f\\u0440\\u043e\\u0432\\u0435\\u0434\\u0438\\u0442\\u0435 \\u0432\\u043f\\u0440\\u0430\\u0432\\u043e \\u043f\\u043e \\u043a\\u0430\\u0440\\u0442\\u043e\\u0447\\u043a\\u0435 \\u0441\\u0441\\u044b\\u043b\\u043a\\u0438, \\u0447\\u0442\\u043e\\u0431\\u044b \\u043f\\u043e\\u0434\\u043f\\u0438\\u0441\\u0430\\u0442\\u044c\\u0441\\u044f. \\u041f\\u0440\\u043e\\u0432\\u0435\\u0434\\u0438\\u0442\\u0435 \\u0432\\u043b\\u0435\\u0432\\u043e \\u043f\\u043e YouTube-\\u0441\\u0441\\u044b\\u043b\\u043a\\u0430\\u043c, \\u0447\\u0442\\u043e\\u0431\\u044b \\u043e\\u0442\\u043a\\u0440\\u044b\\u0442\\u044c \\u043f\\u043e\\u0441\\u043b\\u0435\\u0434\\u043d\\u0435\\u0435 \\u0432\\u0438\\u0434\\u0435\\u043e \\u0438\\u043b\\u0438 \\u043f\\u0440\\u044f\\u043c\\u043e\\u0439 \\u044d\\u0444\\u0438\\u0440.',gotItButton:'\\u041f\\u043e\\u043d\\u044f\\u0442\\u043d\\u043e!',themeLight:'\\u0421\\u0432\\u0435\\u0442\\u043b\\u0430\\u044f \\u0442\\u0435\\u043c\\u0430',themeDark:'\\u0422\\u0451\\u043c\\u043d\\u0430\\u044f \\u0442\\u0435\\u043c\\u0430',watchOnTwitch:'\\u0421\\u043c\\u043e\\u0442\\u0440\\u0435\\u0442\\u044c \\u043d\\u0430 Twitch',totalFollowers:'\\u0412\\u0441\\u0435\\u0433\\u043e \\u043f\\u043e\\u0434\\u043f\\u0438\\u0441\\u0447\\u0438\\u043a\\u043e\\u0432: ',minecraftTitle:'\\u041c\\u043e\\u0439 \\u0441\\u043a\\u0438\\u043d Minecraft',downloadSkin:'\\u0421\\u043a\\u0430\\u0447\\u0430\\u0442\\u044c \\u0441\\u043a\\u0438\\u043d',loading:'\\u0417\\u0430\\u0433\\u0440\\u0443\\u0437\\u043a\\u0430...',supportButton:'\\u041f\\u043e\\u0434\\u0434\\u0435\\u0440\\u0436\\u0430\\u0442\\u044c \\u043c\\u0435\\u043d\\u044f',offlineMessage:'\\u0412\\u044b \\u043d\\u0435 \\u0432 \\u0441\\u0435\\u0442\\u0438. \\u0414\\u0430\\u043d\\u043d\\u044b\\u0435 \\u043c\\u043e\\u0433\\u0443\\u0442 \\u0431\\u044b\\u0442\\u044c \\u0443\\u0441\\u0442\\u0430\\u0440\\u0435\\u0432\\u0448\\u0438\\u043c\\u0438.',devPageTitle:'\\u0418\\u043d\\u0444\\u043e\\u0440\\u043c\\u0430\\u0446\\u0438\\u044f \\u0434\\u043b\\u044f \\u0440\\u0430\\u0437\\u0440\\u0430\\u0431\\u043e\\u0442\\u0447\\u0438\\u043a\\u043e\\u0432',devLastUpdatedLabel:'\\u041f\\u043e\\u0441\\u043b\\u0435\\u0434\\u043d\\u0435\\u0435 \\u043e\\u0431\\u043d\\u043e\\u0432\\u043b\\u0435\\u043d\\u0438\\u0435 \\u0434\\u0430\\u043d\\u043d\\u044b\\u0445:',devDataJsonContentLabel:'\\u0421\\u043e\\u0434\\u0435\\u0440\\u0436\\u0438\\u043c\\u043e\\u0435 data.json:',devDebugInfoContentLabel:'\\u041e\\u0442\\u043b\\u0430\\u0434\\u043e\\u0447\\u043d\\u0430\\u044f \\u0438\\u043d\\u0444\\u043e\\u0440\\u043c\\u0430\\u0446\\u0438\\u044f API:',backToMainText:'\\u041d\\u0430\\u0437\\u0430\\u0434 \\u043a \\u0441\\u0430\\u0439\\u0442\\u0443',openLinkButton:'\\u041e\\u0442\\u043a\\u0440\\u044b\\u0442\\u044c \\u0441\\u0441\\u044b\\u043b\\u043a\\u0443',closeButton:'\\u0417\\u0430\\u043a\\u0440\\u044b\\u0442\\u044c',profileName:'BezzubickMCPlay',profileDescription:'\\u041f\\u0440\\u0438\\u043a\\u043b\\u044e\\u0447\\u0435\\u043d\\u0438\\u044f \\u0432 Minecraft | \\u0421\\u0442\\u0440\\u0438\\u043c\\u044b | \\u0422\\u0432\\u043e\\u0440\\u0447\\u0435\\u0441\\u0442\\u0432\\u043e',avatarAlt:'\\u0410\\u0432\\u0430\\u0442\\u0430\\u0440 \\u043f\\u0440\\u043e\\u0444\\u0438\\u043b\\u044f BezzubickMCPlay',twitchStreamAlsoLive:'\\u0421\\u0442\\u0440\\u0438\\u043c \\u0442\\u0430\\u043a\\u0436\\u0435 \\u0438\\u0434\\u0451\\u0442 \\u043d\\u0430 Twitch!',youtubeChannelLabel:'YouTube \\u041a\\u0430\\u043d\\u0430\\u043b',telegramChannelLabel:'Telegram \\u041a\\u0430\\u043d\\u0430\\u043b',instagramProfileLabel:'\\u041f\\u0440\\u043e\\u0444\\u0438\\u043b\\u044c Instagram',xTwitterProfileLabel:'\\u041f\\u0440\\u043e\\u0444\\u0438\\u043b\\u044c X (Twitter)',twitchChannelLabel:'Twitch \\u041a\\u0430\\u043d\\u0430\\u043b',tiktokProfileLabel:'\\u041f\\u0440\\u043e\\u0444\\u0438\\u043b\\u044c TikTok'}};
 
-var DOM={};var state={theme:params.get('debugTheme')||params.get('theme')||localStorage.getItem('theme')||((navigator.userAgent.includes('Chrome')&&!navigator.userAgent.includes('Edg')&&(navigator.userAgent.includes('Android')||navigator.userAgent.includes('Windows')))?'dark':'glass-dark'),lang:params.get('lang')||localStorage.getItem('lang')||(navigator.language.startsWith('ru')?'ru':'en'),data:{followerCounts:{},youtubeVideos:[],liveStream:{type:'none'}},skinViewerInstance:null,skinControlsEl:null,currentAnimKey:'idle'};
+var DOM={};var state={theme:params.get('debugTheme')||params.get('theme')||localStorage.getItem('theme')||((window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark'),lang:params.get('lang')||localStorage.getItem('lang')||(navigator.language.startsWith('ru')?'ru':'en'),data:{followerCounts:{},youtubeVideos:[],liveStream:{type:'none'}},skinViewerInstance:null,skinControlsEl:null,currentAnimKey:'idle'};
 
 function setVisibility(el,visible){if(!el)return;el.classList.toggle('hidden',!visible);}
 function applyTheme(theme){document.body.classList.remove('dark-theme','light-theme','glass-dark','glass-light');var cls=theme==='dark'?'dark-theme':theme==='light'?'light-theme':theme==='glass-dark'?'glass-dark':'glass-light';document.body.classList.add(cls);localStorage.setItem('theme',theme);document.documentElement.style.background=theme.startsWith('glass')?(theme==='glass-dark'?'#000000':'#ffffff'):(theme.includes('dark')?'#000000':'#f5f0ff');if(DOM.themeIcon)DOM.themeIcon.textContent=theme==='dark'?'light_mode':theme==='light'?'dark_mode':theme==='glass-dark'?'light_mode':'dark_mode';}
@@ -459,16 +470,16 @@ function updateGridLiveState(){var has=appConfig.showLiveStreamSection&&state.da
 function updateLanguage(){var t=strings[state.lang];if(DOM.recentVideosTitle)DOM.recentVideosTitle.textContent=t.recentVideosTitle;if(DOM.minecraftTitle)DOM.minecraftTitle.textContent=t.minecraftTitle;if(DOM.downloadSkinText)DOM.downloadSkinText.textContent=t.downloadSkin;if(DOM.supportButtonText)DOM.supportButtonText.textContent=t.supportButton;if(DOM.offlineMessage)DOM.offlineMessage.textContent=t.offlineMessage;if(DOM.twitchLinkText)DOM.twitchLinkText.textContent=t.watchOnTwitch;if(DOM.twitchMessage)DOM.twitchMessage.textContent=t.twitchStreamAlsoLive;if(DOM.modalTitle)DOM.modalTitle.textContent=t.modalTitle;if(DOM.modalDescription)DOM.modalDescription.textContent=t.modalDescription;if(DOM.modalCloseBtn)DOM.modalCloseBtn.textContent=t.gotItButton;if(DOM.devTitle)DOM.devTitle.textContent=t.devPageTitle;if(DOM.devLastUpdatedLabel)DOM.devLastUpdatedLabel.textContent=t.devLastUpdatedLabel;if(DOM.devDataJsonContentLabel)DOM.devDataJsonContentLabel.textContent=t.devDataJsonContentLabel;if(DOM.devDebugInfoContentLabel)DOM.devDebugInfoContentLabel.textContent=t.devDebugInfoContentLabel;if(DOM.backToMainText)DOM.backToMainText.textContent=t.backToMainText;if(DOM.profileName)DOM.profileName.textContent=t[profileConfig.name_key];if(DOM.profileDescription)DOM.profileDescription.textContent=t[profileConfig.description_key];if(DOM.avatar)DOM.avatar.alt=t.avatarAlt;renderLinksSection(linksConfig);calculateAndDisplayTotalFollowers();}
 function renderProfileSection(){setVisibility(DOM.profileSection,appConfig.showProfileSection);if(appConfig.showProfileSection&&DOM.avatar)DOM.avatar.src=profileConfig.avatar;}
 function calculateAndDisplayTotalFollowers(){var t=strings[state.lang];var total=0;for(var i=0;i<linksConfig.length;i++){var link=linksConfig[i];if(link.isSocial&&link.showSubscriberCount&&link.active){var c=state.data.followerCounts?state.data.followerCounts[link.platformId]:0;if(typeof c==='number')total+=c;}}if(DOM.totalFollowers)DOM.totalFollowers.textContent=t.totalFollowers+' '+formatCount(total);}
-function renderLinksSection(links){setVisibility(DOM.linksSection,appConfig.showLinksSection);if(!appConfig.showLinksSection||!DOM.linksSection)return;DOM.linksSection.innerHTML='';var sorted=links.filter(function(l){return l.active;}).sort(function(a,b){return a.order-b.order;});for(var i=0;i<sorted.length;i++){var link=sorted[i];var a=document.createElement('a');a.href=link.url;a.target='_blank';a.rel='noopener noreferrer';a.draggable=false;a.className='card relative flex items-center justify-between p-4 rounded-2xl m3-shadow-md '+(link.isSocial?'swipe-target':'')+' cursor-pointer';a.setAttribute('data-link-id',link.label_key);var count=state.data.followerCounts?state.data.followerCounts[link.platformId]:undefined;var showCount=link.isSocial&&link.showSubscriberCount;var iconHtml='<span class="material-symbols-outlined icon-large">'+(link.icon||'link')+'</span>';a.innerHTML='<div class="flex items-center select-none">'+iconHtml+'<div><span class="block text-lg font-medium">'+(strings[state.lang][link.label_key]||link.label_key)+'</span>'+(showCount?'<span class="text-sm text-gray-400 mr-2 follower-count-display">'+formatCount(count)+'</span>':'')+'</div></div>';DOM.linksSection.appendChild(a);}initSwipeGestures();}
-function renderYouTubeVideosSection(){var videos=state.data.youtubeVideos||[];setVisibility(DOM.youtubeVideosSection,appConfig.showYouTubeVideosSection&&videos.length>0);if(!appConfig.showYouTubeVideosSection||videos.length===0||!DOM.videoCarousel)return;DOM.videoCarousel.innerHTML='';for(var i=0;i<videos.length;i++){var v=videos[i];var card=document.createElement('a');card.href='https://www.youtube.com/watch?v='+v.id;card.target='_blank';card.className='flex-shrink-0 w-64 rounded-2xl overflow-hidden m3-shadow-md card';card.innerHTML='<img src="'+v.thumbnailUrl+'" alt="'+v.title+'" class="w-full h-36 object-cover"><div class="p-3"><p class="text-sm font-medium leading-tight">'+v.title+'</p></div>';DOM.videoCarousel.appendChild(card);}DOM.videoCarousel.addEventListener('wheel',function(event){if(event.deltaY!==0){event.preventDefault();DOM.videoCarousel.scrollLeft+=event.deltaY;}},{passive:false});}
+function renderLinksSection(links){setVisibility(DOM.linksSection,appConfig.showLinksSection);if(!appConfig.showLinksSection||!DOM.linksSection)return;DOM.linksSection.innerHTML='';var sorted=links.filter(function(l){return l.active;}).sort(function(a,b){return a.order-b.order;});for(var i=0;i<sorted.length;i++){var link=sorted[i];var a=document.createElement('a');a.href=link.url;a.target='_blank';a.rel='noopener noreferrer';a.draggable=false;a.className='card relative flex items-center justify-between p-4 rounded-2xl m3-shadow-md '+(link.isSocial?'swipe-target':'')+' cursor-pointer';a.setAttribute('data-link-id',link.url);var count=state.data.followerCounts?state.data.followerCounts[link.platformId]:undefined;var showCount=link.isSocial&&link.showSubscriberCount;var iconHtml='<span class="material-symbols-outlined icon-large">'+(link.icon||'link')+'</span>';a.innerHTML='<div class="flex items-center select-none">'+iconHtml+'<div><span class="block text-lg font-medium">'+(state.lang==='en'?(link.label_en||link.label):link.label)+'</span>'+(showCount?'<span class="text-sm text-gray-400 mr-2 follower-count-display">'+formatCount(count)+'</span>':'')+'</div></div>';DOM.linksSection.appendChild(a);}initSwipeGestures();}
+function renderYouTubeVideosSection(){var videos=state.data.youtubeVideos||[];setVisibility(DOM.youtubeVideosSection,appConfig.showYouTubeVideosSection&&videos.length>0);if(!appConfig.showYouTubeVideosSection||videos.length===0||!DOM.videoCarousel)return;DOM.videoCarousel.innerHTML='';for(var i=0;i<videos.length;i++){var v=videos[i];var card=document.createElement('a');card.href='https://www.youtube.com/watch?v='+v.id;card.target='_blank';card.className='flex-shrink-0 w-64 rounded-2xl overflow-hidden m3-shadow-md card';card.innerHTML='<img loading="lazy" decoding="async" src="'+v.thumbnailUrl+'" alt="'+v.title+'" class="w-full h-36 object-cover"><div class="p-3"><p class="text-sm font-medium leading-tight">'+v.title+'</p></div>';DOM.videoCarousel.appendChild(card);}DOM.videoCarousel.addEventListener('wheel',function(event){if(event.deltaY!==0){event.preventDefault();DOM.videoCarousel.scrollLeft+=event.deltaY;}},{passive:false});}
 function renderLiveStream(){var info=state.data.liveStream;var has=appConfig.showLiveStreamSection&&info&&info.type!=='none';setVisibility(DOM.liveStreamSection,has);if(!has||!DOM.liveEmbed){updateGridLiveState();return;}if(info.type==='youtube'&&info.id){DOM.liveEmbed.src='https://www.youtube.com/embed/'+info.id+'?autoplay=1&mute=1';setVisibility(DOM.twitchNotification,!!info.twitchLive);if(info.twitchLive&&DOM.twitchLink)DOM.twitchLink.href='https://www.twitch.tv/'+info.twitchLive.twitchChannelName;}else if(info.type==='twitch'&&info.twitchChannelName){var parent=window.location.hostname||'localhost';DOM.liveEmbed.src='https://player.twitch.tv/?channel='+info.twitchChannelName+'&parent='+parent+'&autoplay=true&mute=1';setVisibility(DOM.twitchNotification,false);}updateGridLiveState();}
 function disposeSkinViewer(){if(state.skinViewerInstance){state.skinViewerInstance.dispose();state.skinViewerInstance=null;}}
 function updateActiveAnimationButtons(){if(!state.skinControlsEl)return;var btns=state.skinControlsEl.querySelectorAll('.mini-button');btns.forEach(function(btn){btn.classList.toggle('active',btn.getAttribute('data-anim')===state.currentAnimKey);});}
-function showSkinFallbackImage(){setVisibility(DOM.minecraftBlock,true);disposeSkinViewer();if(!DOM.skinViewerContainer)return;DOM.skinViewerContainer.innerHTML='<img src="'+profileConfig.minecraftSkinUrl+'" alt="Minecraft skin" class="w-full h-full object-contain" />';}
+function showSkinFallbackImage(){setVisibility(DOM.minecraftBlock,true);disposeSkinViewer();if(!DOM.skinViewerContainer)return;DOM.skinViewerContainer.innerHTML='<img loading="lazy" decoding="async" src="'+profileConfig.minecraftSkinUrl+'" alt="Minecraft skin" class="w-full h-full object-contain" />';}
 function buildSkinControls(){if(!skinview3d)return;if(state.skinControlsEl&&state.skinControlsEl.parentElement)state.skinControlsEl.parentElement.removeChild(state.skinControlsEl);var controls=document.createElement('div');controls.id='skin-animation-controls';controls.className='skin-controls';var options=[{key:'idle',icon:'accessibility',available:!!skinview3d.IdleAnimation},{key:'walk',icon:'directions_walk',available:!!skinview3d.WalkingAnimation},{key:'run',icon:'directions_run',available:!!skinview3d.RunningAnimation},{key:'rotate',icon:'autorenew',available:!!skinview3d.RotatingAnimation},{key:'stop',icon:'stop_circle',available:true}];for(var i=0;i<options.length;i++){var opt=options[i];if(!opt.available)continue;var btn=document.createElement('button');btn.type='button';btn.className='mini-button';btn.setAttribute('data-anim',opt.key);btn.innerHTML='<span class="material-symbols-outlined mini-icon" aria-hidden="true">'+opt.icon+'</span>';btn.addEventListener('click',(function(k){return function(){setSkinAnimation(k);};})(opt.key));controls.appendChild(btn);}var downloadWrapper=DOM.downloadSkinButton?DOM.downloadSkinButton.parentElement:null;if(downloadWrapper&&downloadWrapper.parentElement===DOM.minecraftBlock)DOM.minecraftBlock.insertBefore(controls,downloadWrapper);else DOM.skinViewerContainer.after(controls);state.skinControlsEl=controls;updateActiveAnimationButtons();}
 function setSkinAnimation(key){if(!state.skinViewerInstance)return;var anim=null;try{if(key==='idle'&&skinview3d&&skinview3d.IdleAnimation)anim=new skinview3d.IdleAnimation();else if(key==='walk'&&skinview3d&&skinview3d.WalkingAnimation)anim=new skinview3d.WalkingAnimation();else if(key==='run'&&skinview3d&&skinview3d.RunningAnimation)anim=new skinview3d.RunningAnimation();else if(key==='rotate'&&skinview3d&&skinview3d.RotatingAnimation)anim=new skinview3d.RotatingAnimation();else if(key==='stop')anim=null;state.skinViewerInstance.animation=anim;state.currentAnimKey=key;updateActiveAnimationButtons();}catch(e){console.warn('[SkinViewer] Failed to set animation:',key,e);}}
 async function initMinecraftSkinViewer(){if(!appConfig.showMinecraftSkinSection){setVisibility(DOM.minecraftBlock,false);disposeSkinViewer();return;}if(!DOM.skinCanvas||!DOM.skinViewerContainer){console.error('[SkinViewer] Missing elements');setVisibility(DOM.minecraftBlock,false);return;}try{await new Promise(function(r){requestAnimationFrame(function(){requestAnimationFrame(r);});});if(!skinview3d){showSkinFallbackImage();return;}setVisibility(DOM.minecraftBlock,true);var width=Math.max(1,DOM.skinViewerContainer.offsetWidth||320);var height=Math.max(1,DOM.skinViewerContainer.offsetHeight||320);disposeSkinViewer();var viewer=new skinview3d.SkinViewer({canvas:DOM.skinCanvas,width:width,height:height});await viewer.loadSkin(profileConfig.minecraftSkinUrl);try{if(skinview3d.IdleAnimation){viewer.animation=new skinview3d.IdleAnimation();state.currentAnimKey='idle';}else if(skinview3d.WalkingAnimation){viewer.animation=new skinview3d.WalkingAnimation();state.currentAnimKey='walk';}else{state.currentAnimKey='stop';}}catch(e){}try{var controls=skinview3d.createOrbitControls(viewer);if(controls){controls.enablePan=false;controls.enableZoom=true;if(controls.target)controls.target.set(0,17,0);controls.update();}}catch(e){}state.skinViewerInstance=viewer;buildSkinControls();new ResizeObserver(function(){if(!state.skinViewerInstance)return;var w=Math.max(1,DOM.skinViewerContainer.offsetWidth||320);var h=Math.max(1,DOM.skinViewerContainer.offsetHeight||320);state.skinViewerInstance.setSize(w,h);}).observe(DOM.skinViewerContainer);}catch(e){console.error('[SkinViewer] init error, fallback PNG',e);showSkinFallbackImage();}}
-function initSwipeGestures(){var cards=document.querySelectorAll('.swipe-target');for(var ci=0;ci<cards.length;ci++){(function(card){var startX=0,startY=0,currentX=0,currentY=0,pointerDown=false,swipeActive=false,suppressClick=false;var linkData=null;for(var li=0;li<linksConfig.length;li++){if(linksConfig[li].label_key===card.getAttribute('data-link-id')){linkData=linksConfig[li];break;}}if(!linkData)return;var onStart=function(e){pointerDown=true;swipeActive=false;startX=e.touches?e.touches[0].clientX:e.clientX;startY=e.touches?e.touches[0].clientY:e.clientY;card.style.transition='none';};var onMove=function(e){if(!pointerDown)return;currentX=e.touches?e.touches[0].clientX:e.clientX;currentY=e.touches?e.touches[0].clientY:e.clientY;var dx=currentX-startX,dy=currentY-startY;if(!swipeActive&&Math.abs(dx)>20&&Math.abs(dx)>Math.abs(dy)){swipeActive=true;e.preventDefault();}if(swipeActive){e.preventDefault();card.style.transform='translateX('+dx+'px)';card.classList.toggle('swiping-right',dx>0);card.classList.toggle('swiping-left',dx<0);}};var onEnd=function(){if(!pointerDown)return;pointerDown=false;card.style.transition='transform .2s ease, background-color .3s ease, box-shadow .2s ease';var dx=currentX-startX;if(swipeActive){var thr=card.offsetWidth*0.25;if(Math.abs(dx)>thr){if(dx>0){window.open(linkData.subscribeUrl||linkData.url,'_blank');}else{if(linkData.platformId==='youtube'){var live=state.data.liveStream;if(live&&live.type==='youtube'&&live.id)window.open('https://www.youtube.com/watch?v='+live.id,'_blank');else if(state.data.youtubeVideos&&state.data.youtubeVideos.length>0)window.open('https://www.youtube.com/watch?v='+state.data.youtubeVideos[0].id,'_blank');else window.open(linkData.url,'_blank');}else{window.open(linkData.url,'_blank');}}}}card.style.transform='translateX(0)';card.classList.remove('swiping-left','swiping-right');if(swipeActive){suppressClick=true;setTimeout(function(){suppressClick=false;},0);}swipeActive=false;};var onClick=function(e){if(suppressClick){e.preventDefault();e.stopPropagation();}};card.addEventListener('mousedown',onStart);card.addEventListener('mousemove',onMove);card.addEventListener('mouseup',onEnd);card.addEventListener('mouseleave',onEnd);card.addEventListener('touchstart',onStart,{passive:false});card.addEventListener('touchmove',onMove,{passive:false});card.addEventListener('touchend',onEnd);card.addEventListener('click',onClick);})(cards[ci]);}}
+function initSwipeGestures(){var cards=document.querySelectorAll('.swipe-target');for(var ci=0;ci<cards.length;ci++){(function(card){var startX=0,startY=0,currentX=0,currentY=0,pointerDown=false,swipeActive=false,suppressClick=false;var linkData=null;for(var li=0;li<linksConfig.length;li++){if(linksConfig[li].url===card.getAttribute('data-link-id')){linkData=linksConfig[li];break;}}if(!linkData)return;var onStart=function(e){pointerDown=true;swipeActive=false;startX=e.touches?e.touches[0].clientX:e.clientX;startY=e.touches?e.touches[0].clientY:e.clientY;card.style.transition='none';};var onMove=function(e){if(!pointerDown)return;currentX=e.touches?e.touches[0].clientX:e.clientX;currentY=e.touches?e.touches[0].clientY:e.clientY;var dx=currentX-startX,dy=currentY-startY;if(!swipeActive&&Math.abs(dx)>20&&Math.abs(dx)>Math.abs(dy)){swipeActive=true;e.preventDefault();}if(swipeActive){e.preventDefault();card.style.transform='translateX('+dx+'px)';card.classList.toggle('swiping-right',dx>0);card.classList.toggle('swiping-left',dx<0);}};var onEnd=function(){if(!pointerDown)return;pointerDown=false;card.style.transition='transform .2s ease, background-color .3s ease, box-shadow .2s ease';var dx=currentX-startX;if(swipeActive){var thr=card.offsetWidth*0.25;if(Math.abs(dx)>thr){if(dx>0){window.open(linkData.subscribeUrl||linkData.url,'_blank');}else{if(linkData.platformId==='youtube'){var live=state.data.liveStream;if(live&&live.type==='youtube'&&live.id)window.open('https://www.youtube.com/watch?v='+live.id,'_blank');else if(state.data.youtubeVideos&&state.data.youtubeVideos.length>0)window.open('https://www.youtube.com/watch?v='+state.data.youtubeVideos[0].id,'_blank');else window.open(linkData.url,'_blank');}else{window.open(linkData.url,'_blank');}}}}card.style.transform='translateX(0)';card.classList.remove('swiping-left','swiping-right');if(swipeActive){suppressClick=true;setTimeout(function(){suppressClick=false;},0);}swipeActive=false;};var onClick=function(e){if(suppressClick){e.preventDefault();e.stopPropagation();}};card.addEventListener('mousedown',onStart);card.addEventListener('mousemove',onMove);card.addEventListener('mouseup',onEnd);card.addEventListener('mouseleave',onEnd);card.addEventListener('touchstart',onStart,{passive:false});card.addEventListener('touchmove',onMove,{passive:false});card.addEventListener('touchend',onEnd);card.addEventListener('click',onClick);})(cards[ci]);}}
 function setupSupportButton(){setVisibility(DOM.supportSection,appConfig.showSupportButton);if(appConfig.showSupportButton&&DOM.supportButton)DOM.supportButton.href=appConfig.supportUrl||'#';}
 function setupOfflineBanner(){var upd=function(){setVisibility(DOM.offlineWarning,!navigator.onLine);};window.addEventListener('online',upd);window.addEventListener('offline',upd);upd();}
 function manageFirstVisitModal(){if(!DOM.firstVisitModal||!DOM.modalCloseBtn)return;var seen=localStorage.getItem('visited_modal');if(!seen){DOM.firstVisitModal.classList.add('active');DOM.modalCloseBtn.onclick=function(){DOM.firstVisitModal.classList.remove('active');localStorage.setItem('visited_modal','true');};}}
@@ -483,9 +494,10 @@ if(DOM.themeToggle)DOM.themeToggle.addEventListener('click',function(){var order
 if(DOM.languageToggle)DOM.languageToggle.addEventListener('click',function(){state.lang=state.lang==='en'?'ru':'en';localStorage.setItem('lang',state.lang);updateLanguage();});
 if(DOM.downloadSkinButton)DOM.downloadSkinButton.addEventListener('click',downloadMinecraftSkin);
 if(DOM.devToggle)DOM.devToggle.classList.toggle('hidden',!appConfig.showDevToggle);
-(async function(){try{var jk=await import('https://cdn.jsdelivr.net/npm/javascriptkit@0.53.0/dist/javascriptkit.js');var wasmResp=await fetch(BASE+'/scripts/SiteClient.wasm');if(!wasmResp.ok)throw new Error('HTTP '+wasmResp.status);var wasmInst=await jk.instantiate(wasmResp,{});try{wasmInst.exports.main()}catch(e){console.warn('[WASM] main error',e)}}catch(e){console.warn('[WASM] init error (Liquid Glass unavailable)',e)}})();
+if('serviceWorker' in navigator){navigator.serviceWorker.register(BASE+'/sw.js').catch(function(e){console.warn('SW registration failed',e);});}
+(async function(){try{var mod=await import(BASE+'/scripts/javascriptkit.js');var shim=await import('https://cdn.jsdelivr.net/npm/@bjorn3/browser_wasi_shim@0.3.0/+esm');var wasi=new shim.WASI([],[],[new shim.OpenFile(new shim.File([])),shim.ConsoleStdout.lineBuffered(function(m){console.log('[WASM]',m);}),shim.ConsoleStdout.lineBuffered(function(m){console.warn('[WASM]',m);})]);var rt=new mod.SwiftRuntime();var resp=await fetch(BASE+'/scripts/SiteClient.wasm');if(!resp.ok)throw new Error('HTTP '+resp.status);var bytes=await resp.arrayBuffer();var result=await WebAssembly.instantiate(bytes,{wasi_snapshot_preview1:wasi.wasiImport,javascript_kit:rt.wasmImports});rt.setInstance(result.instance);wasi.start(result.instance);}catch(e){console.warn('[WASM] init error (Liquid Glass unavailable)',e);}})();
 });
-"""
+"""; }
 
 // MARK: - Theme
 
@@ -517,9 +529,9 @@ struct BezzubickHTMLFactory: HTMLFactory {
             )
         }
 
-        let heroBtns: [Node<HTML.BodyContext>] = heroes.map { btn in
+        let heroBtns: [Node<HTML.BodyContext>] = heroes.enumerated().map { idx, btn in
             let href = btn.url.hasPrefix("/") ? "\(baseURL)\(btn.url)" : btn.url
-            return .a(.id("cta-\(btn.label.hashValue)"), .href(href),
+            return .a(.id("cta-\(idx)"), .href(href),
                .class("rounded-full px-6 py-3 font-medium m3-shadow-md \(btn.style == "support" ? "support-button" : "primary-button")"),
                .span(.class("material-symbols-outlined"), .text(btn.icon)),
                .span(.text(btn.label)))
@@ -527,14 +539,30 @@ struct BezzubickHTMLFactory: HTMLFactory {
 
         return HTML(
             .lang(.russian),
-            .head(for: index, on: context.site),
-            .body(.class("dark-theme"),
+            .head(
+                .meta(.charset(.utf8)),
+                .meta(.name("viewport"), .content("width=device-width, initial-scale=1")),
+                .title("Bezzubick MCPlay — Minecraft приключения и стримы"),
+                .meta(.name("description"), .content("Официальный сайт Bezzubick MCPlay: Minecraft-приключения, стримы, последние видео, календарь стримов и все ссылки.")),
+                .link(.rel(.icon), .href("\(baseURL)/assets/avatar.png"), .type("image/png")),
                 .raw("""
+                <meta property="og:type" content="website" />
+                <meta property="og:title" content="Bezzubick MCPlay" />
+                <meta property="og:description" content="Minecraft-приключения, стримы, последние видео и все ссылки." />
+                <meta property="og:url" content="https://httydcraft.github.io\(baseURL)/" />
+                <meta property="og:image" content="https://httydcraft.github.io\(baseURL)/assets/avatar.png" />
+                <meta name="twitter:card" content="summary" />
+                <meta name="theme-color" content="#121212" />
+                <link rel="manifest" href="\(baseURL)/manifest.webmanifest" />
+                <link rel="apple-touch-icon" href="\(baseURL)/assets/avatar.png" />
+                <link rel="preconnect" href="https://fonts.googleapis.com" />
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
                 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0&display=swap" rel="stylesheet" />
                 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
-                <script src="https://cdn.tailwindcss.com"></script>
                 <style>\(siteCSS)</style>
-                """),
+                """)
+            ),
+            .body(.class("dark-theme"),
                 .div(.id("page-wrap"), .class("w-full max-w-5xl mx-auto p-4 sm:p-6 lg:p-8"),
                     .div(.id("offline-warning"), .class("hidden fixed top-0 left-0 w-full p-3 text-center font-medium z-50 offline-warning rounded-b-lg shadow-lg"),
                          .span(.text("Вы не в сети. Данные могут быть устаревшими."))),
@@ -575,7 +603,7 @@ struct BezzubickHTMLFactory: HTMLFactory {
                             .div(.class("yt-container"), .id("live-embed-wrap"),
                                  .iframe(.id("live-embed"),
                                          .attribute(named: "allow", value: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"),
-                                         .attribute(named: "allowfullscreen", value: ""))),
+                                         .attribute(named: "allowfullscreen", value: ""), .attribute(named: "loading", value: "lazy"), .attribute(named: "title", value: "Live stream"))),
                             .div(.id("live-badge"), .class("absolute top-3 left-3 px-3 py-1 rounded-full text-white text-xs font-bold live-indicator m3-shadow-md"), .text("LIVE")),
                             .div(.id("twitch-notice"), .class("hidden mt-4 p-4 rounded-2xl text-sm text-center card m3-shadow-md"),
                                  .p(.id("twitch-text"), .class("mb-2"), .text("Стрим также идёт на Twitch!")),
@@ -640,7 +668,7 @@ struct BezzubickHTMLFactory: HTMLFactory {
                     var skinview3d=window.skinview3d||null;
                     var skinState={currentAnimKey:'stop'};
                     function disposeSkinViewer(){if(window.__homeSkinInstance){window.__homeSkinInstance.dispose();window.__homeSkinInstance=null;}}
-                    function homeSkinFallback(c){if(!c)return;disposeSkinViewer();c.innerHTML='<img src=\"'+BASE+'/assets/skin.png\" alt=\"Minecraft skin\" class=\"w-full h-full object-contain\" />';}
+                    function homeSkinFallback(c){if(!c)return;disposeSkinViewer();c.innerHTML='<img loading=\"lazy\" decoding=\"async\" src=\"'+BASE+'/assets/skin.png\" alt=\"Minecraft skin\" class=\"w-full h-full object-contain\" />';}
                     function homeSetSkinAnimation(key){var v=window.__homeSkinInstance;if(!v)return;var anim=null;try{if(key==='idle'&&skinview3d&&skinview3d.IdleAnimation)anim=new skinview3d.IdleAnimation();else if(key==='walk'&&skinview3d&&skinview3d.WalkingAnimation)anim=new skinview3d.WalkingAnimation();else if(key==='run'&&skinview3d&&skinview3d.RunningAnimation)anim=new skinview3d.RunningAnimation();else if(key==='rotate'&&skinview3d&&skinview3d.RotatingAnimation)anim=new skinview3d.RotatingAnimation();else if(key==='stop')anim=null;v.animation=anim;skinState.currentAnimKey=key;homeUpdateActiveButtons()}catch(e){console.warn('[HomeSkin] anim',key,e);}}
                     function homeUpdateActiveButtons(){var el=document.getElementById('skin-controls');if(!el)return;el.querySelectorAll('.mini-button').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-anim')===skinState.currentAnimKey);});}
                     function homeBuildSkinControls(){if(!skinview3d)return;var el=document.getElementById('skin-controls');if(!el)return;el.innerHTML='';var opts=[{key:'idle',icon:'accessibility',av:!!skinview3d.IdleAnimation},{key:'walk',icon:'directions_walk',av:!!skinview3d.WalkingAnimation},{key:'run',icon:'directions_run',av:!!skinview3d.RunningAnimation},{key:'rotate',icon:'autorenew',av:!!skinview3d.RotatingAnimation},{key:'stop',icon:'stop_circle',av:true}];opts.forEach(function(o){if(!o.av)return;var b=document.createElement('button');b.type='button';b.className='mini-button';b.setAttribute('data-anim',o.key);b.innerHTML='<span class="material-symbols-outlined mini-icon" aria-hidden="true">'+o.icon+'</span>';b.addEventListener('click',function(){homeSetSkinAnimation(o.key);});el.appendChild(b);});homeUpdateActiveButtons();}
@@ -663,7 +691,8 @@ struct BezzubickHTMLFactory: HTMLFactory {
                       }catch(e){console.error('[HomeSkin]',e);homeSkinFallback(c)}
                     });
                     document.getElementById('download-skin')?.addEventListener('click',function(ev){ev.preventDefault();var u=new URL(BASE+'/assets/skin.png',location.href).toString();fetch(u,{cache:'no-store'}).then(function(r){if(!r.ok)throw Error();return r.blob()}).then(function(b){var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='minecraft_skin.png';document.body.appendChild(a);a.click();a.remove()}).catch(function(){window.open(u,'_blank')})});
-                    (async function(){try{var resp=await fetch(BASE+'/scripts/SiteClient.wasm');if(!resp.ok)throw new Error('HTTP '+resp.status);var bytes=await resp.arrayBuffer();var instance=await WebAssembly.instantiate(bytes,{});try{instance.instance.exports.main()}catch(e){console.warn('[WASM] main error',e)}}catch(e){console.warn('[WASM] init error (Liquid Glass unavailable)',e)}})();
+                    if('serviceWorker' in navigator){navigator.serviceWorker.register(BASE+'/sw.js').catch(function(e){console.warn('SW registration failed',e);});}
+(async function(){try{var mod=await import(BASE+'/scripts/javascriptkit.js');var shim=await import('https://cdn.jsdelivr.net/npm/@bjorn3/browser_wasi_shim@0.3.0/+esm');var wasi=new shim.WASI([],[],[new shim.OpenFile(new shim.File([])),shim.ConsoleStdout.lineBuffered(function(m){console.log('[WASM]',m);}),shim.ConsoleStdout.lineBuffered(function(m){console.warn('[WASM]',m);})]);var rt=new mod.SwiftRuntime();var resp=await fetch(BASE+'/scripts/SiteClient.wasm');if(!resp.ok)throw new Error('HTTP '+resp.status);var bytes=await resp.arrayBuffer();var result=await WebAssembly.instantiate(bytes,{wasi_snapshot_preview1:wasi.wasiImport,javascript_kit:rt.wasmImports});rt.setInstance(result.instance);wasi.start(result.instance);}catch(e){console.warn('[WASM] init error (Liquid Glass unavailable)',e);}})();
                     """)
                 ])
             )
@@ -685,12 +714,24 @@ struct BezzubickHTMLFactory: HTMLFactory {
             .head(
                 .meta(.charset(.utf8)),
                 .meta(.name("viewport"), .content("width=device-width, initial-scale=1")),
-                .link(.rel(.icon), .href("https://httydcraft.github.io\(baseURL)/assets/avatar.png"), .type("image/png")),
+                .link(.rel(.icon), .href("\(baseURL)/assets/avatar.png"), .type("image/png")),
                 .title("BezzubickMCPlay | Links"),
                 .meta(.name("description"), .content("BezzubickMCPlay: Minecraft adventures, streams, latest videos, social links, and my skin.")),
+                .raw("""
+                <meta property="og:type" content="website" />
+                <meta property="og:title" content="BezzubickMCPlay | Links" />
+                <meta property="og:description" content="Все ссылки BezzubickMCPlay: YouTube, Telegram, Twitch, TikTok, Instagram и X." />
+                <meta property="og:url" content="https://httydcraft.github.io\(baseURL)/links/" />
+                <meta property="og:image" content="https://httydcraft.github.io\(baseURL)/assets/avatar.png" />
+                <meta name="twitter:card" content="summary" />
+                <meta name="theme-color" content="#121212" />
+                <link rel="manifest" href="\(baseURL)/manifest.webmanifest" />
+                <link rel="apple-touch-icon" href="\(baseURL)/assets/avatar.png" />
+                <link rel="preconnect" href="https://fonts.googleapis.com" />
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+                """),
                 .link(.href("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0"), .rel(.stylesheet)),
                 .link(.href("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700"), .rel(.stylesheet)),
-                .script(.src("https://cdn.tailwindcss.com")),
                 .raw("<style>\(linksCSS)</style>")
             ),
             .body(.class("dark-theme"),
@@ -708,7 +749,7 @@ struct BezzubickHTMLFactory: HTMLFactory {
                                 .div(.class("youtube-video-container"),
                                     .iframe(.id("live-embed"), .attribute(named: "frameborder", value: "0"),
                                         .attribute(named: "allow", value: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"),
-                                        .attribute(named: "allowfullscreen", value: ""))),
+                                        .attribute(named: "allowfullscreen", value: ""), .attribute(named: "loading", value: "lazy"), .attribute(named: "title", value: "Live stream"))),
                                 .div(.class("absolute top-3 left-3 px-3 py-1 rounded-full text-white text-xs font-bold live-indicator m3-shadow-md"), .text("LIVE")),
                                 .div(.id("twitch-notification"), .class("hidden mt-4 p-4 rounded-2xl text-sm text-center card m3-shadow-md"),
                                     .p(.id("twitch-message"), .class("mb-2")),

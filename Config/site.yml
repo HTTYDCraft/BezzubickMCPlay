@@ -1,6 +1,12 @@
+# Site metadata.
+# Informational config - canonical values also live in Sources/BezzubickMCPlay/main.swift (BezzubickSite).
+# NOTE - URLs must be plain, WITHOUT <angle brackets> around them.
+
 name: "Bezzubick MCPlay"
-description: "Ютубер и стример по Minecraft. Уютный канал без мата: стримы, видео, комьюнити, планы."
-url: "https://httydcraft.github.io/BezzubickMCPlay"
+description: "Ютубер и стример по Minecraft."
+url: https://httydcraft.github.io/BezzubickMCPlay
 language: ru
-favicon: "/assets/avatar.png"
-image: "/assets/avatar.png"
+# The site is served from a project page under /BezzubickMCPlay/,
+# so asset paths must include the base prefix.
+favicon: /BezzubickMCPlay/assets/avatar.png
+image: /BezzubickMCPlay/assets/avatar.png

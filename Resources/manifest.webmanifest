@@ -1,0 +1,19 @@
+{
+  "name": "Bezzubick MCPlay",
+  "short_name": "Bezzubick",
+  "description": "Minecraft-приключения, стримы, последние видео и все ссылки.",
+  "lang": "ru",
+  "start_url": "/BezzubickMCPlay/",
+  "scope": "/BezzubickMCPlay/",
+  "display": "standalone",
+  "background_color": "#121212",
+  "theme_color": "#121212",
+  "icons": [
+    {
+      "src": "/BezzubickMCPlay/assets/avatar.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

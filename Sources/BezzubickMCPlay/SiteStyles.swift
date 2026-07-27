@@ -1735,3 +1735,50 @@ public let linksPageStylesheet: Stylesheet = Stylesheet {
         }
     }
 }
+
+
+// MARK: - Utility classes
+// Replaces the Tailwind CDN dev build (~300 KB of runtime JS, not meant for
+// production) with the small set of utility classes actually used by the
+// generated markup, plus a minimal reset that matches Tailwind preflight.
+public let utilityCSS = """
+*,::before,::after{box-sizing:border-box}
+h1,h2,h3,h4,h5,h6,p,figure,blockquote{margin:0}
+ul,ol{margin:0;padding:0;list-style:none}
+img,svg,video,canvas,iframe{display:block;max-width:100%}
+button{margin:0;padding:0;background:transparent;border:0;font:inherit;color:inherit;cursor:pointer}
+a{color:inherit;text-decoration:none}
+.md a{text-decoration:underline}
+.md ul{list-style:disc;padding-left:1.5rem}
+.hidden{display:none!important}
+.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}
+.top-0{top:0}.left-0{left:0}.top-3{top:.75rem}.left-3{left:.75rem}.z-50{z-index:50}
+.flex{display:flex}.inline-flex{display:inline-flex}
+.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}
+.flex-shrink-0{flex-shrink:0}
+.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}
+.object-cover{object-fit:cover}.object-contain{object-fit:contain}
+.scroll-smooth{scroll-behavior:smooth}
+.mx-auto{margin-left:auto;margin-right:auto}
+.mb-1{margin-bottom:.25rem}.mb-2{margin-bottom:.5rem}.mb-3{margin-bottom:.75rem}.mb-4{margin-bottom:1rem}.mb-6{margin-bottom:1.5rem}.mb-8{margin-bottom:2rem}
+.mt-2{margin-top:.5rem}.mt-3{margin-top:.75rem}.mt-4{margin-top:1rem}.mt-6{margin-top:1.5rem}.mt-8{margin-top:2rem}
+.p-0{padding:0}.p-2{padding:.5rem}.p-3{padding:.75rem}.p-4{padding:1rem}.p-6{padding:1.5rem}
+.pb-4{padding-bottom:1rem}
+.px-3{padding-left:.75rem;padding-right:.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}
+.py-1{padding-top:.25rem;padding-bottom:.25rem}.py-2{padding-top:.5rem;padding-bottom:.5rem}.py-3{padding-top:.75rem;padding-bottom:.75rem}.py-8{padding-top:2rem;padding-bottom:2rem}
+.space-x-4>*+*{margin-left:1rem}.space-y-4>*+*{margin-top:1rem}
+.h-28{height:7rem}.h-36{height:9rem}.h-full{height:100%}
+.w-28{width:7rem}.w-64{width:16rem}.w-full{width:100%}
+.max-w-4xl{max-width:56rem}.max-w-5xl{max-width:64rem}
+.text-xs{font-size:.75rem;line-height:1rem}.text-sm{font-size:.875rem;line-height:1.25rem}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}
+.font-medium{font-weight:500}.font-bold{font-weight:700}
+.leading-tight{line-height:1.25}
+.text-center{text-align:center}.text-left{text-align:left}
+.text-white{color:#fff}.text-gray-400{color:#9ca3af}.text-purple-400{color:#c084fc}
+.border-4{border-width:4px;border-style:solid}.border-purple-500{border-color:#a855f7}
+.rounded-full{border-radius:9999px}.rounded-2xl{border-radius:1rem}.rounded-b-lg{border-bottom-left-radius:.5rem;border-bottom-right-radius:.5rem}
+.shadow-lg{box-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -4px rgba(0,0,0,.1)}
+@media (min-width:640px){.sm\\:p-6{padding:1.5rem}}
+@media (min-width:1024px){.lg\\:p-8{padding:2rem}}
+:where(button,a):focus-visible{outline:2px solid #bb86fc;outline-offset:2px}
+"""

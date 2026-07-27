@@ -170,20 +170,30 @@ func getYouTubeStats() -> (subs: Int?, videos: [YouTubeVideo], live: LiveStream?
             for tk in thumbKeys {
                 if let t = thumbs[tk] as? [String: Any], let u = t["url"] as? String { thumbUrl = u; break }
             }
+            if videos.contains(where: { $0.id == vid }) { continue }
             videos.append(YouTubeVideo(id: vid, title: title, thumbnailUrl: thumbUrl))
         }
     }
 
-    // Live status
-    if let resp = httpGetJSONObject(url: "https://www.googleapis.com/youtube/v3/search",
-                                    params: ["part": "snippet", "channelId": channelId, "eventType": "live", "type": "video", "key": key]),
-       let items = dictArray(resp, "items"),
-       let first = items.first,
-       let idDict = first["id"] as? [String: Any],
-       let vid = idDict["videoId"] as? String,
-       let sn = first["snippet"] as? [String: Any],
-       let title = sn["title"] as? String {
-        live = LiveStream(type: "youtube", id: vid, title: title, youtubeChannelId: channelId)
+    // Live status.
+    // videos.list costs 1 quota unit, while search.list with eventType=live
+    // costs 100 units per call. An active live stream appears in the uploads
+    // playlist, so we check liveBroadcastContent on the recent uploads instead.
+    if !videos.isEmpty {
+        let ids = videos.map { $0.id }.joined(separator: ",")
+        if let resp = httpGetJSONObject(url: "https://www.googleapis.com/youtube/v3/videos",
+                                        params: ["part": "snippet", "id": ids, "key": key]),
+           let items = dictArray(resp, "items") {
+            for item in items {
+                guard let sn = item["snippet"] as? [String: Any],
+                      let broadcast = sn["liveBroadcastContent"] as? String,
+                      broadcast == "live",
+                      let vid = item["id"] as? String else { continue }
+                let title = sn["title"] as? String ?? ""
+                live = LiveStream(type: "youtube", id: vid, title: title, youtubeChannelId: channelId)
+                break
+            }
+        }
     }
 
     return (subs, videos, live)
