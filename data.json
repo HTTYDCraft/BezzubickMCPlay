@@ -13,12 +13,9 @@
     "x" : 2,
     "youtube" : 219000
   },
-  "lastUpdated" : "2026-08-15T16:55:01Z",
+  "lastUpdated" : "2026-08-15T17:13:30Z",
   "liveStream" : {
-    "id" : "Hw_dM3KGY3U",
-    "title" : "🔴 ПЕРВЫЙ РАЗ ИГРАЕМ В PEAK С ДЕВУШКОЙ ИРЛ [Cтрим]",
-    "type" : "youtube",
-    "youtubeChannelId" : "UCm6mheCT60mZ5qlxG5r2GeA"
+    "type" : "none"
   },
   "youtubeVideos" : [
     {
