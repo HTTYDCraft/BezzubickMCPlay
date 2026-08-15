@@ -13,11 +13,16 @@
     "x" : 2,
     "youtube" : 219000
   },
-  "lastUpdated" : "2026-08-15T14:01:32Z",
+  "lastUpdated" : "2026-08-15T14:31:34Z",
   "liveStream" : {
     "type" : "none"
   },
   "youtubeVideos" : [
+    {
+      "id" : "Hw_dM3KGY3U",
+      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/Hw_dM3KGY3U\/maxresdefault_live.jpg",
+      "title" : "🔴 ПЕРВЫЙ РАЗ ИГРАЕМ В PEAK С ДЕВУШКОЙ ИРЛ [Cтрим]"
+    },
     {
       "id" : "ilzRVUzrm2Q",
       "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/ilzRVUzrm2Q\/maxresdefault.jpg",
@@ -112,11 +117,6 @@
       "id" : "JnxUmWGeg4c",
       "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/JnxUmWGeg4c\/maxresdefault.jpg",
       "title" : "😉 Не кликай на звук! - Когда лень идти в шахту [Reverse Edition] #Shorts #майнкрафт #bezzubickmcplay"
-    },
-    {
-      "id" : "Q3I1DcFGvS4",
-      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/Q3I1DcFGvS4\/maxresdefault.jpg",
-      "title" : "Не жмякай на звук ❌  #minecraft #shorts #майнкрафт"
     }
   ]
 }
