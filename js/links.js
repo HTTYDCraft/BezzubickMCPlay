@@ -5,7 +5,7 @@
    fetch timeout, working dev-view toggle, ?dev=1 support. */
 import {
   BASE, store, applyTheme, nextTheme, setVisibility, fmtCount, esc,
-  fetchJson, fetchData, applyMockFromQuery, initSkinViewer, registerSW,
+  fetchJson, fetchData, setupOffline, applyMockFromQuery, initSkinViewer, registerSW,
 } from './common.js';
 
 const $ = (id) => document.getElementById(id);
@@ -217,15 +217,13 @@ function setDev(open) {
 document.addEventListener('DOMContentLoaded', async () => {
   applyTheme(state.theme, $('theme-icon'));
   setupOffline();
-  const upd = () => setVisibility($('offline-warning'), !navigator.onLine);
-  addEventListener('online', upd); addEventListener('offline', upd); upd();
 
   setDev(state.devOpen);
   $('dev-toggle')?.classList.remove('hidden');
   $('dev-toggle')?.addEventListener('click', () => setDev(!state.devOpen));
   $('back-to-main-button')?.addEventListener('click', (e) => { e.preventDefault(); setDev(false); });
 
-  $('theme-toggle')?.addEventListener('click', () => { state.theme = nextTheme(state.theme); applyTheme(state.theme, $('theme-icon')); });
+  $('theme-toggle')?.addEventListener('click', () => { state.theme = applyTheme(nextTheme(state.theme), $('theme-icon')); });
   $('language-toggle')?.addEventListener('click', () => {
     state.lang = state.lang === 'en' ? 'ru' : 'en';
     store.lang = state.lang;

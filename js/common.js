@@ -12,33 +12,75 @@ export const THEMES = ['dark', 'light', 'glass-dark', 'glass-light'];
 
 const params = new URLSearchParams(location.search);
 
+/* Platform theme policy: everywhere glass, on Android Material You
+   (dark/light). Toggle cycles only the platform set. */
+export function isAndroid() {
+  // UA string first: userAgentData.platform keeps the real OS value when
+  // the UA string is overridden, but real Android Chrome always has it.
+  if (/Android/i.test(navigator.userAgent || '')) return true;
+  return navigator.userAgentData?.platform === 'Android';
+}
+
+export function themeSet() {
+  return isAndroid() ? ['dark', 'light'] : ['glass-dark', 'glass-light'];
+}
+
+function schemeIsLight() {
+  return !!matchMedia?.('(prefers-color-scheme: light)').matches;
+}
+
+function coerceTheme(t) {
+  const set = themeSet();
+  if (set.includes(t)) return t;
+  if (isAndroid()) return t === 'glass-light' || t === 'light' ? 'light' : 'dark';
+  return t === 'light' || t === 'glass-light' ? 'glass-light' : 'glass-dark';
+}
+
+function lsGet(k) { try { return localStorage.getItem(k); } catch { return null; } }
+function lsSet(k, v) { try { localStorage.setItem(k, v); } catch { /* private mode */ } }
+
 export const store = {
   get theme() {
-    return params.get('debugTheme') || params.get('theme')
-      || localStorage.getItem('theme')
-      || (matchMedia?.('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+    // Deep link ?theme= / ?debugTheme= opens exactly that theme and remembers it.
+    const p = params.get('debugTheme') || params.get('theme');
+    if (p && THEMES.includes(p)) { lsSet('theme', p); return p; }
+    const s = lsGet('theme');
+    if (s && THEMES.includes(s)) return s;
+    const set = themeSet();
+    return schemeIsLight() ? set[1] : set[0];
   },
-  set theme(t) { localStorage.setItem('theme', t); },
+  set theme(t) { lsSet('theme', t); },
   get lang() {
-    return params.get('lang') || localStorage.getItem('lang')
-      || (navigator.language?.startsWith('ru') ? 'ru' : 'en');
+    // Deep link ?lang= wins once and is remembered; otherwise stored
+    // choice wins; first visit falls back to the browser language.
+    const p = params.get('lang');
+    if (p === 'ru' || p === 'en') { lsSet('lang', p); return p; }
+    const s = lsGet('lang');
+    if (s === 'ru' || s === 'en') return s;
+    return navigator.language?.startsWith('ru') ? 'ru' : 'en';
   },
-  set lang(l) { localStorage.setItem('lang', l); },
+  set lang(l) { lsSet('lang', l); },
 };
 
 export function applyTheme(theme, iconEl) {
+  if (!THEMES.includes(theme)) theme = themeSet()[0];
   const cls = theme === 'dark' ? 'dark-theme' : theme === 'light' ? 'light-theme'
     : theme === 'glass-dark' ? 'glass-dark' : 'glass-light';
   document.body.classList.remove('dark-theme', 'light-theme', 'glass-dark', 'glass-light');
   document.body.classList.add(cls);
   store.theme = theme;
-  document.documentElement.style.background = theme.startsWith('glass')
-    ? (theme === 'glass-dark' ? '#000000' : '#f5f0ff')
-    : (theme === 'dark' ? '#000000' : '#ffffff');
+  const bg = theme === 'glass-light' ? '#f5f0ff' : theme === 'light' ? '#ffffff' : '#000000';
+  document.documentElement.style.background = bg;
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', bg);
+  document.documentElement.style.colorScheme = theme === 'dark' || theme === 'glass-dark' ? 'dark' : 'light';
   if (iconEl) iconEl.textContent = theme === 'dark' ? 'light_mode' : theme === 'light' ? 'dark_mode' : theme === 'glass-dark' ? 'light_mode' : 'dark_mode';
+  return theme;
 }
 
-export function nextTheme(t) { return THEMES[(THEMES.indexOf(t) + 1 + THEMES.length) % THEMES.length]; }
+export function nextTheme(t) {
+  const set = themeSet();
+  return set[(set.indexOf(coerceTheme(t)) + 1 + set.length) % set.length];
+}
 
 export function setVisibility(el, visible) { if (el) el.classList.toggle('hidden', !visible); }
 

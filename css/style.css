@@ -20,7 +20,7 @@
 }
 html{box-sizing:border-box}
 *,*::before,*::after{box-sizing:inherit}
-body{font-family:'Roboto',sans-serif;transition:background-color .3s ease,color .3s ease;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding:20px;box-sizing:border-box;line-height:1.6;font-weight:400}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Roboto','Segoe UI',sans-serif;transition:background-color .3s ease,color .3s ease;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding:20px;box-sizing:border-box;line-height:1.6;font-weight:400}
 .m3-shadow-md{box-shadow:0 3px 5px rgba(0,0,0,.2),0 1px 18px rgba(0,0,0,.12),0 6px 10px rgba(0,0,0,.14)}
 .m3-shadow-lg{box-shadow:0 6px 10px rgba(0,0,0,.2),0 3px 18px rgba(0,0,0,.12),0 9px 30px rgba(0,0,0,.14)}
 /* ---- Material dark ---- */
@@ -46,9 +46,13 @@ body.light-theme .primary-button:hover{background-color:var(--md-sys-color-prima
 body.light-theme .support-button{background-color:#66BB6A;color:var(--md-sys-color-on-primary-light)}
 body.light-theme .support-button:hover{background-color:#43A047}
 body.light-theme .mini-button.active{background-color:var(--md-sys-color-primary-light);color:var(--md-sys-color-on-primary-light);border-color:transparent}
-/* ---- Apple Liquid Glass: ambient background (pure CSS, replaces WASM canvas) ---- */
-body.glass-dark{background-color:#000;color:#FFF;background-image:radial-gradient(60% 45% at 15% 10%,rgba(187,134,252,.16),transparent 70%),radial-gradient(50% 40% at 85% 20%,rgba(3,218,198,.10),transparent 70%),radial-gradient(55% 45% at 80% 90%,rgba(187,134,252,.12),transparent 70%),radial-gradient(45% 40% at 10% 85%,rgba(76,175,80,.08),transparent 70%);background-attachment:fixed}
-body.glass-light{background-color:#f5f0ff;color:#000;background-image:radial-gradient(60% 45% at 15% 10%,rgba(98,0,238,.10),transparent 70%),radial-gradient(50% 40% at 85% 20%,rgba(3,218,198,.12),transparent 70%),radial-gradient(55% 45% at 80% 90%,rgba(98,0,238,.08),transparent 70%),radial-gradient(45% 40% at 10% 85%,rgba(102,187,106,.10),transparent 70%);background-attachment:fixed}
+/* ---- Apple Liquid Glass: ambient background on a fixed composited layer
+   (no background-attachment:fixed — it repaints on every scroll frame) ---- */
+body.glass-dark{background-color:#000;color:#FFF}
+body.glass-light{background-color:#f5f0ff;color:#000}
+body.glass-dark::before,body.glass-light::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;transform:translateZ(0)}
+body.glass-dark::before{background-image:radial-gradient(60% 45% at 15% 10%,rgba(187,134,252,.16),transparent 70%),radial-gradient(50% 40% at 85% 20%,rgba(3,218,198,.10),transparent 70%),radial-gradient(55% 45% at 80% 90%,rgba(187,134,252,.12),transparent 70%),radial-gradient(45% 40% at 10% 85%,rgba(76,175,80,.08),transparent 70%)}
+body.glass-light::before{background-image:radial-gradient(60% 45% at 15% 10%,rgba(98,0,238,.10),transparent 70%),radial-gradient(50% 40% at 85% 20%,rgba(3,218,198,.12),transparent 70%),radial-gradient(55% 45% at 80% 90%,rgba(98,0,238,.08),transparent 70%),radial-gradient(45% 40% at 10% 85%,rgba(102,187,106,.10),transparent 70%)}
 body.glass-dark .card{background-color:rgba(255,255,255,.04);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.08);border-radius:20px;box-shadow:inset 0 1px 0 0 rgba(255,255,255,.06),0 8px 32px rgba(0,0,0,.5)}
 body.glass-dark .card:hover{background-color:rgba(255,255,255,.07);border-color:rgba(255,255,255,.15);box-shadow:inset 0 1px 0 0 rgba(255,255,255,.1),0 0 30px rgba(187,134,252,.12),0 8px 32px rgba(0,0,0,.6);transform:translateY(-3px)}
 body.glass-dark .control-button{background-color:rgba(255,255,255,.06);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.1);color:#FFF;border-radius:16px}
@@ -99,7 +103,8 @@ body.glass-light .hero .followers{color:rgba(0,0,0,.64)!important}
 /* ---- Cards / hero ---- */
 .card,.card *{user-select:text!important;-webkit-user-select:text!important}
 #links-section .card,#links-section .card *{user-select:none!important;-webkit-user-select:none!important}
-.card{border-radius:16px;transition:transform .2s ease,box-shadow .2s ease;-webkit-tap-highlight-color:rgba(187,134,252,.25);will-change:transform}
+.card{border-radius:16px;transition:transform .2s ease,box-shadow .2s ease;-webkit-tap-highlight-color:rgba(187,134,252,.25)}
+.card:hover{transform:translateY(-3px);box-shadow:var(--md-sys-color-primary-dark) 0 4px 12px;will-change:transform}
 .card:hover{transform:translateY(-3px);box-shadow:var(--md-sys-color-primary-dark) 0 4px 12px}
 body.light-theme .card:hover{box-shadow:var(--md-sys-color-primary-light) 0 4px 12px}
 .card.is-hover{transform:translateY(-3px);box-shadow:var(--md-sys-color-primary-dark) 0 4px 12px!important}
@@ -231,6 +236,9 @@ body.light-theme #skin-viewer-container,body.light-theme #skin-viewer-container 
 }
 @media (max-width:452px){#links-cta .primary-button{width:100%;justify-content:center}#links-cta .primary-button span{white-space:normal}}
 @media (max-width:640px){.tl-buttons .tl-btn{padding:8px;min-width:44px;justify-content:center}.tl-buttons .btn-text{display:none}}
+/* ---- Rendering perf: skip off-screen work, effects untouched ---- */
+#timeline details,#links-section .card,#carousel .card,#video-carousel .card{content-visibility:auto;contain-intrinsic-size:auto 120px}
+#page-wrap,#app{transform:translateZ(0)}
 @media (prefers-reduced-motion:reduce){#timeline details.card summary .material-symbols-outlined{transition:none}}
 /* ---- Utilities (from Swift utilityCSS + missing classes the markup uses) ---- */
 *,::before,::after{box-sizing:border-box}

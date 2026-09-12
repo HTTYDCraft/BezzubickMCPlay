@@ -156,6 +156,7 @@ def parse_links():
             elif section == "hero":
                 heroes.append({
                     "label": cur.get("label", ""),
+                    "label_en": cur.get("label_en", cur.get("label", "")),
                     "url": cur.get("url", ""),
                     "icon": cur.get("icon", "link"),
                     "style": cur.get("style", "support"),
@@ -211,7 +212,8 @@ def build():
         hero_btns.append(
             f'<a href="{html.escape(href)}" class="{cls} rounded-full px-6 py-3 font-medium m3-shadow-md">'
             f'<span class="material-symbols-outlined" aria-hidden="true">{html.escape(b.get("icon", "link"))}</span>'
-            f'<span>{html.escape(b["label"])}</span></a>')
+            f'<span data-lang="ru">{html.escape(b.get("label", ""))}</span>'
+            f'<span data-lang="en" style="display:none">{html.escape(b.get("label_en", b.get("label", "")))}</span></a>')
 
     head = f"""<meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />

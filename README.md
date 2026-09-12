@@ -43,3 +43,12 @@ go run ./worker/cmd/update-data --data data.json --history streams_history.json
 Тест live: открой сайт с `?mockLive=youtube:VIDEO_ID`,
 `?mockLive=twitch:channel`, `?mockLive=both:YT:TW` или `?mockLive=none`.
 Dev-панель страницы ссылок: кнопка `code` или `?dev=1`.
+
+## Язык и темы
+
+- Первый визит: язык — из браузера, тема — из системы.
+- Любой выбор (кнопками или диплинком) запоминается и дальше не меняется сам.
+- Диплинки: `?lang=ru|en`, `?theme=dark|light|glass-dark|glass-light`
+  (например `/links/?lang=en&theme=glass-light`).
+- Переключатель тем: везде только glass (`glass-dark`/`glass-light`),
+  на Android — Material (`dark`/`light`).

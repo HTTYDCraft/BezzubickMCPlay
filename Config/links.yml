@@ -55,10 +55,12 @@ links:
 
 heroButtons:
   - label: "Подписаться на YouTube"
+    label_en: "Subscribe on YouTube"
     url: https://www.youtube.com/channel/UCm6mheCT60mZ5qlxG5r2GeA?sub_confirmation=1
     icon: play_arrow
     style: primary
   - label: "Все мои ссылки"
+    label_en: "All my links"
     url: /links/
     icon: link
     style: primary
