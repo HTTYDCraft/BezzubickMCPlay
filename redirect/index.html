@@ -23,11 +23,9 @@
   .loader h1 .dot:nth-child(3){animation-delay:.4s}
   @keyframes blink{0%,60%,100%{opacity:.2}30%{opacity:1}}
   @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-  .bar{width:min(220px,50vw);height:3px;border-radius:9999px;margin:22px auto 0;background:rgba(255,255,255,.12);overflow:hidden}
+  .bar{width:min(220px,50vw);height:3px;border-radius:9999px;margin:36px auto 0;background:rgba(255,255,255,.12);overflow:hidden}
   .bar span{display:block;height:100%;width:40%;border-radius:inherit;background:#BB86FC;animation:slide 1.1s ease-in-out infinite}
   @keyframes slide{from{transform:translateX(-110%)}to{transform:translateX(280%)}}
-  .manual{margin-top:26px;font-size:14px;color:rgba(255,255,255,.55);text-decoration:none}
-  .manual:hover{color:#fff}
   @media (prefers-reduced-motion:reduce){.loader{animation:none}.loader h1 .dot{animation:none;opacity:1}.bar span{animation:none;width:100%}}
 </style>
 <noscript><meta http-equiv="refresh" content="0;url=https://httydcraft.github.io/BezzubickMCPlay/" /></noscript>
@@ -36,7 +34,6 @@
 <main class="loader">
   <h1><span id="loading-text">Загрузка</span><span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></h1>
   <div class="bar" aria-hidden="true"><span></span></div>
-  <div><a id="manual-link" class="manual" href="https://httydcraft.github.io/BezzubickMCPlay/">httydcraft.github.io/BezzubickMCPlay</a></div>
 </main>
 <script>
 (function(){
@@ -49,7 +46,6 @@
   // Forward path + all query params (?lang, ?theme, ?dev, …) + hash.
   var path = (location.pathname || '/').replace(/^\/+|\/+$/g, '');
   var url = TARGET + (path ? '/' + path + '/' : '/') + (location.search || '') + (location.hash || '');
-  document.getElementById('manual-link').href = url;
   setTimeout(function(){ location.replace(url); }, 800);
 })();
 </script>
