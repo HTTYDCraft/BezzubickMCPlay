@@ -4,7 +4,7 @@
    BASE derived from scope instead of hardcoded. */
 'use strict';
 
-var CACHE = 'bezzubick-v2';
+var CACHE = 'bezzubick-dev';
 var BASE = new URL(registration.scope).pathname.replace(/\/$/, '');
 
 var APP_SHELL = [

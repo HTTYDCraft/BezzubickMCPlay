@@ -17,6 +17,7 @@ Usage:  python3 tools/build.py [--base /BezzubickMCPlay]
 
 import html
 import json
+import datetime
 import os
 import re
 import shutil
@@ -441,10 +442,19 @@ def build():
                     os.makedirs(os.path.dirname(d), exist_ok=True)
                     shutil.copy2(s, d)
     for fn in ("data.json", "streams_history.json",
-               "manifest.webmanifest", "sw.js"):
+               "manifest.webmanifest"):
         src = os.path.join(ROOT, fn)
         if os.path.isfile(src):
             shutil.copy2(src, os.path.join(dist, fn))
+    # Service worker: stamp a unique cache name per build so browsers
+    # detect changed sw.js bytes and actually update the cached shell.
+    # (A constant cache name meant clients tested stale code for days.)
+    stamp = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%d%H%M%S")
+    with open(os.path.join(ROOT, "sw.js"), encoding="utf-8") as f:
+        sw = f.read()
+    sw = sw.replace("bezzubick-dev", f"bezzubick-{stamp}")
+    with open(os.path.join(dist, "sw.js"), "w", encoding="utf-8") as f:
+        f.write(sw)
     print(f"Built dist/ (base={BASE or '/'}), timeline={len(timeline)}, links={len(links)}")
 
 
