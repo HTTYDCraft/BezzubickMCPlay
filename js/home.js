@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   $('tl-expand') && ($('tl-expand').onclick = () => document.querySelectorAll('#timeline details').forEach((d) => { d.open = true; }));
   $('tl-collapse') && ($('tl-collapse').onclick = () => document.querySelectorAll('#timeline details').forEach((d) => { d.open = false; }));
 
-  $('theme-toggle') && ($('theme-toggle').onclick = () => { state.theme = nextTheme(state.theme); applyTheme(state.theme, $('theme-icon')); });
+  $('theme-toggle') && ($('theme-toggle').onclick = () => { state.theme = applyTheme(nextTheme(state.theme), $('theme-icon')); });
   $('lang-toggle') && ($('lang-toggle').onclick = () => {
     state.lang = state.lang === 'ru' ? 'en' : 'ru';
     store.lang = state.lang;
