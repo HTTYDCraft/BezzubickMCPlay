@@ -4,7 +4,7 @@
    BASE derived from scope instead of hardcoded. */
 'use strict';
 
-var CACHE = 'bezzubick-20260912133320';
+var CACHE = 'bezzubick-20260912133800';
 var BASE = new URL(registration.scope).pathname.replace(/\/$/, '');
 
 var APP_SHELL = [
