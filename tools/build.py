@@ -25,9 +25,18 @@ import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE = ""
-for a in sys.argv[1:]:
-    if a == "--base" or a.startswith("--base="):
-        BASE = a.split("=", 1)[1] if "=" in a else sys.argv[sys.argv.index(a) + 1]
+SITE_URL = "https://httydcraft.github.io/BezzubickMCPlay"
+args = sys.argv[1:]
+for i, a in enumerate(args):
+    if a == "--base" and i + 1 < len(args):
+        BASE = args[i + 1]
+    elif a.startswith("--base="):
+        BASE = a.split("=", 1)[1]
+    elif a == "--site-url" and i + 1 < len(args):
+        SITE_URL = args[i + 1]
+    elif a.startswith("--site-url="):
+        SITE_URL = a.split("=", 1)[1]
+SITE_URL = SITE_URL.rstrip("/")
 
 
 def read_file(path):
@@ -197,6 +206,35 @@ def load_snapshot(name, fallback):
         return fallback
 
 
+def seo_tags(page_path, title, desc, same_as):
+    """Canonical + OG/Twitter + hreflang + JSON-LD for a page."""
+    url = f"{SITE_URL}{page_path}"
+    tags = [
+        f'<link rel="canonical" href="{url}" />',
+        f'<meta property="og:url" content="{url}" />',
+        '<meta name="twitter:card" content="summary_large_image" />',
+        f'<meta name="twitter:title" content="{html.escape(title)}" />',
+        f'<meta name="twitter:description" content="{html.escape(desc)}" />',
+        f'<meta name="twitter:image" content="{SITE_URL}/assets/avatar.png" />',
+        f'<link rel="alternate" hreflang="ru" href="{url}" />',
+        f'<link rel="alternate" hreflang="en" href="{url}?lang=en" />',
+        f'<link rel="alternate" hreflang="x-default" href="{url}" />',
+    ]
+    ld = {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Bezzubick MCPlay",
+        "alternateName": "BezzubickMCPlay",
+        "url": url,
+        "image": f"{SITE_URL}/assets/avatar.png",
+        "description": desc,
+        "sameAs": same_as,
+    }
+    ld_json = json.dumps(ld, ensure_ascii=False).replace("</", "<\\/")
+    tags.append(f'<script type="application/ld+json">{ld_json}</script>')
+    return "\n".join(tags)
+
+
 def build():
     ru_intro, en_intro = read_bilingual("Content/about-intro.md")
     ru_outro, en_outro = read_bilingual("Content/about-outro.md")
@@ -221,6 +259,14 @@ def build():
         '{"followerCounts":{},"youtubeVideos":[],"liveStream":{"type":"none"}}')
     history_snapshot = load_snapshot("streams_history.json", '{"events":[]}')
     links_snapshot = json.dumps(links_json, ensure_ascii=False).replace("</", "<\\/")
+
+    same_as = sorted({l["url"] for l in links_json if l["url"].startswith("http")})
+    seo_index = seo_tags("/", "Bezzubick MCPlay",
+        "Официальный сайт Bezzubick MCPlay: Minecraft-приключения, стримы, последние видео, календарь стримов и все ссылки.",
+        same_as)
+    seo_links = seo_tags("/links/", "BezzubickMCPlay | Мои ссылки",
+        "Все ссылки BezzubickMCPlay: YouTube, Telegram, Twitch, TikTok, Instagram и X. Стримы, видео и Minecraft-скин.",
+        same_as)
 
     dist = os.path.join(ROOT, "dist")
     shutil.rmtree(dist, ignore_errors=True)
@@ -266,6 +312,7 @@ def build():
 <meta property="og:title" content="Bezzubick MCPlay" />
 <meta property="og:description" content="Minecraft-приключения, стримы, последние видео и все ссылки." />
 <meta property="og:image" content="{BASE}/assets/avatar.png" />
+{seo_index}
 </head>
 <body class="dark-theme">
 <div id="page-wrap" class="w-full max-w-5xl mx-auto p-4 sm:p-6 lg:p-8">
@@ -354,6 +401,7 @@ def build():
 <meta property="og:title" content="BezzubickMCPlay | Links" />
 <meta property="og:description" content="Все ссылки BezzubickMCPlay: YouTube, Telegram, Twitch, TikTok, Instagram и X." />
 <meta property="og:image" content="{BASE}/assets/avatar.png" />
+{seo_links}
 </head>
 <body class="dark-theme">
 <div id="app" class="w-full max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
@@ -428,6 +476,26 @@ def build():
 
     with open(os.path.join(dist, "assets", "links.json"), "w", encoding="utf-8") as f:
         json.dump(links_json, f, ensure_ascii=False, indent=2)
+
+    # SEO: robots.txt, sitemap.xml, IndexNow key file.
+    today = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
+    with open(os.path.join(dist, "robots.txt"), "w", encoding="utf-8") as f:
+        f.write(f"User-agent: *\nAllow: /\nSitemap: {SITE_URL}/sitemap.xml\n")
+    with open(os.path.join(dist, "sitemap.xml"), "w", encoding="utf-8") as f:
+        f.write(f"""<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>{SITE_URL}/</loc><lastmod>{today}</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>{SITE_URL}/links/</loc><lastmod>{today}</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+</urlset>
+""")
+    try:
+        with open(os.path.join(ROOT, "indexnow-key.txt"), encoding="utf-8") as f:
+            key = f.read().strip()
+        if key:
+            with open(os.path.join(dist, f"{key}.txt"), "w", encoding="utf-8") as f:
+                f.write(key)
+    except OSError:
+        pass
 
     for name in ("assets", "css", "js"):
         src = os.path.join(ROOT, name)

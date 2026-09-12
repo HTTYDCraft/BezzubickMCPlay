@@ -19,6 +19,7 @@ concurrency:
 
 env:
   SITE_BASE: /BezzubickMCPlay
+  SITE_URL: https://httydcraft.github.io/BezzubickMCPlay
 
 jobs:
   build-deploy:
@@ -31,7 +32,7 @@ jobs:
           python-version: '3.12'
 
       - name: Build static site
-        run: python3 tools/build.py --base "$SITE_BASE"
+        run: python3 tools/build.py --base "$SITE_BASE" --site-url "$SITE_URL"
 
       - name: Add .nojekyll
         run: touch dist/.nojekyll
@@ -40,3 +41,13 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
+
+      # IndexNow: instantly notify Bing + Yandex about both pages.
+      # (Google doesn't support IndexNow — it reads robots.txt/sitemap.xml.)
+      - name: Ping IndexNow
+        run: |
+          KEY=$(tr -d ' \n\r' < indexnow-key.txt)
+          curl -s -o /dev/null -w "IndexNow:%{http_code}\n" \
+            -H 'Content-Type: application/json; charset=utf-8' \
+            -d "{\"host\":\"httydcraft.github.io\",\"key\":\"$KEY\",\"keyLocation\":\"$SITE_URL/$KEY.txt\",\"urlList\":[\"$SITE_URL/\",\"$SITE_URL/links/\"]}" \
+            https://api.indexnow.org/indexnow
