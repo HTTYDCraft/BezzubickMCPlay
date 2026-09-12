@@ -62,6 +62,9 @@ body.glass-light::before{background-image:radial-gradient(45% 38% at 22% 16%,rgb
 @keyframes ambient-drift{from{transform:translate3d(-7%,-4%,0) scale(1)}to{transform:translate3d(7%,5%,0) scale(1.12)}}
 /* Drift pauses while scrolling: static backdrop = nothing to flicker. */
 body.is-scrolling.glass-light::before{animation-play-state:paused}
+/* While scrolling, drop backdrop blur (flat translucent keeps the look):
+   no blur re-raster = no hitches, no blurry placeholders. Restored idle. */
+body.is-scrolling .card,body.is-scrolling .control-button,body.is-scrolling .primary-button,body.is-scrolling .support-button,body.is-scrolling .mini-button,body.is-scrolling .modal-content,body.is-scrolling .dev-page-content,body.is-scrolling .stream-cal-grid .cell{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
 /* Hover lift only for precise pointers: on touch it fires mid-scroll and flickers.
    Stable per-card layer for backdrop-filter on desktop (classic Chrome fix). */
 @media (hover:hover) and (pointer:fine){.card{transform:translateZ(0)}}

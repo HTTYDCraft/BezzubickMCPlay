@@ -112,6 +112,19 @@ export async function fetchJson(url, timeoutMs = 12000) {
   }
 }
 
+/* Build-time snapshot baked into the HTML (tools/build.py): instant first
+   paint without waiting for the network; JS refreshes after. */
+export function readSnapshot(id, fallback) {
+  try {
+    const el = document.getElementById(id);
+    if (!el) return fallback;
+    const v = JSON.parse(el.textContent);
+    return v ?? fallback;
+  } catch {
+    return fallback;
+  }
+}
+
 export async function fetchData() {
   try {
     return await fetchJson(`${BASE}/data.json?t=${Date.now()}`);
