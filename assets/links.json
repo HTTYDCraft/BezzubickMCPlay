@@ -1,0 +1,72 @@
+[
+  {
+    "label": "Канал YouTube",
+    "label_en": "YouTube Channel",
+    "url": "https://www.youtube.com/channel/UCm6mheCT60mZ5qlxG5r2GeA",
+    "icon": "play_arrow",
+    "platform": "youtube",
+    "order": 1,
+    "showCount": true,
+    "subscribeUrl": "https://www.youtube.com/channel/UCm6mheCT60mZ5qlxG5r2GeA?sub_confirmation=1"
+  },
+  {
+    "label": "Канал Telegram",
+    "label_en": "Telegram Channel",
+    "url": "https://t.me/bezzubickmcplay",
+    "icon": "send",
+    "platform": "telegram",
+    "order": 2,
+    "showCount": true,
+    "subscribeUrl": ""
+  },
+  {
+    "label": "Канал Twitch",
+    "label_en": "Twitch Channel",
+    "url": "https://www.twitch.tv/bezzubickmcplay",
+    "icon": "live_tv",
+    "platform": "twitch",
+    "order": 3,
+    "showCount": true,
+    "subscribeUrl": ""
+  },
+  {
+    "label": "Лайф-влог",
+    "label_en": "Life Vlog",
+    "url": "https://www.youtube.com/@BezzLive",
+    "icon": "videocam",
+    "platform": "youtube",
+    "order": 4,
+    "showCount": false,
+    "subscribeUrl": "https://www.youtube.com/@BezzLive?sub_confirmation=1"
+  },
+  {
+    "label": "Профиль TikTok",
+    "label_en": "TikTok Profile",
+    "url": "https://www.tiktok.com/@bezzubickmcplay",
+    "icon": "music_note",
+    "platform": "tiktok",
+    "order": 5,
+    "showCount": false,
+    "subscribeUrl": ""
+  },
+  {
+    "label": "Профиль Instagram",
+    "label_en": "Instagram Profile",
+    "url": "https://www.instagram.com/bezzubickmcplay/",
+    "icon": "photo_camera",
+    "platform": "instagram",
+    "order": 6,
+    "showCount": false,
+    "subscribeUrl": ""
+  },
+  {
+    "label": "Профиль X (Twitter)",
+    "label_en": "X (Twitter) Profile",
+    "url": "https://x.com/bezzubickmcplay",
+    "icon": "public",
+    "platform": "x",
+    "order": 7,
+    "showCount": false,
+    "subscribeUrl": ""
+  }
+]
