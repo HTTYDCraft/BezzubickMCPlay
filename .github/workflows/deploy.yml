@@ -1,5 +1,7 @@
-name: Deploy Site + WASM
+name: Deploy Site
 
+# Pure static build on Linux: Python stdlib builder reads Content/*.md +
+# Config/*.yml and emits dist/. No Swift, no macOS, no WASM toolchain.
 on:
   push:
     branches: [main]
@@ -15,161 +17,26 @@ concurrency:
   group: gh-pages-deploy
   cancel-in-progress: false
 
+env:
+  SITE_BASE: /BezzubickMCPlay
+
 jobs:
-  build-site:
-    runs-on: ubuntu-24.04-arm
+  build-deploy:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libcurl4-openssl-dev
-
-      - uses: vapor/swiftly-action@v0.2
-
-      - name: Install Swift 6.3.2
-        run: |
-          swiftly install 6.3.2
-          swiftly use 6.3.2
-
-      - name: Build & generate site
-        run: swift run BezzubickMCPlay
-
-      - name: Copy resource files
-        run: |
-          cp -r Resources/assets Output/assets 2>/dev/null || true
-
-      - uses: actions/upload-artifact@v4
+      - uses: actions/setup-python@v5
         with:
-          name: site-output
-          path: ./Output
+          python-version: '3.12'
 
-  build-wasm:
-    runs-on: ubuntu-24.04-arm
-    steps:
-      - uses: actions/checkout@v4
+      - name: Build static site
+        run: python3 tools/build.py --base "$SITE_BASE"
 
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libcurl4-openssl-dev
-
-      - uses: vapor/swiftly-action@v0.2
-
-      - name: Install Swift 6.3.2
-        run: |
-          swiftly install 6.3.2
-          swiftly use 6.3.2
-
-      - name: Install Swift SDK for WASM
-        run: |
-          swift sdk install \
-            "https://download.swift.org/swift-6.3.2-release/wasm-sdk/swift-6.3.2-RELEASE/swift-6.3.2-RELEASE_wasm.artifactbundle.tar.gz" \
-            --checksum a61f0584c93283589f8b2f42db05c1f9a182b506c2957271402992655591dd7c
-
-      - name: Build & link SiteClient WASM
-        run: |
-          set -e
-          swift build --swift-sdk swift-6.3.2-RELEASE_wasm --target SiteClient -c release
-          BIN_DIR=$(swift build --swift-sdk swift-6.3.2-RELEASE_wasm -c release --show-bin-path 2>/dev/null)
-          echo "BIN_DIR=$BIN_DIR"
-
-          # Check if SwiftPM already linked
-          WASM_FILE=$(find "$BIN_DIR" -name "*.wasm" -type f 2>/dev/null | head -1)
-          if [ -n "$WASM_FILE" ]; then
-            mkdir -p /tmp/wasm
-            cp "$WASM_FILE" /tmp/wasm/SiteClient.wasm
-            echo "SwiftPM linked WASM at $WASM_FILE"
-            exit 0
-          fi
-          echo "SwiftPM did not link (ARM64 bug). Linking manually..."
-
-          # Find wasm-ld (follow symlinks to toolchain)
-          WASM_LD=$(find /home/runner/.local/share/swiftly/toolchains -name wasm-ld -type f 2>/dev/null | head -1)
-          if [ -z "$WASM_LD" ]; then
-            WASM_LD=$(find / -name wasm-ld -type f 2>/dev/null | head -1)
-          fi
-          REAL_WASM_LD=$(readlink -f "$WASM_LD" 2>/dev/null || echo "$WASM_LD")
-          TOOLCHAIN=$(dirname "$(dirname "$REAL_WASM_LD")")
-          echo "wasm-ld: $WASM_LD -> $REAL_WASM_LD"
-          echo "toolchain: $TOOLCHAIN"
-
-          # Find WASI SDK via swift sdk list
-          SDK_DIR=""
-          SDK_PATH=$(swift sdk list 2>/dev/null | grep -oP '"path"\s*:\s*"\K[^"]+' | head -1)
-          if [ -n "$SDK_PATH" ]; then
-            SDK_DIR=$(find "$SDK_PATH" -name "WASI.sdk" -type d 2>/dev/null | head -1)
-          fi
-          # Fallback: search ~/.config
-          if [ -z "$SDK_DIR" ]; then
-            SDK_DIR=$(find ~/.config/swiftpm -name "WASI.sdk" -type d 2>/dev/null | head -1)
-          fi
-          echo "SDK_DIR: $SDK_DIR"
-
-          OBJS=$(find "$BIN_DIR" -name "*.o" -type f 2>/dev/null | tr '\n' ' ')
-          SWIFT_LIBS=$(find "$TOOLCHAIN/usr/lib/swift_static/wasi" -name "*.a" -type f 2>/dev/null | sort | tr '\n' ' ')
-          echo "Objects: $(echo $OBJS | wc -w)"
-          echo "Swift libs: $(echo $SWIFT_LIBS | wc -w)"
-
-          mkdir -p /tmp/wasm
-
-          if [ -n "$SDK_DIR" ]; then
-            WASI_LIB_DIR=$(find "$SDK_DIR" -path "*/share/wasi-sysroot/lib/wasm32-wasi" -type d 2>/dev/null | head -1)
-            CRT1=$(find "$SDK_DIR" -name "crt1.o" -type f 2>/dev/null | head -1)
-            "$WASM_LD" \
-              --no-entry --export=main --allow-undefined --strip-all \
-              $OBJS \
-              -L"$WASI_LIB_DIR" -lc \
-              $CRT1 \
-              --whole-archive $SWIFT_LIBS --no-whole-archive \
-              -o /tmp/wasm/SiteClient.wasm 2>&1
-          else
-            # Last resort: link without WASI libc (assume no libc usage)
-            "$WASM_LD" \
-              --no-entry --export=main --allow-undefined --strip-all \
-              $OBJS \
-              --whole-archive $SWIFT_LIBS --no-whole-archive \
-              -o /tmp/wasm/SiteClient.wasm 2>&1
-          fi
-
-          ls -lh /tmp/wasm/SiteClient.wasm 2>/dev/null && echo "WASM OK" || echo "WASM FAILED"
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: wasm-output
-          path: /tmp/wasm/SiteClient.wasm
-          if-no-files-found: ignore
-
-  merge-deploy:
-    needs: [build-site, build-wasm]
-    runs-on: ubuntu-24.04-arm
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: site-output
-          path: ./Output
-
-      - name: Download WASM if available
-        id: download-wasm
-        continue-on-error: true
-        uses: actions/download-artifact@v4
-        with:
-          name: wasm-output
-          path: ./wasm-artifact
-
-      - name: Merge WASM into site
-        run: |
-          mkdir -p Output/scripts
-          cp -r Resources/scripts/. Output/scripts/ 2>/dev/null || true
-          if [ -f ./wasm-artifact/SiteClient.wasm ]; then
-            cp ./wasm-artifact/SiteClient.wasm Output/scripts/
-            echo "WASM deployed ($(du -h Output/scripts/SiteClient.wasm | cut -f1))"
-          else
-            echo "No WASM, deploying site only"
-          fi
+      - name: Add .nojekyll
+        run: touch dist/.nojekyll
 
       - uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./Output
+          publish_dir: ./dist

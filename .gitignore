@@ -1,13 +1,2 @@
 .DS_Store
-/.build
-/Packages
-xcuserdata/
-DerivedData/
-.swiftpm/configuration/registries.json
-.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
-.netrc
-.aider*
-/Output
-.publish/
-/liquid-glass-main
-Resources/scripts/liquid-glass.js
+/dist
