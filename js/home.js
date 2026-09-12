@@ -5,8 +5,8 @@
    local-date calendar keys; escaped titles; single wheel listener. */
 import {
   BASE, store, applyTheme, nextTheme, setVisibility, fmtCount, esc,
-  fetchJson, fetchData, fetchHistory, localKey, setupOffline, applyMockFromQuery,
-  initSkinViewer, registerSW,
+  fetchJson, fetchData, fetchHistory, readSnapshot, localKey, setupOffline,
+  applyMockFromQuery, initSkinViewer, registerSW,
 } from './common.js';
 
 const $ = (id) => document.getElementById(id);
@@ -52,9 +52,10 @@ function updateTexts() {
 /* Same counter as the links page: only platforms with showCount. */
 async function loadLinks() {
   try {
-    state.links = await fetchJson(`${BASE}/assets/links.json?t=${Date.now()}`);
+    const links = await fetchJson(`${BASE}/assets/links.json?t=${Date.now()}`);
+    return Array.isArray(links) ? links : null;
   } catch {
-    state.links = [];
+    return null;
   }
 }
 
@@ -190,14 +191,29 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (e.deltaY !== 0) { e.preventDefault(); carousel.scrollLeft += e.deltaY; }
   }, { passive: false });
 
-  state.data = await fetchData();
+  state.data = readSnapshot('data-snapshot', state.data);
+  state.history = readSnapshot('history-snapshot', state.history);
+  state.links = readSnapshot('links-snapshot', []);
   state.data.liveStream = applyMockFromQuery(state.data.liveStream);
-  state.history = await fetchHistory();
-  await loadLinks();
   renderTotals();
   renderVideos();
   renderLive();
   renderCal();
+
+  // Background refresh: replace snapshot with live data when it arrives.
+  (async () => {
+    try {
+      const [links, data, history] = await Promise.all([loadLinks(), fetchData(), fetchHistory()]);
+      if (Array.isArray(links) && links.length) state.links = links;
+      state.data = data;
+      state.data.liveStream = applyMockFromQuery(state.data.liveStream);
+      state.history = history;
+      renderTotals();
+      renderVideos();
+      renderLive();
+      renderCal();
+    } catch (e) { console.warn('[Refresh] failed, snapshot kept', e); }
+  })();
 
   await initSkinViewer({
     viewerEl: $('skin-viewer'),

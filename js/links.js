@@ -5,7 +5,8 @@
    fetch timeout, working dev-view toggle, ?dev=1 support. */
 import {
   BASE, store, applyTheme, nextTheme, setVisibility, fmtCount, esc,
-  fetchJson, fetchData, setupOffline, applyMockFromQuery, initSkinViewer, registerSW,
+  fetchJson, fetchData, readSnapshot, setupOffline, applyMockFromQuery,
+  initSkinViewer, registerSW,
 } from './common.js';
 
 const $ = (id) => document.getElementById(id);
@@ -35,10 +36,11 @@ const state = {
 
 async function loadLinks() {
   try {
-    state.links = await fetchJson(`${BASE}/assets/links.json?t=${Date.now()}`);
+    const links = await fetchJson(`${BASE}/assets/links.json?t=${Date.now()}`);
+    return Array.isArray(links) ? links : null;
   } catch (e) {
     console.warn('[Links] links.json missing (run tools/build.py)', e);
-    state.links = [];
+    return null;
   }
 }
 
@@ -246,8 +248,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  await loadLinks();
-  state.data = await fetchData();
+  state.links = readSnapshot('links-snapshot', []);
+  state.data = readSnapshot('data-snapshot', state.data);
   state.data.liveStream = applyMockFromQuery(state.data.liveStream);
 
   renderProfile();
@@ -257,6 +259,20 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (appConfig.showSupportButton && $('support-button')) $('support-button').href = appConfig.supportUrl;
   setVisibility($('support-section'), appConfig.showSupportButton);
   renderDev();
+
+  // Background refresh: replace snapshot with live data when it arrives.
+  (async () => {
+    try {
+      const [links, data] = await Promise.all([loadLinks(), fetchData()]);
+      if (Array.isArray(links) && links.length) state.links = links;
+      state.data = data;
+      state.data.liveStream = applyMockFromQuery(state.data.liveStream);
+      updateLanguage();
+      renderVideos();
+      renderLive();
+      renderDev();
+    } catch (e) { console.warn('[Refresh] failed, snapshot kept', e); }
+  })();
 
   // Swift unhid the skin block on init; without this the viewer starts
   // in a hidden (zero-size) container and stays invisible.

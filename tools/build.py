@@ -187,11 +187,39 @@ def bilingual_div(ru_html, en_html):
             f'<div data-lang="en" style="display:none">{en_html}</div>')
 
 
+def load_snapshot(name, fallback):
+    try:
+        with open(os.path.join(ROOT, name), encoding="utf-8") as f:
+            # Escape closing tags so the JSON can't break out of <script>.
+            return f.read().replace("</", "<\\/")
+    except OSError:
+        return fallback
+
+
 def build():
     ru_intro, en_intro = read_bilingual("Content/about-intro.md")
     ru_outro, en_outro = read_bilingual("Content/about-outro.md")
     timeline = read_timeline()
     links, heroes = parse_links()
+
+    links_json = [{
+        "label": l["label"],
+        "label_en": l["label_en"],
+        "url": l["url"],
+        "icon": l["icon"],
+        "platform": l["platform"],
+        "order": l["order"],
+        "showCount": l["showCount"],
+        "subscribeUrl": (l["url"] + ("&" if "?" in l["url"] else "?") + "sub_confirmation=1")
+        if l["platform"] == "youtube" else "",
+    } for l in links]
+
+    # Instant first paint: bake current data/history/links into the HTML.
+    # JS renders the snapshot synchronously, then refreshes from network.
+    data_snapshot = load_snapshot("data.json",
+        '{"followerCounts":{},"youtubeVideos":[],"liveStream":{"type":"none"}}')
+    history_snapshot = load_snapshot("streams_history.json", '{"events":[]}')
+    links_snapshot = json.dumps(links_json, ensure_ascii=False).replace("</", "<\\/")
 
     dist = os.path.join(ROOT, "dist")
     shutil.rmtree(dist, ignore_errors=True)
@@ -305,6 +333,9 @@ def build():
 <button id="lang-toggle" class="control-button p-3 rounded-full m3-shadow-md flex items-center justify-center" aria-label="Toggle language"><span class="material-symbols-outlined" aria-hidden="true">translate</span></button>
 </div>
 </div>
+<script id="data-snapshot" type="application/json">{data_snapshot}</script>
+<script id="history-snapshot" type="application/json">{history_snapshot}</script>
+<script id="links-snapshot" type="application/json">{links_snapshot}</script>
 <script>window.__BASE__={json.dumps(BASE)};</script>
 <script defer src="{BASE}/js/vendor/skinview3d.bundle.js"></script>
 <script type="module" src="{BASE}/js/home.js"></script>
@@ -380,6 +411,8 @@ def build():
 <div class="modal-content"><h3 id="modal-title" class="text-2xl font-bold mb-4"></h3><p id="modal-description" class="text-base mb-6"></p><button id="modal-close" class="primary-button px-6 py-3 rounded-full font-medium"></button></div>
 </div>
 </div>
+<script id="data-snapshot" type="application/json">{data_snapshot}</script>
+<script id="links-snapshot" type="application/json">{links_snapshot}</script>
 <script>window.__BASE__={json.dumps(BASE)};</script>
 <script defer src="{BASE}/js/vendor/skinview3d.bundle.js"></script>
 <script type="module" src="{BASE}/js/links.js"></script>
@@ -392,17 +425,6 @@ def build():
     with open(os.path.join(dist, "links", "index.html"), "w", encoding="utf-8") as f:
         f.write(links_html)
 
-    links_json = [{
-        "label": l["label"],
-        "label_en": l["label_en"],
-        "url": l["url"],
-        "icon": l["icon"],
-        "platform": l["platform"],
-        "order": l["order"],
-        "showCount": l["showCount"],
-        "subscribeUrl": (l["url"] + ("&" if "?" in l["url"] else "?") + "sub_confirmation=1")
-        if l["platform"] == "youtube" else "",
-    } for l in links]
     with open(os.path.join(dist, "assets", "links.json"), "w", encoding="utf-8") as f:
         json.dump(links_json, f, ensure_ascii=False, indent=2)
 
