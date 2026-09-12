@@ -252,3 +252,12 @@ export function registerSW() {
     navigator.serviceWorker.register(`${BASE}/sw.js`).catch((e) => console.warn('SW registration failed', e));
   }
 }
+
+/* Pause the ambient drift while the user scrolls (see CSS
+   body.is-scrolling). Passive listener, class toggles only. */
+let scrollTimer = 0;
+addEventListener('scroll', () => {
+  document.body.classList.add('is-scrolling');
+  clearTimeout(scrollTimer);
+  scrollTimer = setTimeout(() => document.body.classList.remove('is-scrolling'), 250);
+}, { passive: true });
