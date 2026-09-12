@@ -5,7 +5,7 @@
    fetch timeout, working dev-view toggle, ?dev=1 support. */
 import {
   BASE, store, applyTheme, nextTheme, setVisibility, fmtCount, esc,
-  fetchJson, fetchData, readSnapshot, setupOffline, applyMockFromQuery,
+  fetchJson, fetchData, readSnapshot, initReveal, setupOffline, applyMockFromQuery,
   initSkinViewer, registerSW,
 } from './common.js';
 
@@ -259,6 +259,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (appConfig.showSupportButton && $('support-button')) $('support-button').href = appConfig.supportUrl;
   setVisibility($('support-section'), appConfig.showSupportButton);
   renderDev();
+  initReveal();
 
   // Background refresh: replace snapshot with live data when it arrives.
   (async () => {

@@ -5,7 +5,7 @@
    local-date calendar keys; escaped titles; single wheel listener. */
 import {
   BASE, store, applyTheme, nextTheme, setVisibility, fmtCount, esc,
-  fetchJson, fetchData, fetchHistory, readSnapshot, localKey, setupOffline,
+  fetchJson, fetchData, fetchHistory, readSnapshot, initReveal, localKey, setupOffline,
   applyMockFromQuery, initSkinViewer, registerSW,
 } from './common.js';
 
@@ -199,8 +199,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderVideos();
   renderLive();
   renderCal();
-
-  // Background refresh: replace snapshot with live data when it arrives.
+  initReveal();
   (async () => {
     try {
       const [links, data, history] = await Promise.all([loadLinks(), fetchData(), fetchHistory()]);

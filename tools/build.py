@@ -228,7 +228,7 @@ def build():
 
     tl_html = []
     for i, e in enumerate(timeline):
-        tl_html.append(f"""<details class="timeline card m3-shadow-md"{' open' if i == 0 else ''}>
+        tl_html.append(f"""<details class="timeline card m3-shadow-md" data-reveal{' open' if i == 0 else ''}>
 <summary><span class="text-lg font-medium"><span data-lang="ru">{html.escape(e['year'])} — {html.escape(e['title_ru'])}</span><span data-lang="en" style="display:none">{html.escape(e['year'])} — {html.escape(e['title_en'])}</span></span><span class="material-symbols-outlined" aria-hidden="true">expand_more</span></summary>
 <div class="md">{bilingual_div(md2html(e['body_ru']), md2html(e['body_en']))}</div>
 </details>""")
@@ -269,7 +269,7 @@ def build():
 <body class="dark-theme">
 <div id="page-wrap" class="w-full max-w-5xl mx-auto p-4 sm:p-6 lg:p-8">
 <div id="offline-warning" class="hidden fixed top-0 left-0 w-full p-3 text-center font-medium z-50 offline-warning rounded-b-lg shadow-lg"><span data-lang="ru">Вы не в сети. Данные могут быть устаревшими.</span><span data-lang="en" style="display:none">You are offline. Data might be outdated.</span></div>
-<section class="hero text-center mb-8">
+<section class="hero text-center mb-8" data-reveal>
 <img class="w-28 h-28 rounded-full mx-auto mb-4 border-4 border-purple-500 object-cover m3-shadow-md" src="{BASE}/assets/avatar.png" alt="Bezzubick MCPlay" fetchpriority="high" />
 <h1 class="text-4xl font-bold mb-2">Bezzubick MCPlay</h1>
 <p id="hero-tagline" class="text-lg text-gray-400 mb-4"><span data-lang="ru">Привет! Я ютубер и стример из России. Minecraft — мой основной контент.</span><span data-lang="en" style="display:none">Hey! I'm a YouTuber and streamer from Russia. Minecraft is my main content.</span></p>
@@ -278,7 +278,7 @@ def build():
 {''.join(hero_btns)}
 </div>
 </section>
-<section class="about-card card m3-shadow-md p-6 mt-6">
+<section class="about-card card m3-shadow-md p-6 mt-6" data-reveal>
 <div id="about-intro" class="md">{bilingual_div(md2html(ru_intro), md2html(en_intro))}</div>
 <div class="timeline-controls">
 <h3 class="text-xl font-bold" id="timeline-title">Лента канала</h3>
@@ -293,12 +293,12 @@ def build():
 <div id="about-outro" class="md mt-4">{bilingual_div(md2html(ru_outro), md2html(en_outro))}</div>
 </section>
 <div id="content-grid" class="home-grid mt-6 no-live">
-<section class="card m3-shadow-md p-6" id="links-cta">
+<section class="card m3-shadow-md p-6" id="links-cta" data-reveal>
 <h2 class="text-xl font-bold mb-2" id="nav-title">Навигация</h2>
 <p id="nav-desc" class="text-gray-400 mb-4">Перейдите на страницу со всеми моими ссылками, соцсетями, скином и dev‑инфо.</p>
 <a href="{BASE}/links/" class="primary-button rounded-full px-6 py-3 font-medium m3-shadow-md"><span class="material-symbols-outlined" aria-hidden="true">link</span><span id="nav-cta-text">Перейти к ссылкам</span></a>
 </section>
-<section id="live" class="relative overflow-hidden p-0 hidden">
+<section id="live" class="relative overflow-hidden p-0 hidden" data-reveal>
 <div class="youtube-video-container" id="live-embed-wrap"><iframe id="live-embed" title="Live stream" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
 <div id="live-badge" class="absolute top-3 left-3 px-3 py-1 rounded-full text-white text-xs font-bold live-indicator m3-shadow-md">LIVE</div>
 <div id="twitch-notice" class="hidden mt-4 p-4 rounded-2xl text-sm text-center card m3-shadow-md">
@@ -306,7 +306,7 @@ def build():
 <a id="twitch-link" href="#" target="_blank" rel="noopener" class="primary-button inline-flex items-center px-4 py-2 rounded-full font-medium"><span class="material-symbols-outlined text-base" aria-hidden="true">videocam</span><span id="twitch-cta">Смотреть на Twitch</span></a>
 </div>
 </section>
-<section id="calendar" class="p-6">
+<section id="calendar" class="p-6" data-reveal>
 <div class="md text-center mb-2"><h3 id="live-empty-title">Сейчас стрима нет</h3><p id="live-empty-sub">Обычно стримы по пятницам, 17:00–19:00 МСК.</p></div>
 <div class="cal-nav">
 <button id="cal-prev" class="control-button p-2 rounded-full m3-shadow-md" aria-label="Previous month"><span class="material-symbols-outlined" aria-hidden="true">chevron_left</span></button>
@@ -317,14 +317,14 @@ def build():
 <div id="cal-grid" class="stream-cal-grid"></div>
 <div class="legend"><span class="dot yt"></span><span id="legend-yt">YouTube</span><span class="dot tw"></span><span id="legend-tw">Twitch</span><span class="dot both"></span><span id="legend-both">Оба</span><span class="dot planned"></span><span id="legend-planned">Потенциальный</span><span class="muted" id="legend-missed">Зачёркнутые — стрима не было</span></div>
 </section>
-<section id="skin" class="card m3-shadow-md p-6">
+<section id="skin" class="card m3-shadow-md p-6" data-reveal>
 <h2 class="text-xl font-bold text-center mb-4" id="skin-title">Мой скин Minecraft</h2>
 <div id="skin-viewer" class="skin-viewer"><canvas id="skin-canvas"></canvas></div>
 <div id="skin-controls" class="skin-controls" role="group" aria-label="Skin animation"></div>
 <div class="flex justify-center mt-4"><a id="download-skin" href="{BASE}/assets/skin.png" class="primary-button rounded-full px-6 py-3 font-medium m3-shadow-md" download="minecraft_skin.png" rel="noopener"><span class="material-symbols-outlined" aria-hidden="true">download</span><span id="skin-download-text">Скачать скин</span></a></div>
 </section>
 </div>
-<section class="mb-8 mt-8">
+<section class="mb-8 mt-8" data-reveal>
 <h2 class="text-xl font-bold mb-3" id="videos-title">Последние видео</h2>
 <div id="carousel" class="flex overflow-x-auto space-x-4 pb-4 video-carousel scroll-smooth"></div>
 </section>
@@ -358,14 +358,14 @@ def build():
 <div id="app" class="w-full max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
 <div id="offline-warning" class="hidden fixed top-0 left-0 w-full p-3 text-center font-medium z-50 offline-warning rounded-b-lg shadow-lg"><span id="offline-message"></span></div>
 <div id="main-view">
-<section id="profile-section" class="text-center mb-8 hidden">
+<section id="profile-section" class="text-center mb-8 hidden" data-reveal>
 <img id="avatar" class="w-28 h-28 rounded-full mx-auto mb-4 border-4 border-purple-500 object-cover m3-shadow-md" src="{BASE}/assets/avatar.png" alt="Аватар" />
 <h1 id="profile-name" class="text-4xl font-bold mb-2"></h1>
 <p id="profile-description" class="text-lg text-gray-400 mb-4"></p>
 <div id="total-followers" class="text-xl font-medium text-purple-400"></div>
 </section>
 <div id="content-grid" class="content-container grid-layout grid-no-live">
-<section id="live-stream-section" class="relative rounded-2xl overflow-hidden m3-shadow-md hidden">
+<section id="live-stream-section" class="relative rounded-2xl overflow-hidden m3-shadow-md hidden" data-reveal>
 <div class="youtube-video-container"><iframe id="live-embed" title="Live stream" loading="lazy" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
 <div class="absolute top-3 left-3 px-3 py-1 rounded-full text-white text-xs font-bold live-indicator m3-shadow-md">LIVE</div>
 <div id="twitch-notification" class="hidden mt-4 p-4 rounded-2xl text-sm text-center card m3-shadow-md">
@@ -373,19 +373,19 @@ def build():
 <a id="twitch-link" href="#" target="_blank" rel="noopener" class="primary-button px-4 py-2 rounded-full font-medium"><span class="material-symbols-outlined text-base" aria-hidden="true">videocam</span><span id="twitch-link-text"></span></a>
 </div>
 </section>
-<div class="main-links-block">
+<div class="main-links-block" data-reveal>
 <section id="links-section" class="space-y-4 hidden"></section>
 <section id="support-section" class="flex justify-center hidden mt-8">
 <a id="support-button" href="https://www.donationalerts.com/r/bezzubickmcplay" target="_blank" rel="noopener" class="primary-button px-6 py-3 rounded-full font-medium m3-shadow-md"><span class="material-symbols-outlined" aria-hidden="true">favorite</span><span id="support-button-text"></span></a>
 </section>
 </div>
-<section id="minecraft-block" class="hidden">
+<section id="minecraft-block" class="hidden" data-reveal>
 <h2 id="minecraft-title" class="text-xl font-bold text-center mb-4"></h2>
 <div id="skin-viewer-container"><canvas id="skin-canvas"></canvas></div>
 <div class="flex justify-center mt-4 mb-2"><button id="download-skin-button" class="primary-button px-6 py-3 rounded-full font-medium m3-shadow-md"><span class="material-symbols-outlined" aria-hidden="true">download</span><span id="download-skin-text"></span></button></div>
 </section>
 </div>
-<section id="youtube-videos-section" class="mb-8 mt-8 hidden">
+<section id="youtube-videos-section" class="mb-8 mt-8 hidden" data-reveal>
 <h2 id="recent-videos-title" class="text-xl font-bold mb-4"></h2>
 <div id="video-carousel" class="flex overflow-x-auto space-x-4 pb-4 video-carousel scroll-smooth"></div>
 </section>
