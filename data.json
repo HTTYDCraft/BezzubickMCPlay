@@ -1,122 +1,123 @@
 {
-  "debugInfo" : {
-    "instagram_setup_warning" : "Missing Instagram credentials",
-    "tiktok_setup_warning" : "Missing TikTok credentials"
+  "followerCounts": {
+    "instagram": 0,
+    "telegram": 43,
+    "tiktok": 0,
+    "twitch": 10,
+    "vk_group": 247,
+    "vk_personal": 893,
+    "x": 2,
+    "youtube": 218000
   },
-  "followerCounts" : {
-    "instagram" : 0,
-    "telegram" : 43,
-    "tiktok" : 0,
-    "twitch" : 8,
-    "vk_group" : 247,
-    "vk_personal" : 893,
-    "x" : 2,
-    "youtube" : 218000
-  },
-  "lastUpdated" : "2026-09-12T08:45:25Z",
-  "liveStream" : {
-    "type" : "none"
-  },
-  "youtubeVideos" : [
+  "youtubeVideos": [
     {
-      "id" : "Hw_dM3KGY3U",
-      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/Hw_dM3KGY3U\/maxresdefault.jpg",
-      "title" : "🔴 ПЕРВЫЙ РАЗ ИГРАЕМ В PEAK С ДЕВУШКОЙ ИРЛ [Cтрим]"
+      "id": "Hw_dM3KGY3U",
+      "title": "🔴 ПЕРВЫЙ РАЗ ИГРАЕМ В PEAK С ДЕВУШКОЙ ИРЛ [Cтрим]",
+      "thumbnailUrl": "https://i.ytimg.com/vi/Hw_dM3KGY3U/maxresdefault.jpg"
     },
     {
-      "id" : "ilzRVUzrm2Q",
-      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/ilzRVUzrm2Q\/maxresdefault.jpg",
-      "title" : "🔴 СТРИМ В ЧУЛКАХ С ДЕВУШКОЙ (и котиком)! Общаемся с подписчиками [Cтрим] | Minecraft"
+      "id": "ilzRVUzrm2Q",
+      "title": "🔴 СТРИМ В ЧУЛКАХ С ДЕВУШКОЙ (и котиком)! Общаемся с подписчиками [Cтрим] | Minecraft",
+      "thumbnailUrl": "https://i.ytimg.com/vi/ilzRVUzrm2Q/maxresdefault.jpg"
     },
     {
-      "id" : "x8lyN32GOlQ",
-      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/x8lyN32GOlQ\/maxresdefault.jpg",
-      "title" : "🔴 СТРИМ В ЧУЛКАХ С ДЕВУШКОЙ ИГРАЕМ В ТВИСТЕР (и гусем)! Общаемся с подписчиками [Cтрим] | Minecraft"
+      "id": "x8lyN32GOlQ",
+      "title": "🔴 СТРИМ В ЧУЛКАХ С ДЕВУШКОЙ ИГРАЕМ В ТВИСТЕР (и гусем)! Общаемся с подписчиками [Cтрим] | Minecraft",
+      "thumbnailUrl": "https://i.ytimg.com/vi/x8lyN32GOlQ/maxresdefault.jpg"
     },
     {
-      "id" : "CbA1pEWdJJw",
-      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/CbA1pEWdJJw\/maxresdefault.jpg",
-      "title" : "🔴 СТРИМ С ДЕВУШКОЙ! (и гусем) Общаемся с подписчиками [Cтрим] | Minecraft"
+      "id": "CbA1pEWdJJw",
+      "title": "🔴 СТРИМ С ДЕВУШКОЙ! (и гусем) Общаемся с подписчиками [Cтрим] | Minecraft",
+      "thumbnailUrl": "https://i.ytimg.com/vi/CbA1pEWdJJw/maxresdefault.jpg"
     },
     {
-      "id" : "Y6OTWJI-FYU",
-      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/Y6OTWJI-FYU\/maxresdefault.jpg",
-      "title" : "БЕЗЗ СНОВА ИГРАЕТ В БЕДВАРС | Minecraft"
+      "id": "Y6OTWJI-FYU",
+      "title": "БЕЗЗ СНОВА ИГРАЕТ В БЕДВАРС | Minecraft",
+      "thumbnailUrl": "https://i.ytimg.com/vi/Y6OTWJI-FYU/maxresdefault.jpg"
     },
     {
-      "id" : "xOp5YK7Jh6c",
-      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/xOp5YK7Jh6c\/maxresdefault.jpg",
-      "title" : "🔴 Create Aeronautics на стриме [Cтрим] | Minecraft"
+      "id": "xOp5YK7Jh6c",
+      "title": "🔴 Create Aeronautics на стриме [Cтрим] | Minecraft",
+      "thumbnailUrl": "https://i.ytimg.com/vi/xOp5YK7Jh6c/maxresdefault.jpg"
     },
     {
-      "id" : "IUFOjbNJAxc",
-      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/IUFOjbNJAxc\/maxresdefault.jpg",
-      "title" : "🔴 СТРИМ С ДЕВУШКОЙ! Общаемся с подписчиками [Cтрим] | Minecraft"
+      "id": "IUFOjbNJAxc",
+      "title": "🔴 СТРИМ С ДЕВУШКОЙ! Общаемся с подписчиками [Cтрим] | Minecraft",
+      "thumbnailUrl": "https://i.ytimg.com/vi/IUFOjbNJAxc/maxresdefault.jpg"
     },
     {
-      "id" : "zjN2Qa3OrZ0",
-      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/zjN2Qa3OrZ0\/maxresdefault.jpg",
-      "title" : "ХУДШАЯ КАРТА В СТИЛЕ АУДИОКНИГИ В МАЙНКРАФТ| Minecraft"
+      "id": "zjN2Qa3OrZ0",
+      "title": "ХУДШАЯ КАРТА В СТИЛЕ АУДИОКНИГИ В МАЙНКРАФТ| Minecraft",
+      "thumbnailUrl": "https://i.ytimg.com/vi/zjN2Qa3OrZ0/maxresdefault.jpg"
     },
     {
-      "id" : "-h1vEb02DFc",
-      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/-h1vEb02DFc\/maxresdefault.jpg",
-      "title" : "ФАРМЛЮ БУЛЫЖНИК 6 ЧАСОВ В МАЙНКРАФТ | Minecraft"
+      "id": "-h1vEb02DFc",
+      "title": "ФАРМЛЮ БУЛЫЖНИК 6 ЧАСОВ В МАЙНКРАФТ | Minecraft",
+      "thumbnailUrl": "https://i.ytimg.com/vi/-h1vEb02DFc/maxresdefault.jpg"
     },
     {
-      "id" : "SjE_VQtDSdg",
-      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/SjE_VQtDSdg\/maxresdefault.jpg",
-      "title" : "БОЛЬШИЕ ШАРЫ #Shorts"
+      "id": "SjE_VQtDSdg",
+      "title": "БОЛЬШИЕ ШАРЫ #Shorts",
+      "thumbnailUrl": "https://i.ytimg.com/vi/SjE_VQtDSdg/maxresdefault.jpg"
     },
     {
-      "id" : "3OioOVz4PJc",
-      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/3OioOVz4PJc\/maxresdefault.jpg",
-      "title" : "НА ЮТУБЕ НЕЧЕГО СМОТРЕТЬ - И В ЭТОМ ВИНОВАТ ТЫ!"
+      "id": "3OioOVz4PJc",
+      "title": "НА ЮТУБЕ НЕЧЕГО СМОТРЕТЬ - И В ЭТОМ ВИНОВАТ ТЫ!",
+      "thumbnailUrl": "https://i.ytimg.com/vi/3OioOVz4PJc/maxresdefault.jpg"
     },
     {
-      "id" : "j09aadNVXIc",
-      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/j09aadNVXIc\/maxresdefault.jpg",
-      "title" : "😱 МЫ СТАЛИ ТЕСТИРОВЩИКАМИ КАРТ В МАЙНКРАФТ! [Перепутье всех карт - Feodaller] | Minecraft"
+      "id": "j09aadNVXIc",
+      "title": "😱 МЫ СТАЛИ ТЕСТИРОВЩИКАМИ КАРТ В МАЙНКРАФТ! [Перепутье всех карт - Feodaller] | Minecraft",
+      "thumbnailUrl": "https://i.ytimg.com/vi/j09aadNVXIc/maxresdefault.jpg"
     },
     {
-      "id" : "bffxaEeMhl0",
-      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/bffxaEeMhl0\/maxresdefault.jpg",
-      "title" : "🔴 ПОСЛЕДНИЙ ВЕСЕННИЙ. Каникулы? [Cтрим] | Minecraft"
+      "id": "bffxaEeMhl0",
+      "title": "🔴 ПОСЛЕДНИЙ ВЕСЕННИЙ. Каникулы? [Cтрим] | Minecraft",
+      "thumbnailUrl": "https://i.ytimg.com/vi/bffxaEeMhl0/maxresdefault.jpg"
     },
     {
-      "id" : "Tq9kv8BhWgA",
-      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/Tq9kv8BhWgA\/maxresdefault.jpg",
-      "title" : "🔴 Вечерний стрим (для тутлеса утренний)  [Cтрим] | Mindustry"
+      "id": "Tq9kv8BhWgA",
+      "title": "🔴 Вечерний стрим (для тутлеса утренний)  [Cтрим] | Mindustry",
+      "thumbnailUrl": "https://i.ytimg.com/vi/Tq9kv8BhWgA/maxresdefault.jpg"
     },
     {
-      "id" : "D_7T2w6mUFE",
-      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/D_7T2w6mUFE\/maxresdefault.jpg",
-      "title" : "🔴 Стрим на хейве, всме дарова  [Cтрим] | Minecraft"
+      "id": "D_7T2w6mUFE",
+      "title": "🔴 Стрим на хейве, всме дарова  [Cтрим] | Minecraft",
+      "thumbnailUrl": "https://i.ytimg.com/vi/D_7T2w6mUFE/maxresdefault.jpg"
     },
     {
-      "id" : "wyzGY8LmYCA",
-      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/wyzGY8LmYCA\/maxresdefault.jpg",
-      "title" : "🔴 РЕПОООООООПОПО | R.E.P.O"
+      "id": "wyzGY8LmYCA",
+      "title": "🔴 РЕПОООООООПОПО | R.E.P.O",
+      "thumbnailUrl": "https://i.ytimg.com/vi/wyzGY8LmYCA/maxresdefault.jpg"
     },
     {
-      "id" : "G-Oy-FuqBTY",
-      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/G-Oy-FuqBTY\/maxresdefault.jpg",
-      "title" : "🔴 ПРОСТО СТРИМ | Minecraft"
+      "id": "G-Oy-FuqBTY",
+      "title": "🔴 ПРОСТО СТРИМ | Minecraft",
+      "thumbnailUrl": "https://i.ytimg.com/vi/G-Oy-FuqBTY/maxresdefault.jpg"
     },
     {
-      "id" : "F-Cdh4SM0fE",
-      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/F-Cdh4SM0fE\/maxresdefault.jpg",
-      "title" : "просто играем в майнкрафт. без больших букв"
+      "id": "F-Cdh4SM0fE",
+      "title": "просто играем в майнкрафт. без больших букв",
+      "thumbnailUrl": "https://i.ytimg.com/vi/F-Cdh4SM0fE/maxresdefault.jpg"
     },
     {
-      "id" : "w_UzSa8eLfU",
-      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/w_UzSa8eLfU\/maxresdefault.jpg",
-      "title" : "😉 Не кликай на звук! - Когда лень идти в шахту [Reverse Edition] #Shorts #майнкрафт #bezzubickmcplay"
+      "id": "w_UzSa8eLfU",
+      "title": "😉 Не кликай на звук! - Когда лень идти в шахту [Reverse Edition] #Shorts #майнкрафт #bezzubickmcplay",
+      "thumbnailUrl": "https://i.ytimg.com/vi/w_UzSa8eLfU/maxresdefault.jpg"
     },
     {
-      "id" : "JnxUmWGeg4c",
-      "thumbnailUrl" : "https:\/\/i.ytimg.com\/vi\/JnxUmWGeg4c\/maxresdefault.jpg",
-      "title" : "😉 Не кликай на звук! - Когда лень идти в шахту [Reverse Edition] #Shorts #майнкрафт #bezzubickmcplay"
+      "id": "JnxUmWGeg4c",
+      "title": "😉 Не кликай на звук! - Когда лень идти в шахту [Reverse Edition] #Shorts #майнкрафт #bezzubickmcplay",
+      "thumbnailUrl": "https://i.ytimg.com/vi/JnxUmWGeg4c/maxresdefault.jpg"
     }
-  ]
+  ],
+  "liveStream": {
+    "type": "none"
+  },
+  "lastUpdated": "2026-09-12T12:22:38Z",
+  "debugInfo": {
+    "instagram_setup_warning": "Missing Instagram credentials",
+    "tiktok_setup_warning": "Missing TikTok credentials",
+    "x_error": "HTTP 402: {\"detail\":\"credits depleted\",\"status\":402,\"title\":\"Payment Required\",\"type\":\"https://api.x.com/2/problems/credits-depleted\"}"
+  }
 }
