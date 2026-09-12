@@ -33,7 +33,7 @@ function setTxt(id, val) { const e = $(id); if (e && val !== undefined) e.textCo
 function updateTexts() {
   setTxt('totals', `${t('followers')}—`);
   setTxt('nav-title', t('navTitle')); setTxt('nav-desc', t('navDesc'));
-  setTxt('nav-cta-text', t('navCta')); setTxt('go-links-text', t('navCta'));
+  setTxt('nav-cta-text', t('navCta'));
   setTxt('skin-title', t('skinTitle')); setTxt('skin-download-text', t('skinDl'));
   setTxt('videos-title', t('videosTitle')); setTxt('timeline-title', t('tlTitle'));
   setTxt('tl-expand-text', t('expand')); setTxt('tl-collapse-text', t('collapse'));
