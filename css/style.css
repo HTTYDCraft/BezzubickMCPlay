@@ -49,18 +49,19 @@ body.light-theme .mini-button.active{background-color:var(--md-sys-color-primary
 /* ---- Apple Liquid Glass ambience on body: propagated to the canvas,
    painted once, no layers, no per-frame cost (a fixed ::before layer
    flickered and diluted the gradients) ---- */
-body.glass-dark{background-color:#000;color:#FFF;background-image:radial-gradient(75% 60% at 15% 8%,rgba(187,134,252,.24),transparent 70%),radial-gradient(60% 50% at 85% 18%,rgba(3,218,198,.14),transparent 70%),radial-gradient(70% 55% at 80% 92%,rgba(187,134,252,.18),transparent 70%),radial-gradient(55% 45% at 8% 88%,rgba(76,175,80,.12),transparent 70%);background-attachment:fixed}
+body.glass-dark{background-color:#000;color:#FFF}
 body.glass-light{background-color:#f5f0ff;color:#000;background-image:radial-gradient(75% 60% at 15% 8%,rgba(98,0,238,.14),transparent 70%),radial-gradient(60% 50% at 85% 18%,rgba(3,218,198,.16),transparent 70%),radial-gradient(70% 55% at 80% 92%,rgba(98,0,238,.12),transparent 70%),radial-gradient(55% 45% at 8% 88%,rgba(102,187,106,.14),transparent 70%);background-attachment:fixed}
 /* NOTE: no background on html — body background propagates to the canvas
    and covers overscroll too, so the purple is never cut off. */
 /* ---- Slow ambient drift: transform-only animation (compositor thread,
    zero repaints, cannot flicker). Static gradients stay on body. ---- */
-body.glass-dark::before,body.glass-light::before{content:"";position:fixed;inset:-18%;z-index:-1;pointer-events:none;background-repeat:no-repeat;will-change:transform;animation:ambient-drift 24s ease-in-out infinite alternate}
+body.glass-dark::before{display:none}
+body.glass-light::before{content:"";position:fixed;inset:-18%;z-index:-1;pointer-events:none;background-repeat:no-repeat;will-change:transform;animation:ambient-drift 24s ease-in-out infinite alternate}
 body.glass-dark::before{background-image:radial-gradient(45% 38% at 22% 16%,rgba(187,134,252,.30),transparent 70%),radial-gradient(38% 34% at 80% 24%,rgba(3,218,198,.20),transparent 70%)}
 body.glass-light::before{background-image:radial-gradient(45% 38% at 22% 16%,rgba(98,0,238,.18),transparent 70%),radial-gradient(38% 34% at 80% 24%,rgba(3,218,198,.20),transparent 70%)}
 @keyframes ambient-drift{from{transform:translate3d(-7%,-4%,0) scale(1)}to{transform:translate3d(7%,5%,0) scale(1.12)}}
 /* Drift pauses while scrolling: static backdrop = nothing to flicker. */
-body.is-scrolling.glass-dark::before,body.is-scrolling.glass-light::before{animation-play-state:paused}
+body.is-scrolling.glass-light::before{animation-play-state:paused}
 /* Hover lift only for precise pointers: on touch it fires mid-scroll and flickers.
    Stable per-card layer for backdrop-filter on desktop (classic Chrome fix). */
 @media (hover:hover) and (pointer:fine){.card{transform:translateZ(0)}}
@@ -251,7 +252,7 @@ body.light-theme #skin-viewer-container,body.light-theme #skin-viewer-container 
 /* NOTE: no content-visibility here — it made elements flicker on scroll. */
 /* NOTE: no translateZ(0) on page wrappers — a giant composited layer flickers. */
 @media (hover:none){.card:hover{transform:none}}
-@media (prefers-reduced-motion:reduce){#timeline details.card summary .material-symbols-outlined{transition:none}body.glass-dark::before,body.glass-light::before{animation:none}}
+@media (prefers-reduced-motion:reduce){#timeline details.card summary .material-symbols-outlined{transition:none}body.glass-light::before{animation:none}}
 /* ---- Utilities (from Swift utilityCSS + missing classes the markup uses) ---- */
 *,::before,::after{box-sizing:border-box}
 h1,h2,h3,h4,h5,h6,p,figure,blockquote{margin:0}
