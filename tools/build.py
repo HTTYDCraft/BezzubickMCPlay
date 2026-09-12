@@ -293,7 +293,7 @@ def build():
 <h2 class="text-xl font-bold text-center mb-4" id="skin-title">Мой скин Minecraft</h2>
 <div id="skin-viewer" class="skin-viewer"><canvas id="skin-canvas"></canvas></div>
 <div id="skin-controls" class="skin-controls" role="group" aria-label="Skin animation"></div>
-<div class="flex justify-center mt-2"><a id="download-skin" href="{BASE}/assets/skin.png" class="primary-button rounded-full px-6 py-3 font-medium m3-shadow-md" download="minecraft_skin.png" rel="noopener"><span class="material-symbols-outlined" aria-hidden="true">download</span><span id="skin-download-text">Скачать скин</span></a></div>
+<div class="flex justify-center mt-4"><a id="download-skin" href="{BASE}/assets/skin.png" class="primary-button rounded-full px-6 py-3 font-medium m3-shadow-md" download="minecraft_skin.png" rel="noopener"><span class="material-symbols-outlined" aria-hidden="true">download</span><span id="skin-download-text">Скачать скин</span></a></div>
 </section>
 </div>
 <section class="mb-8 mt-6">
@@ -345,13 +345,13 @@ def build():
 <div class="main-links-block">
 <section id="links-section" class="space-y-4 hidden"></section>
 <section id="support-section" class="flex justify-center hidden mt-6">
-<a id="support-button" href="https://www.donationalerts.com/r/bezzubickmcplay" target="_blank" rel="noopener" class="support-button px-6 py-3 rounded-full font-medium m3-shadow-md"><span class="material-symbols-outlined" aria-hidden="true">favorite</span><span id="support-button-text"></span></a>
+<a id="support-button" href="https://www.donationalerts.com/r/bezzubickmcplay" target="_blank" rel="noopener" class="primary-button px-6 py-3 rounded-full font-medium m3-shadow-md"><span class="material-symbols-outlined" aria-hidden="true">favorite</span><span id="support-button-text"></span></a>
 </section>
 </div>
 <section id="minecraft-block" class="hidden">
 <h2 id="minecraft-title" class="text-xl font-bold text-center mb-4"></h2>
 <div id="skin-viewer-container"><canvas id="skin-canvas"></canvas></div>
-<div class="flex justify-center mt-3 mb-1"><button id="download-skin-button" class="primary-button px-6 py-3 rounded-full font-medium m3-shadow-md"><span class="material-symbols-outlined" aria-hidden="true">download</span><span id="download-skin-text"></span></button></div>
+<div class="flex justify-center mt-4 mb-2"><button id="download-skin-button" class="primary-button px-6 py-3 rounded-full font-medium m3-shadow-md"><span class="material-symbols-outlined" aria-hidden="true">download</span><span id="download-skin-text"></span></button></div>
 </section>
 </div>
 <section id="youtube-videos-section" class="mb-8 hidden">

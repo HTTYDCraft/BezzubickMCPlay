@@ -50,7 +50,9 @@ body.light-theme .mini-button.active{background-color:var(--md-sys-color-primary
    (no background-attachment:fixed — it repaints on every scroll frame) ---- */
 body.glass-dark{background-color:#000;color:#FFF}
 body.glass-light{background-color:#f5f0ff;color:#000}
-body.glass-dark::before,body.glass-light::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;transform:translateZ(0)}
+html{background:#000}
+html:has(body.light-theme),html:has(body.glass-light){background:#fff}
+body.glass-dark::before,body.glass-light::before{content:"";position:fixed;inset:-100%;z-index:-1;pointer-events:none}
 body.glass-dark::before{background-image:radial-gradient(60% 45% at 15% 10%,rgba(187,134,252,.16),transparent 70%),radial-gradient(50% 40% at 85% 20%,rgba(3,218,198,.10),transparent 70%),radial-gradient(55% 45% at 80% 90%,rgba(187,134,252,.12),transparent 70%),radial-gradient(45% 40% at 10% 85%,rgba(76,175,80,.08),transparent 70%)}
 body.glass-light::before{background-image:radial-gradient(60% 45% at 15% 10%,rgba(98,0,238,.10),transparent 70%),radial-gradient(50% 40% at 85% 20%,rgba(3,218,198,.12),transparent 70%),radial-gradient(55% 45% at 80% 90%,rgba(98,0,238,.08),transparent 70%),radial-gradient(45% 40% at 10% 85%,rgba(102,187,106,.10),transparent 70%)}
 body.glass-dark .card{background-color:rgba(255,255,255,.04);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.08);border-radius:20px;box-shadow:inset 0 1px 0 0 rgba(255,255,255,.06),0 8px 32px rgba(0,0,0,.5)}
@@ -133,11 +135,11 @@ body.light-theme .hero .followers{color:rgba(0,0,0,.64)!important}
 body.light-theme .md pre{background-color:rgba(0,0,0,.06)}
 .md pre code{background-color:transparent;padding:0}
 /* ---- Timeline ---- */
-.timeline-controls{display:flex;gap:10px;align-items:center;justify-content:space-between;margin:14px 0 8px}
+.timeline-controls{display:flex;gap:10px;align-items:center;justify-content:space-between;margin:16px 0}
 .tl-buttons{display:flex;gap:8px}
 .tl-buttons .tl-btn{display:inline-flex;align-items:center;gap:.5rem;min-height:44px}
 .tl-buttons .tl-btn .material-symbols-outlined{line-height:1}
-#timeline{display:flex;flex-direction:column;gap:12px}
+#timeline{display:flex;flex-direction:column;gap:16px}
 #timeline details.card{padding:14px 18px;border-radius:16px}
 #timeline details.card summary{display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;list-style:none}
 #timeline details.card summary::-webkit-details-marker{display:none}
@@ -156,8 +158,8 @@ body.light-theme .md pre{background-color:rgba(0,0,0,.06)}
 /* ---- Player / calendar ---- */
 .youtube-video-container{position:relative;width:100%;padding-top:56.25%;border-radius:16px;overflow:hidden;background:#000}
 .youtube-video-container iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-.cal-nav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:10px 0}
-.stream-cal-head,.stream-cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.cal-nav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 0}
+.stream-cal-head,.stream-cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
 .stream-cal-head div{text-align:center;font-weight:600;opacity:.8}
 .stream-cal-grid .cell{text-align:center;padding:8px 6px;border-radius:10px;border:1px solid var(--md-sys-color-outline-dark);min-height:46px;display:flex;flex-direction:column;justify-content:center;gap:3px}
 body.light-theme .stream-cal-grid .cell{border-color:var(--md-sys-color-outline-light)}
@@ -166,7 +168,7 @@ body.light-theme .stream-cal-grid .cell{border-color:var(--md-sys-color-outline-
 body.light-theme .stream-cal-grid .cell.today{outline:2px solid var(--md-sys-color-primary-light)}
 .stream-cal-grid .cell.fri{background-color:rgba(187,134,252,.08)}
 .stream-cal-grid .cell.passed.no-stream{opacity:.5;text-decoration:line-through}
-.legend{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:10px;font-size:.95rem}
+.legend{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:12px;font-size:.95rem}
 .dot{width:10px;height:10px;border-radius:50%;display:inline-block}
 .dot.yt{background-color:#FF4444}
 .dot.tw{background-color:#9146FF}
@@ -177,7 +179,7 @@ body.light-theme .stream-cal-grid .cell.today{outline:2px solid var(--md-sys-col
 #skin{position:relative}
 .skin-viewer{width:100%;aspect-ratio:1/1;height:auto;background-color:transparent;border-radius:16px;display:grid;place-items:center;position:relative;z-index:1}
 #skin-canvas{width:100%;height:100%;display:block}
-.skin-controls{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;max-width:100%;margin:14px 0 10px;position:relative;z-index:2}
+.skin-controls{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;max-width:100%;margin:16px 0 12px;position:relative;z-index:2}
 .mini-button{display:inline-flex;align-items:center;justify-content:center;height:44px;min-width:44px;padding:0 12px;border-radius:9999px;border:1px solid rgba(255,255,255,.1);background-color:#2d2d2d;color:#fff;cursor:pointer;touch-action:manipulation;pointer-events:auto}
 .mini-button .material-symbols-outlined{font-size:18px;line-height:1;color:currentColor}
 .mini-button.active{background-color:var(--md-sys-color-primary-dark);color:#000;border-color:transparent}
@@ -237,7 +239,8 @@ body.light-theme #skin-viewer-container,body.light-theme #skin-viewer-container 
 @media (max-width:452px){#links-cta .primary-button{width:100%;justify-content:center}#links-cta .primary-button span{white-space:normal}}
 @media (max-width:640px){.tl-buttons .tl-btn{padding:8px;min-width:44px;justify-content:center}.tl-buttons .btn-text{display:none}}
 /* NOTE: no content-visibility here — it made elements flicker on scroll. */
-#page-wrap,#app{transform:translateZ(0)}
+/* NOTE: no translateZ(0) on page wrappers — a giant composited layer flickers. */
+@media (hover:none){.card:hover{transform:none}}
 @media (prefers-reduced-motion:reduce){#timeline details.card summary .material-symbols-outlined{transition:none}}
 /* ---- Utilities (from Swift utilityCSS + missing classes the markup uses) ---- */
 *,::before,::after{box-sizing:border-box}
