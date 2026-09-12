@@ -241,11 +241,11 @@ def build():
 <body class="dark-theme">
 <div id="page-wrap" class="w-full max-w-5xl mx-auto p-4 sm:p-6 lg:p-8">
 <div id="offline-warning" class="hidden fixed top-0 left-0 w-full p-3 text-center font-medium z-50 offline-warning rounded-b-lg shadow-lg"><span data-lang="ru">Вы не в сети. Данные могут быть устаревшими.</span><span data-lang="en" style="display:none">You are offline. Data might be outdated.</span></div>
-<section class="hero card m3-shadow-md p-6">
-<img class="avatar m3-shadow-md" src="{BASE}/assets/avatar.png" alt="Bezzubick MCPlay" fetchpriority="high" />
-<h1>Bezzubick MCPlay</h1>
-<p id="hero-tagline"><span data-lang="ru">Привет! Я ютубер и стример из России. Minecraft — мой основной контент.</span><span data-lang="en" style="display:none">Hey! I'm a YouTuber and streamer from Russia. Minecraft is my main content.</span></p>
-<div id="totals" class="followers">Всего подписчиков: —</div>
+<section class="hero text-center mb-8">
+<img class="w-28 h-28 rounded-full mx-auto mb-4 border-4 border-purple-500 object-cover m3-shadow-md" src="{BASE}/assets/avatar.png" alt="Bezzubick MCPlay" fetchpriority="high" />
+<h1 class="text-4xl font-bold mb-2">Bezzubick MCPlay</h1>
+<p id="hero-tagline" class="text-lg text-gray-400 mb-4"><span data-lang="ru">Привет! Я ютубер и стример из России. Minecraft — мой основной контент.</span><span data-lang="en" style="display:none">Hey! I'm a YouTuber and streamer from Russia. Minecraft is my main content.</span></p>
+<div id="totals" class="text-xl font-medium text-purple-400 mb-4">Всего подписчиков: —</div>
 <div class="cta hero-cta">
 {''.join(hero_btns)}
 </div>
@@ -371,6 +371,7 @@ def build():
 <div class="flex justify-center mt-8"><a href="{BASE}/" id="back-to-main-button" class="primary-button px-6 py-3 rounded-full font-medium m3-shadow-md"><span class="material-symbols-outlined" aria-hidden="true">arrow_back</span><span id="back-to-main-text"></span></a></div>
 </div>
 <div class="flex justify-center items-center space-x-4 mt-8 mb-8">
+<a href="{BASE}/" class="control-button p-3 rounded-full m3-shadow-md flex items-center justify-center" aria-label="Back to main site"><span class="material-symbols-outlined" aria-hidden="true">arrow_back</span></a>
 <button id="theme-toggle" class="control-button p-3 rounded-full m3-shadow-md flex items-center justify-center" aria-label="Toggle theme"><span class="material-symbols-outlined" id="theme-icon">light_mode</span></button>
 <button id="language-toggle" class="control-button p-3 rounded-full m3-shadow-md flex items-center justify-center" aria-label="Toggle language"><span class="material-symbols-outlined" aria-hidden="true">language</span></button>
 <button id="dev-toggle" class="control-button p-3 rounded-full m3-shadow-md flex items-center justify-center hidden" aria-label="Toggle developer view"><span class="material-symbols-outlined" aria-hidden="true">code</span></button>

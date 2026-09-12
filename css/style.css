@@ -31,8 +31,8 @@ body.dark-theme .control-button{background-color:var(--md-sys-color-surface-cont
 body.dark-theme .control-button:hover{background-color:var(--md-sys-color-surface-container-dark)}
 body.dark-theme .primary-button{background-color:var(--md-sys-color-primary-dark);color:var(--md-sys-color-on-primary-dark)}
 body.dark-theme .primary-button:hover{background-color:var(--md-sys-color-primary-container-dark);color:var(--md-sys-color-on-primary-container-dark)}
-body.dark-theme .support-button{background-color:#4CAF50;color:var(--md-sys-color-on-primary-dark)}
-body.dark-theme .support-button:hover{background-color:#388E3C}
+body.dark-theme .support-button{background-color:var(--md-sys-color-primary-dark);color:var(--md-sys-color-on-primary-dark)}
+body.dark-theme .support-button:hover{background-color:var(--md-sys-color-primary-container-dark);color:var(--md-sys-color-on-primary-container-dark)}
 body.dark-theme .offline-warning{background-color:#FFB300;color:#212121}
 body.dark-theme .mini-button.active{background-color:var(--md-sys-color-primary-dark);color:var(--md-sys-color-on-primary-dark);border-color:transparent}
 /* ---- Material light ---- */
@@ -43,8 +43,8 @@ body.light-theme .control-button{background-color:var(--md-sys-color-surface-con
 body.light-theme .control-button:hover{background-color:var(--md-sys-color-surface-container-light)}
 body.light-theme .primary-button{background-color:var(--md-sys-color-primary-light);color:var(--md-sys-color-on-primary-light)}
 body.light-theme .primary-button:hover{background-color:var(--md-sys-color-primary-container-light);color:var(--md-sys-color-on-primary-container-light)}
-body.light-theme .support-button{background-color:#66BB6A;color:var(--md-sys-color-on-primary-light)}
-body.light-theme .support-button:hover{background-color:#43A047}
+body.light-theme .support-button{background-color:var(--md-sys-color-primary-light);color:var(--md-sys-color-on-primary-light)}
+body.light-theme .support-button:hover{background-color:var(--md-sys-color-primary-container-light);color:var(--md-sys-color-on-primary-container-light)}
 body.light-theme .mini-button.active{background-color:var(--md-sys-color-primary-light);color:var(--md-sys-color-on-primary-light);border-color:transparent}
 /* ---- Apple Liquid Glass: ambient background on a fixed composited layer
    (no background-attachment:fixed — it repaints on every scroll frame) ---- */
@@ -59,8 +59,8 @@ body.glass-dark .control-button{background-color:rgba(255,255,255,.06);backdrop-
 body.glass-dark .control-button:hover{background-color:rgba(255,255,255,.1)}
 body.glass-dark .primary-button{background:linear-gradient(135deg,rgba(187,134,252,.4),rgba(187,134,252,.2));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(187,134,252,.3);color:#FFF;border-radius:16px}
 body.glass-dark .primary-button:hover{background:linear-gradient(135deg,rgba(187,134,252,.6),rgba(187,134,252,.3));border-color:rgba(187,134,252,.5);box-shadow:0 0 20px rgba(187,134,252,.2)}
-body.glass-dark .support-button{background:linear-gradient(135deg,rgba(76,175,80,.4),rgba(76,175,80,.2));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(76,175,80,.3);color:#FFF;border-radius:16px}
-body.glass-dark .support-button:hover{background:linear-gradient(135deg,rgba(76,175,80,.6),rgba(76,175,80,.3))}
+body.glass-dark .support-button{background:linear-gradient(135deg,rgba(187,134,252,.4),rgba(187,134,252,.2));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(187,134,252,.3);color:#FFF;border-radius:16px}
+body.glass-dark .support-button:hover{background:linear-gradient(135deg,rgba(187,134,252,.6),rgba(187,134,252,.3))}
 body.glass-dark .modal-content,body.glass-dark .dev-page-content{background-color:rgba(255,255,255,.06);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.12);border-radius:28px;box-shadow:inset 0 1px 0 0 rgba(255,255,255,.1),0 16px 48px rgba(0,0,0,.5)}
 body.glass-dark .mini-button{background-color:rgba(255,255,255,.06);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.1);color:#FFF}
 body.glass-dark .mini-button.active{background-color:rgba(187,134,252,.3);border-color:rgba(187,134,252,.5);color:#FFF}
@@ -83,8 +83,8 @@ body.glass-light .control-button{background-color:rgba(255,255,255,.6);backdrop-
 body.glass-light .control-button:hover{background-color:rgba(255,255,255,.8)}
 body.glass-light .primary-button{background:linear-gradient(135deg,rgba(98,0,238,.8),rgba(98,0,238,.6));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(98,0,238,.3);color:#FFF;border-radius:16px}
 body.glass-light .primary-button:hover{background:linear-gradient(135deg,rgba(98,0,238,.9),rgba(98,0,238,.7));box-shadow:0 0 20px rgba(98,0,238,.15)}
-body.glass-light .support-button{background:linear-gradient(135deg,rgba(102,187,106,.8),rgba(102,187,106,.6));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(102,187,106,.3);color:#FFF;border-radius:16px}
-body.glass-light .support-button:hover{background:linear-gradient(135deg,rgba(102,187,106,.9),rgba(102,187,106,.7))}
+body.glass-light .support-button{background:linear-gradient(135deg,rgba(98,0,238,.8),rgba(98,0,238,.6));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(98,0,238,.3);color:#FFF;border-radius:16px}
+body.glass-light .support-button:hover{background:linear-gradient(135deg,rgba(98,0,238,.9),rgba(98,0,238,.7))}
 body.glass-light .modal-content,body.glass-light .dev-page-content{background-color:rgba(255,255,255,.75);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.5);border-radius:28px;box-shadow:inset 0 1px 0 0 rgba(255,255,255,.6),0 16px 48px rgba(0,0,0,.1)}
 body.glass-light .mini-button{background-color:rgba(255,255,255,.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(0,0,0,.08);color:#000}
 body.glass-light .mini-button.active{background-color:rgba(98,0,238,.8);border-color:transparent;color:#FFF}
@@ -236,8 +236,7 @@ body.light-theme #skin-viewer-container,body.light-theme #skin-viewer-container 
 }
 @media (max-width:452px){#links-cta .primary-button{width:100%;justify-content:center}#links-cta .primary-button span{white-space:normal}}
 @media (max-width:640px){.tl-buttons .tl-btn{padding:8px;min-width:44px;justify-content:center}.tl-buttons .btn-text{display:none}}
-/* ---- Rendering perf: skip off-screen work, effects untouched ---- */
-#timeline details,#links-section .card,#carousel .card,#video-carousel .card{content-visibility:auto;contain-intrinsic-size:auto 120px}
+/* NOTE: no content-visibility here — it made elements flicker on scroll. */
 #page-wrap,#app{transform:translateZ(0)}
 @media (prefers-reduced-motion:reduce){#timeline details.card summary .material-symbols-outlined{transition:none}}
 /* ---- Utilities (from Swift utilityCSS + missing classes the markup uses) ---- */

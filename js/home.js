@@ -5,7 +5,7 @@
    local-date calendar keys; escaped titles; single wheel listener. */
 import {
   BASE, store, applyTheme, nextTheme, setVisibility, fmtCount, esc,
-  fetchData, fetchHistory, localKey, setupOffline, applyMockFromQuery,
+  fetchJson, fetchData, fetchHistory, localKey, setupOffline, applyMockFromQuery,
   initSkinViewer, registerSW,
 } from './common.js';
 
@@ -13,6 +13,7 @@ const $ = (id) => document.getElementById(id);
 const state = {
   theme: store.theme, lang: store.lang,
   data: { followerCounts: {}, youtubeVideos: [], liveStream: { type: 'none' } },
+  links: [],
   history: { events: [] },
   cal: { year: new Date().getFullYear(), month: new Date().getMonth() },
 };
@@ -48,9 +49,25 @@ function updateTexts() {
   document.documentElement.lang = state.lang;
 }
 
+/* Same counter as the links page: only platforms with showCount. */
+async function loadLinks() {
+  try {
+    state.links = await fetchJson(`${BASE}/assets/links.json?t=${Date.now()}`);
+  } catch {
+    state.links = [];
+  }
+}
+
 function renderTotals() {
   let total = 0;
-  for (const v of Object.values(state.data.followerCounts || {})) if (typeof v === 'number') total += v;
+  const counts = state.data.followerCounts || {};
+  if (state.links.length) {
+    for (const l of state.links) {
+      if (l.showCount && typeof counts[l.platform] === 'number') total += counts[l.platform];
+    }
+  } else {
+    for (const v of Object.values(counts)) if (typeof v === 'number') total += v;
+  }
   setTxt('totals', t('followers') + fmtCount(total));
 }
 
@@ -176,6 +193,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   state.data = await fetchData();
   state.data.liveStream = applyMockFromQuery(state.data.liveStream);
   state.history = await fetchHistory();
+  await loadLinks();
   renderTotals();
   renderVideos();
   renderLive();
