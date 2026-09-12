@@ -42,7 +42,7 @@ go run ./worker/cmd/update-data --data data.json --history streams_history.json
 
 Тест live: открой сайт с `?mockLive=youtube:VIDEO_ID`,
 `?mockLive=twitch:channel`, `?mockLive=both:YT:TW` или `?mockLive=none`.
-Dev-панель страницы ссылок: кнопка `code` или `?dev=1`.
+Dev-панель страницы ссылок: только по ссылке `?dev=1`.
 
 ## Язык и темы
 

@@ -219,8 +219,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   setupOffline();
 
   setDev(state.devOpen);
-  $('dev-toggle')?.classList.remove('hidden');
-  $('dev-toggle')?.addEventListener('click', () => setDev(!state.devOpen));
+  // Dev toggle exists only via deep link ?dev=1 (not shown otherwise).
+  if (state.devOpen) {
+    $('dev-toggle')?.classList.remove('hidden');
+    $('dev-toggle')?.addEventListener('click', () => setDev(!state.devOpen));
+  }
   $('back-to-main-button')?.addEventListener('click', (e) => { e.preventDefault(); setDev(false); });
 
   $('theme-toggle')?.addEventListener('click', () => { state.theme = applyTheme(nextTheme(state.theme), $('theme-icon')); });
@@ -255,7 +258,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   setVisibility($('support-section'), appConfig.showSupportButton);
   renderDev();
 
-  // Swift inserted animation controls above the download button; keep that.
+  // Swift unhid the skin block on init; without this the viewer starts
+  // in a hidden (zero-size) container and stays invisible.
+  setVisibility($('minecraft-block'), appConfig.showMinecraftSkinSection);
+  if (appConfig.showMinecraftSkinSection) {
   let controlsEl = null;
   if ($('minecraft-block') && $('download-skin-button')) {
     controlsEl = document.createElement('div');
@@ -272,6 +278,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     skinUrl: profileConfig.minecraftSkinUrl,
     downloadBtn: $('download-skin-button'),
   });
+  }
 
   registerSW();
 });

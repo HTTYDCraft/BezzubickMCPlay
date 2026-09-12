@@ -247,7 +247,6 @@ def build():
 <p id="hero-tagline"><span data-lang="ru">Привет! Я ютубер и стример из России. Minecraft — мой основной контент.</span><span data-lang="en" style="display:none">Hey! I'm a YouTuber and streamer from Russia. Minecraft is my main content.</span></p>
 <div id="totals" class="followers">Всего подписчиков: —</div>
 <div class="cta hero-cta">
-<a href="{BASE}/links/" class="primary-button rounded-full px-6 py-3 font-medium m3-shadow-md"><span class="material-symbols-outlined" aria-hidden="true">link</span><span id="go-links-text">Мои ссылки</span></a>
 {''.join(hero_btns)}
 </div>
 </section>
