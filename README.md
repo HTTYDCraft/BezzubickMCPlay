@@ -51,4 +51,5 @@ Dev-панель страницы ссылок: только по ссылке `
 - Диплинки: `?lang=ru|en`, `?theme=dark|light|glass-dark|glass-light`
   (например `/links/?lang=en&theme=glass-light`).
 - Переключатель тем: везде только glass (`glass-dark`/`glass-light`),
-  на Android — Material (`dark`/`light`).
+  Material (`dark`/`light`) — только в Chrome на Android
+  (Fennec/Firefox/Opera остаются на glass).

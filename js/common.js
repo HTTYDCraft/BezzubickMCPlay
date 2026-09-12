@@ -14,15 +14,18 @@ const params = new URLSearchParams(location.search);
 
 /* Platform theme policy: everywhere glass, on Android Material You
    (dark/light). Toggle cycles only the platform set. */
-export function isAndroid() {
-  // UA string first: userAgentData.platform keeps the real OS value when
-  // the UA string is overridden, but real Android Chrome always has it.
-  if (/Android/i.test(navigator.userAgent || '')) return true;
-  return navigator.userAgentData?.platform === 'Android';
+/* Platform theme policy: Material You only in Chrome on Android
+   (Fennec/Firefox/Opera keep glass); everywhere else glass. */
+export function isMaterialPlatform() {
+  const ua = navigator.userAgent || '';
+  const isAndroid = /Android/i.test(ua) || navigator.userAgentData?.platform === 'Android';
+  if (!isAndroid) return false;
+  if (/Firefox|Fennec|OPR\/|EdgA\//i.test(ua)) return false;
+  return /Chrome\/\d+|Chromium\/\d+/i.test(ua);
 }
 
 export function themeSet() {
-  return isAndroid() ? ['dark', 'light'] : ['glass-dark', 'glass-light'];
+  return isMaterialPlatform() ? ['dark', 'light'] : ['glass-dark', 'glass-light'];
 }
 
 function schemeIsLight() {
@@ -32,7 +35,7 @@ function schemeIsLight() {
 function coerceTheme(t) {
   const set = themeSet();
   if (set.includes(t)) return t;
-  if (isAndroid()) return t === 'glass-light' || t === 'light' ? 'light' : 'dark';
+  if (isMaterialPlatform()) return t === 'glass-light' || t === 'light' ? 'light' : 'dark';
   return t === 'light' || t === 'glass-light' ? 'glass-light' : 'glass-dark';
 }
 
@@ -70,7 +73,8 @@ export function applyTheme(theme, iconEl) {
   document.body.classList.add(cls);
   store.theme = theme;
   const bg = theme === 'glass-light' ? '#f5f0ff' : theme === 'light' ? '#ffffff' : '#000000';
-  document.documentElement.style.background = bg;
+  // NOTE: no background on <html> — body background propagates to the canvas
+  // and covers overscroll. Toolbar color goes via theme-color meta.
   document.querySelector('meta[name="theme-color"]')?.setAttribute('content', bg);
   document.documentElement.style.colorScheme = theme === 'dark' || theme === 'glass-dark' ? 'dark' : 'light';
   if (iconEl) iconEl.textContent = theme === 'dark' ? 'light_mode' : theme === 'light' ? 'dark_mode' : theme === 'glass-dark' ? 'light_mode' : 'dark_mode';
