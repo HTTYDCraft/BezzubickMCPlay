@@ -296,13 +296,13 @@ def build():
 <div class="flex justify-center mt-4"><a id="download-skin" href="{BASE}/assets/skin.png" class="primary-button rounded-full px-6 py-3 font-medium m3-shadow-md" download="minecraft_skin.png" rel="noopener"><span class="material-symbols-outlined" aria-hidden="true">download</span><span id="skin-download-text">Скачать скин</span></a></div>
 </section>
 </div>
-<section class="mb-8 mt-6">
+<section class="mb-8 mt-8">
 <h2 class="text-xl font-bold mb-3" id="videos-title">Последние видео</h2>
 <div id="carousel" class="flex overflow-x-auto space-x-4 pb-4 video-carousel scroll-smooth"></div>
 </section>
 <div class="flex justify-center items-center space-x-4 mt-8 mb-8">
-<button id="theme-toggle" class="control-button p-3 rounded-full m3-shadow-md" aria-label="Toggle theme"><span class="material-symbols-outlined" id="theme-icon">light_mode</span></button>
-<button id="lang-toggle" class="control-button p-3 rounded-full m3-shadow-md" aria-label="Toggle language"><span class="material-symbols-outlined" aria-hidden="true">translate</span></button>
+<button id="theme-toggle" class="control-button p-3 rounded-full m3-shadow-md flex items-center justify-center" aria-label="Toggle theme"><span class="material-symbols-outlined" id="theme-icon">light_mode</span></button>
+<button id="lang-toggle" class="control-button p-3 rounded-full m3-shadow-md flex items-center justify-center" aria-label="Toggle language"><span class="material-symbols-outlined" aria-hidden="true">translate</span></button>
 </div>
 </div>
 <script>window.__BASE__={json.dumps(BASE)};</script>
@@ -344,7 +344,7 @@ def build():
 </section>
 <div class="main-links-block">
 <section id="links-section" class="space-y-4 hidden"></section>
-<section id="support-section" class="flex justify-center hidden mt-6">
+<section id="support-section" class="flex justify-center hidden mt-8">
 <a id="support-button" href="https://www.donationalerts.com/r/bezzubickmcplay" target="_blank" rel="noopener" class="primary-button px-6 py-3 rounded-full font-medium m3-shadow-md"><span class="material-symbols-outlined" aria-hidden="true">favorite</span><span id="support-button-text"></span></a>
 </section>
 </div>
@@ -354,7 +354,7 @@ def build():
 <div class="flex justify-center mt-4 mb-2"><button id="download-skin-button" class="primary-button px-6 py-3 rounded-full font-medium m3-shadow-md"><span class="material-symbols-outlined" aria-hidden="true">download</span><span id="download-skin-text"></span></button></div>
 </section>
 </div>
-<section id="youtube-videos-section" class="mb-8 hidden">
+<section id="youtube-videos-section" class="mb-8 mt-8 hidden">
 <h2 id="recent-videos-title" class="text-xl font-bold mb-4"></h2>
 <div id="video-carousel" class="flex overflow-x-auto space-x-4 pb-4 video-carousel scroll-smooth"></div>
 </section>
