@@ -276,12 +276,14 @@ export function initReveal() {
   }
   els.forEach((el) => el.classList.add('reveal'));
   els.filter((el) => el.getBoundingClientRect().top < innerHeight * 0.9)
-    .forEach((el, i) => el.style.setProperty('--reveal-delay', `${i * 80}ms`));
+    .forEach((el, i) => el.style.setProperty('--reveal-delay', `${i * 60}ms`));
+  // Positive bottom margin: animation starts ~200px before the block enters,
+  // so sharp flings never outrun the observer into a visible pop-in.
   const io = new IntersectionObserver((entries) => {
     for (const e of entries) {
       if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
     }
-  }, { threshold: 0.1, rootMargin: '0px 0px -6% 0px' });
+  }, { threshold: 0, rootMargin: '0px 0px 200px 0px' });
   els.forEach((el) => io.observe(el));
 }
 
