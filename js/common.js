@@ -164,7 +164,7 @@ export async function initSkinViewer({ viewerEl, canvas, controlsEl, skinUrl, do
   const fallback = () => {
     try { viewer?.dispose?.(); } catch { /* noop */ }
     viewer = null;
-    viewerEl.innerHTML = `<img loading="lazy" decoding="async" src="${esc(skinUrl)}" alt="Minecraft skin" class="w-full h-full object-contain" />`;
+    viewerEl.innerHTML = `<img loading="eager" decoding="async" src="${esc(skinUrl)}" alt="Minecraft skin" class="w-full h-full object-contain" />`;
     if (controlsEl) controlsEl.innerHTML = '';
   };
   const syncButtons = () => {

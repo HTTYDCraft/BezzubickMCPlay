@@ -82,7 +82,7 @@ function renderVideos() {
     a.target = '_blank';
     a.rel = 'noopener';
     a.className = 'flex-shrink-0 w-64 rounded-2xl overflow-hidden m3-shadow-md card';
-    a.innerHTML = `<img loading="lazy" decoding="async" src="${esc(v.thumbnailUrl)}" alt="${esc(v.title)}" class="w-full h-36 object-cover"><div class="p-3"><p class="text-sm font-medium leading-tight">${esc(v.title)}</p></div>`;
+    a.innerHTML = `<img loading="eager" decoding="async" src="${esc(v.thumbnailUrl)}" alt="${esc(v.title)}" class="w-full h-36 object-cover"><div class="p-3"><p class="text-sm font-medium leading-tight">${esc(v.title)}</p></div>`;
     el.appendChild(a);
   }
 }
