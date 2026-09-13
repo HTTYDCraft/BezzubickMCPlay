@@ -306,6 +306,7 @@ def build():
 <html lang="ru">
 <head>
 {head}
+<meta name="google-site-verification" content="Dx4RAAUxp_z-t2B8Z7r4JaKsP-0KVtZUwfgyMljeyhA" />
 <title>Bezzubick MCPlay — Minecraft приключения и стримы</title>
 <meta name="description" content="Официальный сайт Bezzubick MCPlay: Minecraft-приключения, стримы, последние видео, календарь стримов и все ссылки." />
 <meta property="og:type" content="website" />
@@ -395,6 +396,7 @@ def build():
 <html lang="ru">
 <head>
 {head}
+<meta name="google-site-verification" content="Dx4RAAUxp_z-t2B8Z7r4JaKsP-0KVtZUwfgyMljeyhA" />
 <title>BezzubickMCPlay | Мои ссылки</title>
 <meta name="description" content="Все ссылки BezzubickMCPlay: YouTube, Telegram, Twitch, TikTok, Instagram и X. Стримы, видео и Minecraft-скин." />
 <meta property="og:type" content="website" />
