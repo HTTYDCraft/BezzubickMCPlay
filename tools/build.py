@@ -510,7 +510,7 @@ def build():
                     os.makedirs(os.path.dirname(d), exist_ok=True)
                     shutil.copy2(s, d)
     for fn in ("data.json", "streams_history.json",
-               "manifest.webmanifest"):
+               "manifest.webmanifest", "404.html"):
         src = os.path.join(ROOT, fn)
         if os.path.isfile(src):
             shutil.copy2(src, os.path.join(dist, fn))
