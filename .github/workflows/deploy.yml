@@ -23,7 +23,7 @@ env:
 
 jobs:
   build-deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-arm
     steps:
       - uses: actions/checkout@v4
 

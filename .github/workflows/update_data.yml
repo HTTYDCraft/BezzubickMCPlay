@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   update-data:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-arm
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
