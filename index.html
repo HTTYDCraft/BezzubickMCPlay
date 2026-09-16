@@ -5,8 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="theme-color" content="#000000" />
 <meta name="description" content="Bezzubick MCPlay — перенаправление." />
-<link rel="icon" href="https://httydcraft.github.io/BezzubickMCPlay/assets/favicon.png" type="image/png" />
-<link rel="canonical" href="https://httydcraft.github.io/BezzubickMCPlay/" />
+<meta name="robots" content="noindex, follow" />
+<link rel="icon" href="https://bezzubickmcplay.pages.dev/assets/favicon.png" type="image/png" />
+<link rel="canonical" href="https://bezzubickmcplay.pages.dev/" />
 <title>Загрузка…</title>
 <style>
   html,body{height:100%}
@@ -28,7 +29,7 @@
   @keyframes slide{from{transform:translateX(-110%)}to{transform:translateX(280%)}}
   @media (prefers-reduced-motion:reduce){.loader{animation:none}.loader h1 .dot{animation:none;opacity:1}.bar span{animation:none;width:100%}}
 </style>
-<noscript><meta http-equiv="refresh" content="0;url=https://httydcraft.github.io/BezzubickMCPlay/" /></noscript>
+<noscript><meta http-equiv="refresh" content="0;url=https://bezzubickmcplay.pages.dev/" /></noscript>
 </head>
 <body>
 <main class="loader">
@@ -37,13 +38,12 @@
 </main>
 <script>
 (function(){
-  var TARGET = 'https://httydcraft.github.io/BezzubickMCPlay';
+  var TARGET = 'https://bezzubickmcplay.pages.dev';
   var lang = (navigator.language || 'ru').toLowerCase().indexOf('ru') === 0 ? 'ru' : 'en';
   document.documentElement.lang = lang;
   var label = lang === 'ru' ? 'Загрузка' : 'Loading';
   document.getElementById('loading-text').textContent = label;
   document.title = label + '…';
-  // Forward path + all query params (?lang, ?theme, ?dev, …) + hash.
   var path = (location.pathname || '/').replace(/^\/+|\/+$/g, '');
   var url = TARGET + (path ? '/' + path + '/' : '/') + (location.search || '') + (location.hash || '');
   setTimeout(function(){ location.replace(url); }, 800);
